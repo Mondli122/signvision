@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SignBridge SA - Two-Way Sign Language Translator & Learning Platform | Robo Rumble Technomania</title>
+  <meta name="description" content="Real-time two-way South African Sign Language (SASL) translator and interactive learning platform using computer vision and AI for Robo Rumble Technomania.">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- MediaPipe Libraries with Automatic Fallbacks -->
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous" onerror="this.onerror=null;this.src='https://unpkg.com/@mediapipe/hands/hands.js';"></script>
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+
+  <!-- Top Navigation Bar -->
+  <header class="navbar">
+    <div class="brand">
+      <div class="brand-icon">🤝</div>
+      <div class="brand-text">
+        <h1>SignBridge SA</h1>
+      </div>
+      <span class="brand-badge">Technomania 2026</span>
+    </div>
+
+    <div class="nav-controls">
+      <button class="btn" id="openDictBtn">
+        <span>📖</span> SASL Dictionary
+      </button>
+      <button class="btn btn-primary" onclick="document.querySelector('.tab-btn[data-mode=\'practice\']').click()">
+        <span>🎯</span> Practice Mode
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Content Container -->
+  <main class="main-container">
+
+    <!-- Competition Partner Banner -->
+    <section class="tech-banner">
+      <div class="banner-info">
+        <h2>Robo Rumble National STEM Competition</h2>
+        <p>Bridging the digital divide for Deaf and hearing communities across South Africa. Delivered with <strong>AlgoAtWork</strong> & <strong>UL Digital Hub</strong>.</p>
+      </div>
+      <div class="banner-stats">
+        <div class="stat-chip">
+          <span class="dot"></span> 60 FPS CV Tracking
+        </div>
+        <div class="stat-chip">
+          <span>🇿🇦</span> SASL Supported
+        </div>
+      </div>
+    </section>
+
+    <!-- Navigation Tabs -->
+    <nav class="mode-tabs">
+      <button class="tab-btn active" data-mode="sign-to-text">
+        <span>📹</span> Sign to Text & Speech
+      </button>
+      <button class="tab-btn" data-mode="text-to-sign">
+        <span>💬</span> Speech / Text to Sign
+      </button>
+      <button class="tab-btn" data-mode="practice">
+        <span>🎓</span> Learn & Practice
+      </button>
+    </nav>
+
+    <!-- SECTION 1: Sign to Text & Speech (Deaf -> Hearing) -->
+    <section id="view-sign-to-text" class="view-section active">
+      <div class="dashboard-grid">
+        
+        <!-- Camera Viewport Card -->
+        <div class="camera-card">
+          <div class="card-header">
+            <div class="card-title">
+              <span>📷</span> Live Camera Vision Engine
+            </div>
+            <div class="live-indicator" id="liveBadge">
+              ● STANDBY
+            </div>
+          </div>
+
+          <div class="viewport-container">
+            <video id="inputVideo" class="input-video" autoplay playsinline muted></video>
+            <canvas id="outputCanvas" class="output-canvas"></canvas>
+
+            <div class="camera-overlay-info">
+              <span id="fpsCounter">0 FPS</span> | MediaPipe Hands v0.10
+            </div>
+
+            <!-- Error Banner Overlay -->
+            <div id="cameraErrorBanner" style="display: none; position: absolute; inset: 0; background: rgba(11, 15, 25, 0.95); z-index: 10; padding: 2rem; flex-direction: column; justify-content: center; align-items: center; text-align: center; gap: 1rem;">
+              <div style="font-size: 3rem;">⚠️</div>
+              <h3 style="color: #EF4444; font-family: var(--font-heading);" id="cameraErrorTitle">Camera Access Error</h3>
+              <p style="color: var(--text-muted); font-size: 0.9rem; max-width: 450px;" id="cameraErrorText">Please allow camera permissions in your browser address bar to use real-time sign language tracking.</p>
+              <button class="btn btn-primary" onclick="window.app && window.app.startCamera()">Retry Camera</button>
+            </div>
+          </div>
+
+          <div class="camera-controls">
+            <button class="btn btn-primary" id="startCameraBtn">
+              <span>▶</span> Start Camera Tracking
+            </button>
+            <button class="btn" id="stopCameraBtn" style="display: none; background: rgba(239, 68, 68, 0.2); border-color: rgba(239, 68, 68, 0.4); color: #FCA5A5;">
+              <span>⏹</span> Stop Camera
+            </button>
+          </div>
+        </div>
+
+        <!-- Translation & Telemetry Output Card -->
+        <div class="output-card">
+          
+          <div class="current-prediction-box">
+            <div class="gesture-icon-display" id="gestureIcon">✋</div>
+            <div class="gesture-gloss-text" id="gestureGloss">WAITING FOR CAMERA...</div>
+
+            <div class="confidence-bar-container">
+              <div class="confidence-labels">
+                <span>Classification Confidence</span>
+                <span id="confidenceValue">0%</span>
+              </div>
+              <div class="progress-track">
+                <div class="progress-fill" id="confidenceBar"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="translation-log-box">
+            <div class="log-header">
+              <span>Live Translation Transcript</span>
+              <div style="display: flex; gap: 0.5rem;">
+                <button class="btn" id="speakLogBtn" style="padding: 2px 8px; font-size: 0.75rem;">🔊 Read Out</button>
+                <button class="btn" id="clearLogBtn" style="padding: 2px 8px; font-size: 0.75rem;">🗑 Clear</button>
+              </div>
+            </div>
+            <div class="log-stream" id="translationLog">
+              <span class="log-chip" style="opacity: 0.5;">Gesture history will stream here...</span>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECTION 2: Speech / Text to Sign (Hearing -> Deaf) -->
+    <section id="view-text-to-sign" class="view-section">
+      <div class="text-to-sign-grid">
+        <div class="input-box-card">
+          <div class="card-title">
+            <span>🗣</span> Speech or Text to SASL Translation
+          </div>
+          <p style="color: var(--text-muted); font-size: 0.9rem;">Type an English phrase or use the microphone to translate into South African Sign Language glosses and visual cards.</p>
+          
+          <div class="text-input-group">
+            <input type="text" id="textToSignInput" class="text-input" placeholder="e.g. Hello, thank you for your help...">
+            <button class="btn" id="micBtn" title="Voice Input">🎙</button>
+            <button class="btn btn-primary" id="translateTextBtn">Translate</button>
+          </div>
+
+          <div style="margin-top: 1rem;">
+            <h4 style="color: var(--secondary-accent); font-size: 0.85rem; text-transform: uppercase; margin-bottom: 0.5rem;">Sign Gloss Sequence:</h4>
+            <div id="glossSequenceDisplay" style="font-family: var(--font-heading); font-size: 1.5rem; font-weight: 700; color: var(--primary-accent);">
+              HELLO THANK YOU HELP
+            </div>
+          </div>
+
+          <div class="visual-cards-container" id="visualSignCards">
+            <!-- Cards rendered dynamically -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 3: Learn & Practice Mode -->
+    <section id="view-practice" class="view-section">
+      <div class="learning-card">
+        <div class="card-header">
+          <div class="card-title">
+            <span>🎓</span> Interactive Sign Practice Challenge
+          </div>
+          <div style="font-family: var(--font-heading); font-size: 1.1rem; font-weight: 700; color: var(--purple-accent);">
+            Score: <span id="practiceScore">0</span> PTS
+          </div>
+        </div>
+
+        <div class="target-prompt-banner">
+          <div class="target-word-display">
+            <h3>Target Gesture to Show Camera:</h3>
+            <h2 id="targetSignWord">I LOVE YOU</h2>
+            <p id="targetSignDesc" style="color: var(--text-muted); font-size: 0.9rem; margin-top: 0.25rem;">Extend thumb, index, and pinky finger simultaneously while middle and ring fingers are folded.</p>
+          </div>
+          <div style="font-size: 4rem;" id="targetSignIcon">🤟</div>
+        </div>
+
+        <p style="text-align: center; color: var(--text-muted); font-size: 0.9rem;">
+          Make sure your camera is running, then hold the target sign in front of the camera for 1.2 seconds!
+        </p>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- SASL Dictionary Modal -->
+  <div class="modal-overlay" id="dictModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 style="font-family: var(--font-heading); color: var(--primary-accent);">South African Sign Language (SASL) Dictionary</h3>
+        <button class="btn" id="closeDictBtn">✕ Close</button>
+      </div>
+      <div class="modal-body" id="modalDictGrid">
+        <!-- Dictionary items injected dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p>SignBridge SA &copy; 2026 | Built for <strong>Robo Rumble Technomania Competition</strong> | AlgoAtWork & UL Digital Hub</p>
+  </footer>
+
+  <!-- Custom JavaScript -->
+  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
