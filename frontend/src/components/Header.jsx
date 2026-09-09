@@ -1,7 +1,9 @@
 import React from 'react';
-import { Download, User, Menu, HandMetal } from 'lucide-react';
+import { Download, User, Menu, HandMetal, AlertTriangle, Video } from 'lucide-react';
+import DialectSelector from './DialectSelector';
 
-export default function Header() {
+
+export default function Header({ currentProvince, onSelectProvince, onOpenEmergency, onOpenWebRTC }) {
   return (
     <header className="glass-card" style={{ padding: '12px 24px', borderRadius: '18px', position: 'relative', overflow: 'hidden' }}>
       {/* Decorative top colored accent line matching South African rainbow gradient */}
@@ -48,54 +50,70 @@ export default function Header() {
           </div>
         </div>
 
-        {/* Center: Install App CTA */}
-        <div>
-          <button className="btn-primary" style={{ borderRadius: '12px', padding: '9px 18px', fontSize: '13px' }}>
-            <Download size={16} />
-            Install App
+        {/* Center: SASL Dialect Selector & Quick Launchers */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <DialectSelector
+            currentProvince={currentProvince || 'Gauteng'}
+            onSelectProvince={onSelectProvince}
+          />
+
+          <button
+            onClick={onOpenWebRTC}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              background: 'rgba(56, 189, 248, 0.15)',
+              border: '1px solid #38bdf8',
+              color: '#38bdf8',
+              padding: '8px 14px',
+              borderRadius: '10px',
+              cursor: 'pointer',
+              fontWeight: '600',
+              fontSize: '0.85rem'
+            }}
+          >
+            <Video size={16} />
+            <span>Video Call</span>
+          </button>
+
+          <button
+            onClick={onOpenEmergency}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
+              border: 'none',
+              color: '#ffffff',
+              padding: '8px 14px',
+              borderRadius: '10px',
+              cursor: 'pointer',
+              fontWeight: 'bold',
+              fontSize: '0.85rem',
+              boxShadow: '0 2px 10px rgba(239, 68, 68, 0.4)'
+            }}
+          >
+            <AlertTriangle size={16} />
+            <span>Emergency SOS</span>
           </button>
         </div>
 
-        {/* Right: Status, User, Menu */}
+        {/* Right: Status, Install & User */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <button className="btn-primary" style={{ borderRadius: '12px', padding: '9px 16px', fontSize: '13px' }}>
+            <Download size={16} />
+            Install PWA
+          </button>
+
           <div className="status-pill">
             <span className="status-dot"></span>
-            Online
+            AI Live
           </div>
-
-          <button style={{
-            width: '38px',
-            height: '38px',
-            borderRadius: '50%',
-            background: '#F1F5F9',
-            border: '1px solid #E2E8F0',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: '#334155',
-            cursor: 'pointer',
-            transition: 'background 0.2s'
-          }}>
-            <User size={18} />
-          </button>
-
-          <button style={{
-            width: '38px',
-            height: '38px',
-            borderRadius: '10px',
-            background: '#FFFFFF',
-            border: '1px solid #E2E8F0',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: '#334155',
-            cursor: 'pointer'
-          }}>
-            <Menu size={20} />
-          </button>
         </div>
 
       </div>
     </header>
   );
 }
+
