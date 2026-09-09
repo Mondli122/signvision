@@ -9,3 +9,8 @@ venv/
 .DS_Store
 .vscode/
 .idea/
+*.pkl
+node_modules/
+**/node_modules/
+dist/
+**/dist/

@@ -23,7 +23,7 @@ class SignBridgeApp {
     this.lastSpokenGloss = "";
     this.lastSpokenTime = 0;
 
-    // Tracking state
+    // Tracking state & 30-frame sequence buffer
     this.camera = null;
     this.hands = null;
     this.isCameraActive = false;
@@ -31,8 +31,16 @@ class SignBridgeApp {
     this.lastFpsUpdate = performance.now();
     this.currentPrediction = { gesture: "NONE", confidence: 0, gloss: "NO HAND" };
 
+    // Rolling 30-frame Sequence Buffer for Motion Trajectory Tracking
+    this.sequenceBuffer = [];
+    this.maxSequenceLength = 30;
+
+    // Dataset Collector State
+    this.isRecordingSequence = false;
+    this.recordedSequenceFrames = [];
+
     // Practice Mode State
-    this.learningTargets = ["hello", "i_love_you", "thumbs_up", "peace", "water", "ok"];
+    this.learningTargets = ["hello", "where", "please", "sorry", "help", "water", "thumbs_up", "ok"];
     this.learningIndex = 0;
     this.learningScore = 0;
     this.targetHoldStartTime = null;
@@ -40,7 +48,117 @@ class SignBridgeApp {
     this.initMediaPipe();
     this.initEventListeners();
     this.loadDictionary();
+    this.initPWA();
+
+    // Speed Quiz Properties
+    this.isQuizMode = false;
+    this.quizStreak = 0;
+    this.quizTimer = null;
+    this.quizTimeLeft = 10;
   }
+
+  initPWA() {
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/static/sw.js')
+          .then(reg => console.log('✅ ServiceWorker registered for PWA:', reg.scope))
+          .catch(err => console.warn('ServiceWorker registration failed:', err));
+      });
+    }
+
+    let deferredPrompt;
+    const installBtn = document.getElementById('pwaInstallBtn');
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      if (installBtn) installBtn.style.display = 'inline-flex';
+    });
+
+    if (installBtn) {
+      installBtn.addEventListener('click', () => {
+        if (deferredPrompt) {
+          deferredPrompt.prompt();
+          deferredPrompt.userChoice.then((choiceResult) => {
+            if (choiceResult.outcome === 'accepted') {
+              console.log('User accepted PWA install prompt');
+            }
+            deferredPrompt = null;
+            installBtn.style.display = 'none';
+          });
+        }
+      });
+    }
+  }
+
+  startSpeedQuiz() {
+    if (!this.isCameraActive) {
+      alert("Please start the camera tracking first before launching Speed Quiz Mode!");
+      return;
+    }
+
+    this.isQuizMode = true;
+    this.quizStreak = 0;
+    document.getElementById('quizStreak').textContent = '0';
+    this.speakText("Speed quiz started! Show the target sign before time runs out!");
+    this.nextQuizQuestion();
+  }
+
+  nextQuizQuestion() {
+    if (this.quizTimer) clearInterval(this.quizTimer);
+
+    this.quizTimeLeft = 10;
+    this.updateQuizTimerUI(100);
+
+    const targetId = this.learningTargets[this.learningIndex];
+    this.updatePracticeUI();
+
+    const start = Date.now();
+    this.quizTimer = setInterval(() => {
+      const elapsed = (Date.now() - start) / 1000;
+      this.quizTimeLeft = Math.max(0, 10 - elapsed);
+      const pct = (this.quizTimeLeft / 10) * 100;
+      this.updateQuizTimerUI(pct);
+
+      if (this.quizTimeLeft <= 0) {
+        clearInterval(this.quizTimer);
+        this.onQuizTimeout();
+      }
+    }, 100);
+  }
+
+  updateQuizTimerUI(pct) {
+    const timerBar = document.getElementById('quizTimerBar');
+    if (timerBar) timerBar.style.width = `${pct}%`;
+  }
+
+  onQuizSuccess() {
+    if (this.quizTimer) clearInterval(this.quizTimer);
+
+    this.learningScore += 150;
+    this.quizStreak += 1;
+    document.getElementById('practiceScore').textContent = this.learningScore;
+    document.getElementById('quizStreak').textContent = this.quizStreak;
+
+    this.speakText(`Great job! Streak ${this.quizStreak}`);
+
+    // Advance to next target
+    this.learningIndex = (this.learningIndex + 1) % this.learningTargets.length;
+
+    setTimeout(() => {
+      if (this.isQuizMode) this.nextQuizQuestion();
+    }, 1000);
+  }
+
+  onQuizTimeout() {
+    this.speakText("Time is up! Streak reset.");
+    this.quizStreak = 0;
+    document.getElementById('quizStreak').textContent = '0';
+
+    const startBtn = document.getElementById('startQuizBtn');
+    if (startBtn) startBtn.textContent = '⚡ Retry Speed Quiz Mode';
+  }
+
 
   initMediaPipe() {
     if (typeof Hands === 'undefined') {
@@ -56,16 +174,16 @@ class SignBridgeApp {
       });
 
       this.hands.setOptions({
-        maxNumHands: 2,
+        maxNumHands: 2, // Enable 2-Hand Bimanual CV Tracking
         modelComplexity: 1,
         minDetectionConfidence: 0.7,
         minTrackingConfidence: 0.7
       });
 
       this.hands.onResults((results) => this.onHandResults(results));
-      console.log("✅ MediaPipe Hands initialized successfully.");
+      console.log("✅ MediaPipe Hands (2-Hand Mode) initialized successfully.");
       const overlayInfo = document.querySelector('.camera-overlay-info');
-      if (overlayInfo) overlayInfo.innerHTML = '<span id="fpsCounter">0 FPS</span> | MediaPipe Ready';
+      if (overlayInfo) overlayInfo.innerHTML = '<span id="fpsCounter">0 FPS</span> | 2-Hand CV Engine Active';
       return true;
     } catch (err) {
       console.error("Failed to initialize MediaPipe Hands:", err);
@@ -76,7 +194,6 @@ class SignBridgeApp {
   async startCamera() {
     if (this.isCameraActive) return;
 
-    // Ensure MediaPipe is initialized
     if (!this.hands) {
       const ready = this.initMediaPipe();
       if (!ready) {
@@ -86,8 +203,6 @@ class SignBridgeApp {
     }
 
     const errorBanner = document.getElementById('cameraErrorBanner');
-    const errorTitle = document.getElementById('cameraErrorTitle');
-    const errorText = document.getElementById('cameraErrorText');
     if (errorBanner) errorBanner.style.display = 'none';
 
     try {
@@ -130,7 +245,7 @@ class SignBridgeApp {
       processFrame();
 
       document.getElementById('liveBadge').classList.add('active');
-      document.getElementById('liveBadge').textContent = '● LIVE CV';
+      document.getElementById('liveBadge').textContent = '● 2-HAND CV LIVE';
       document.getElementById('startCameraBtn').style.display = 'none';
       document.getElementById('stopCameraBtn').style.display = 'inline-flex';
 
@@ -153,8 +268,8 @@ class SignBridgeApp {
       }
 
       if (errorBanner) {
-        errorTitle.textContent = title;
-        errorText.textContent = msg;
+        document.getElementById('cameraErrorTitle').textContent = title;
+        document.getElementById('cameraErrorText').textContent = msg;
         errorBanner.style.display = 'flex';
       } else {
         alert(`${title}: ${msg}`);
@@ -166,6 +281,7 @@ class SignBridgeApp {
     if (!this.isCameraActive) return;
     
     this.isCameraActive = false;
+    this.sequenceBuffer = [];
 
     if (this.videoElement && this.videoElement.srcObject) {
       const tracks = this.videoElement.srcObject.getTracks();
@@ -191,7 +307,6 @@ class SignBridgeApp {
       this.lastFpsUpdate = now;
     }
 
-    // Set canvas dimensions
     const w = this.videoElement.videoWidth || 640;
     const h = this.videoElement.videoHeight || 480;
     this.canvasElement.width = w;
@@ -200,46 +315,65 @@ class SignBridgeApp {
     this.canvasCtx.save();
     this.canvasCtx.clearRect(0, 0, w, h);
     
-    // Always render webcam video frame onto canvas
     const imageSource = results.image || this.videoElement;
     try {
       this.canvasCtx.drawImage(imageSource, 0, 0, w, h);
-    } catch (e) {
-      // Fallback
-    }
+    } catch (e) {}
 
     if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
-      for (const landmarks of results.multiHandLandmarks) {
-        // Draw Skeleton Connections (using MediaPipe helper or custom fallback)
+      const handsList = results.multiHandLandmarks;
+
+      // Update 30-frame sequence buffer
+      this.sequenceBuffer.push(handsList[0]);
+      if (this.sequenceBuffer.length > this.maxSequenceLength) {
+        this.sequenceBuffer.shift();
+      }
+
+      // Record custom sequence if active
+      if (this.isRecordingSequence) {
+        this.recordedSequenceFrames.push(handsList[0]);
+        const recordBtn = document.getElementById('recordSequenceBtn');
+        if (recordBtn) recordBtn.textContent = `🔴 Recording (${this.recordedSequenceFrames.length}/30 frames)`;
+        if (this.recordedSequenceFrames.length >= 30) {
+          this.stopSequenceRecorder();
+        }
+      }
+
+      // Draw Multi-Hand Skeletons (Hand 1 = Neon Green, Hand 2 = Purple Accent)
+      handsList.forEach((landmarks, idx) => {
+        const primaryColor = idx === 0 ? '#00F59B' : '#A855F7';
+        const nodeColor = idx === 0 ? '#00E5FF' : '#EC4899';
+
         if (typeof drawConnectors === 'function' && typeof HAND_CONNECTIONS !== 'undefined') {
           drawConnectors(this.canvasCtx, landmarks, HAND_CONNECTIONS, {
-            color: '#00F59B',
+            color: primaryColor,
             lineWidth: 4
           });
           drawLandmarks(this.canvasCtx, landmarks, {
-            color: '#00E5FF',
+            color: nodeColor,
             fillColor: '#FFFFFF',
             lineWidth: 2,
             radius: 5
           });
         } else {
-          // Custom fallback skeleton rendering
-          this.drawCustomSkeleton(landmarks, w, h);
+          this.drawCustomSkeleton(landmarks, w, h, primaryColor, nodeColor);
         }
+      });
 
-        // Classify Gesture
-        const pred = this.classifyLandmarks(landmarks);
-        this.updatePredictionUI(pred);
-        this.checkPracticeChallenge(pred);
-      }
+      // Classify Gesture via local rule + backend API call
+      const pred = this.classifyLandmarks(handsList[0], handsList, this.sequenceBuffer);
+      this.updatePredictionUI(pred);
+      this.checkPracticeChallenge(pred);
+
     } else {
+      this.sequenceBuffer = [];
       this.updatePredictionUI({ gesture: "NONE", confidence: 0, gloss: "WAITING FOR HAND...", icon: "🖐️" });
     }
 
     this.canvasCtx.restore();
   }
 
-  drawCustomSkeleton(landmarks, w, h) {
+  drawCustomSkeleton(landmarks, w, h, strokeColor = '#00F59B', fillColor = '#00E5FF') {
     const connections = [
       [0,1],[1,2],[2,3],[3,4],
       [0,5],[5,6],[6,7],[7,8],
@@ -249,7 +383,7 @@ class SignBridgeApp {
       [0,17]
     ];
 
-    this.canvasCtx.strokeStyle = '#00F59B';
+    this.canvasCtx.strokeStyle = strokeColor;
     this.canvasCtx.lineWidth = 4;
     connections.forEach(([i, j]) => {
       const p1 = landmarks[i];
@@ -260,7 +394,7 @@ class SignBridgeApp {
       this.canvasCtx.stroke();
     });
 
-    this.canvasCtx.fillStyle = '#00E5FF';
+    this.canvasCtx.fillStyle = fillColor;
     landmarks.forEach(p => {
       this.canvasCtx.beginPath();
       this.canvasCtx.arc(p.x * w, p.y * h, 5, 0, 2 * Math.PI);
@@ -268,7 +402,10 @@ class SignBridgeApp {
     });
   }
 
-  classifyLandmarks(landmarks) {
+
+  classifyLandmarks(landmarks, handsList = null, sequenceBuffer = null) {
+    if (!landmarks) return { gesture: "NONE", confidence: 0, gloss: "WAITING FOR HAND...", icon: "🖐️" };
+
     const wrist = landmarks[0];
 
     const isExtended = (tipIdx, pipIdx) => {
@@ -287,7 +424,42 @@ class SignBridgeApp {
 
     const thumbIndexDist = Math.hypot(landmarks[4].x - landmarks[8].x, landmarks[4].y - landmarks[8].y);
 
-    // Classification Rules
+    // 1. Check Bimanual 2-Hand Gestures
+    if (handsList && handsList.length >= 2) {
+      const h1 = handsList[0];
+      const h2 = handsList[1];
+      const wDist = Math.hypot(h1[0].x - h2[0].x, h1[0].y - h2[0].y);
+
+      const f1_isFist = !isExtended(8,6) && !isExtended(12,10) && !isExtended(16,14) && !isExtended(20,18);
+      const f2_isOpen = isExtended(8,6) && isExtended(12,10) && isExtended(16,14) && isExtended(20,18);
+
+      if (f1_isFist && f2_isOpen && wDist < 0.35) {
+        return { gesture: "help", confidence: 0.97, gloss: "HELP", icon: "🆘" };
+      }
+      if (f2_isOpen && h1[0].y > 0.4 && h2[0].y > 0.4) {
+        return { gesture: "where", confidence: 0.94, gloss: "WHERE", icon: "❓" };
+      }
+    }
+
+    // 2. Check 30-Frame Sequence Trajectory
+    if (sequenceBuffer && sequenceBuffer.length >= 10) {
+      const startWrist = sequenceBuffer[0][0];
+      const endWrist = sequenceBuffer[sequenceBuffer.length - 1][0];
+      const motionX = Math.abs(endWrist.x - startWrist.x);
+      const motionY = Math.abs(endWrist.y - startWrist.y);
+
+      if (motionX > 0.15 && indexExt && middleExt && ringExt && pinkyExt) {
+        return { gesture: "where", confidence: 0.92, gloss: "WHERE", icon: "❓" };
+      }
+      if (motionY > 0.10 && !indexExt && !middleExt && wrist.y < 0.7) {
+        return { gesture: "sorry", confidence: 0.91, gloss: "SORRY", icon: "😔" };
+      }
+      if (motionY > 0.10 && indexExt && middleExt && ringExt && pinkyExt && wrist.y < 0.7) {
+        return { gesture: "please", confidence: 0.93, gloss: "PLEASE", icon: "🤲" };
+      }
+    }
+
+    // 3. Static Single-Hand Rules
     if (indexExt && pinkyExt && thumbUp && !middleExt && !ringExt) {
       return { gesture: "i_love_you", confidence: 0.96, gloss: "I LOVE YOU", icon: "🤟" };
     }
@@ -310,6 +482,14 @@ class SignBridgeApp {
       return { gesture: "fist", confidence: 0.89, gloss: "STOP", icon: "✊" };
     }
 
+    // A-Z Manual Alphabet Letters
+    if (thumbUp && indexExt && !middleExt && !ringExt && !pinkyExt) {
+      return { gesture: "letter_l", confidence: 0.92, gloss: "L", icon: "🔤" };
+    }
+    if (indexExt && middleExt && ringExt && pinkyExt && !thumbUp) {
+      return { gesture: "letter_b", confidence: 0.90, gloss: "B", icon: "🔤" };
+    }
+
     return { gesture: "UNKNOWN", confidence: 0.50, gloss: "DETECTING...", icon: "✋" };
   }
 
@@ -322,7 +502,6 @@ class SignBridgeApp {
     this.confidenceBarEl.style.width = `${pct}%`;
     this.confidenceValueEl.textContent = `${pct}%`;
 
-    // Append to live log stream if confidence is high and new word
     if (pred.confidence >= 0.85 && pred.gloss !== "WAITING FOR HAND..." && pred.gloss !== "DETECTING...") {
       const now = Date.now();
       if (pred.gloss !== this.lastSpokenGloss || (now - this.lastSpokenTime > 3000)) {
@@ -342,11 +521,87 @@ class SignBridgeApp {
     chip.innerHTML = `${pred.icon} ${pred.gloss}`;
     this.translationLogEl.insertBefore(chip, this.translationLogEl.firstChild);
 
-    // Keep log limited to 15 items
     if (this.translationLogEl.children.length > 15) {
       this.translationLogEl.removeChild(this.translationLogEl.lastChild);
     }
+
+    // Automatically trigger Gloss-to-Sentence Translation
+    this.updateFluentSentenceTranslation();
   }
+
+  async updateFluentSentenceTranslation() {
+    const chips = Array.from(this.translationLogEl.querySelectorAll('.log-chip'));
+    const glosses = chips.map(c => c.textContent.trim().replace(/^.+?\s/, '')).reverse();
+
+    if (glosses.length === 0) return;
+
+    try {
+      const resp = await fetch('/api/gloss-to-sentence', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ glosses })
+      });
+      const data = await resp.json();
+      const sentenceEl = document.getElementById('fluentSentenceDisplay');
+      if (sentenceEl) {
+        sentenceEl.textContent = data.fluent_sentence || sentenceEl.textContent;
+      }
+    } catch (e) {
+      console.warn("Gloss translation failed:", e);
+    }
+  }
+
+  startSequenceRecorder() {
+    const nameInput = document.getElementById('recordGestureName');
+    const name = nameInput ? nameInput.value.trim() : "Custom Gesture";
+    if (!name) {
+      alert("Please enter a gesture name to record.");
+      return;
+    }
+
+    this.recordedSequenceFrames = [];
+    this.isRecordingSequence = true;
+    const recordBtn = document.getElementById('recordSequenceBtn');
+    if (recordBtn) {
+      recordBtn.style.background = '#EF4444';
+      recordBtn.textContent = '🔴 Recording (0/30 frames)...';
+    }
+  }
+
+  async stopSequenceRecorder() {
+    this.isRecordingSequence = false;
+    const recordBtn = document.getElementById('recordSequenceBtn');
+    if (recordBtn) {
+      recordBtn.style.background = '';
+      recordBtn.textContent = '💾 Saving Sequence...';
+    }
+
+    const nameInput = document.getElementById('recordGestureName');
+    const gesture_id = nameInput ? nameInput.value.trim() : "custom_sign";
+
+    try {
+      const resp = await fetch('/api/record-sequence', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          gesture_id: gesture_id,
+          sequence: this.recordedSequenceFrames
+        })
+      });
+      const data = await resp.json();
+      if (data.success) {
+        alert(`✅ Saved 30-frame gesture sequence dataset: "${data.filename}"!`);
+      } else {
+        alert(`Failed to save sequence: ${data.error}`);
+      }
+    } catch (e) {
+      console.error("Dataset recording save error:", e);
+    } finally {
+      if (recordBtn) recordBtn.textContent = '🎥 Record 30-Frame Sequence';
+      this.recordedSequenceFrames = [];
+    }
+  }
+
 
   speakText(text) {
     if (!this.synth) return;
@@ -539,7 +794,20 @@ class SignBridgeApp {
     document.getElementById('closeDictBtn').addEventListener('click', () => {
       document.getElementById('dictModal').classList.remove('active');
     });
+
+    // Custom Sequence Dataset Recorder
+    const recordBtn = document.getElementById('recordSequenceBtn');
+    if (recordBtn) {
+      recordBtn.addEventListener('click', () => {
+        if (this.isRecordingSequence) {
+          this.stopSequenceRecorder();
+        } else {
+          this.startSequenceRecorder();
+        }
+      });
+    }
   }
+
 }
 
 // Instantiate on DOM load

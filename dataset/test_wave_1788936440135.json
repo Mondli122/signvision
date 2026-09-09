@@ -1,0 +1,14 @@
+{
+  "gesture_id": "test_wave",
+  "timestamp": 1788936440.1366293,
+  "num_frames": 1,
+  "sequence": [
+    [
+      {
+        "x": 0.5,
+        "y": 0.5,
+        "z": 0
+      }
+    ]
+  ]
+}

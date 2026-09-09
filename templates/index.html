@@ -16,6 +16,11 @@
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous" onerror="this.onerror=null;this.src='https://unpkg.com/@mediapipe/hands/hands.js';"></script>
 
+  <!-- PWA Manifest & Icons -->
+  <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+  <meta name="theme-color" content="#0b0f19">
+  <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3074/3074058.png">
+
   <!-- Custom CSS -->
   <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
@@ -32,6 +37,9 @@
     </div>
 
     <div class="nav-controls">
+      <button class="btn" id="pwaInstallBtn" style="display: none; background: rgba(168, 85, 247, 0.2); border-color: rgba(168, 85, 247, 0.4); color: var(--purple-accent);">
+        <span>📲</span> Install PWA
+      </button>
       <button class="btn" id="openDictBtn">
         <span>📖</span> SASL Dictionary
       </button>
@@ -40,6 +48,7 @@
       </button>
     </div>
   </header>
+
 
   <!-- Main Content Container -->
   <main class="main-container">
@@ -146,6 +155,17 @@
             </div>
           </div>
 
+          <!-- Fluent Natural English Sentence Translator Card -->
+          <div style="margin-top: 1rem; padding: 1rem; background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(0, 245, 155, 0.2); border-radius: 12px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+              <span style="font-family: var(--font-heading); font-size: 0.8rem; text-transform: uppercase; color: var(--primary-accent); letter-spacing: 0.05em;">💬 Fluent English Sentence:</span>
+              <span style="font-size: 0.7rem; color: var(--text-muted);">NLP Gloss Transformer Active</span>
+            </div>
+            <div id="fluentSentenceDisplay" style="font-size: 1.1rem; font-weight: 600; color: #FFFFFF; min-height: 1.8rem;">
+              Waiting for sign sequence...
+            </div>
+          </div>
+
         </div>
 
       </div>
@@ -182,14 +202,26 @@
 
     <!-- SECTION 3: Learn & Practice Mode -->
     <section id="view-practice" class="view-section">
-      <div class="learning-card">
+      
+      <!-- Speed Quiz Challenge Card -->
+      <div class="learning-card" style="border-color: rgba(168, 85, 247, 0.4); background: radial-gradient(circle at 90% 10%, rgba(168, 85, 247, 0.15), rgba(18, 26, 44, 0.85));">
         <div class="card-header">
-          <div class="card-title">
-            <span>🎓</span> Interactive Sign Practice Challenge
+          <div class="card-title" style="color: var(--purple-accent);">
+            <span>⚡</span> Interactive SASL Speed Quiz
           </div>
-          <div style="font-family: var(--font-heading); font-size: 1.1rem; font-weight: 700; color: var(--purple-accent);">
-            Score: <span id="practiceScore">0</span> PTS
+          <div style="display: flex; gap: 1rem; align-items: center;">
+            <div style="font-family: var(--font-heading); font-size: 1rem; font-weight: 700; color: #F59E0B;" id="quizStreakContainer">
+              🔥 Streak: <span id="quizStreak">0</span>
+            </div>
+            <div style="font-family: var(--font-heading); font-size: 1.1rem; font-weight: 700; color: var(--primary-accent);">
+              Score: <span id="practiceScore">0</span> PTS
+            </div>
           </div>
+        </div>
+
+        <!-- Timer Countdown Bar -->
+        <div style="width: 100%; height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; margin-bottom: 1rem;">
+          <div id="quizTimerBar" style="width: 100%; height: 100%; background: linear-gradient(90deg, var(--primary-accent), var(--purple-accent)); transition: width 0.1s linear;"></div>
         </div>
 
         <div class="target-prompt-banner">
@@ -201,11 +233,36 @@
           <div style="font-size: 4rem;" id="targetSignIcon">🤟</div>
         </div>
 
-        <p style="text-align: center; color: var(--text-muted); font-size: 0.9rem;">
-          Make sure your camera is running, then hold the target sign in front of the camera for 1.2 seconds!
+        <div style="display: flex; justify-content: center; gap: 1rem; margin-top: 1rem;">
+          <button class="btn btn-primary" id="startQuizBtn">
+            <span>⚡</span> Start 10-Sec Speed Quiz Mode
+          </button>
+        </div>
+      </div>
+
+      <!-- Dataset Sequence Collector Card -->
+      <div class="learning-card" style="margin-top: 1.5rem;">
+        <div class="card-header">
+          <div class="card-title">
+            <span>📹</span> Custom Gesture Sequence Dataset Collector
+          </div>
+          <span style="font-size: 0.8rem; color: var(--secondary-accent);">ML Dataset Engine</span>
+        </div>
+
+        <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1rem;">
+          Record 30-frame (~1 sec) landmark sequences for new custom signs to train your sequence classification model.
         </p>
+
+        <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+          <input type="text" id="recordGestureName" class="text-input" placeholder="e.g. Please, Sorry, Where, Teacher..." style="flex: 1; min-width: 240px;">
+          <button class="btn btn-primary" id="recordSequenceBtn">
+            <span>🎥</span> Record 30-Frame Sequence
+          </button>
+        </div>
       </div>
     </section>
+
+
 
   </main>
 
