@@ -400,26 +400,27 @@ def gloss_to_sentence():
     """
     data = request.json or {}
     glosses = data.get('glosses', [])
+    target_lang = data.get('language', 'English').title()
     
     if isinstance(glosses, str):
         glosses = glosses.strip().split()
 
     if not glosses:
-        return jsonify({"sentence": "", "original_glosses": []})
+        return jsonify({"sentence": "", "original_glosses": [], "language": target_lang})
 
     clean_glosses = [g.upper() for g in glosses if g not in ["WAITING FOR HAND...", "DETECTING..."]]
     if not clean_glosses:
-        return jsonify({"original_glosses": [], "fluent_sentence": "Waiting for sign input..."})
+        return jsonify({"original_glosses": [], "fluent_sentence": "Waiting for sign input...", "language": target_lang})
 
     gloss_str = " ".join(clean_glosses)
     
-    # Try OpenRouter LLM first
+    # Try OpenRouter LLM first for Multilingual SA Translation
     system_prompt = (
-        "You are an expert South African Sign Language (SASL) interpreter and NLP translator. "
-        "Convert the raw input stream of SASL Sign Glosses into one natural, grammatically correct English sentence. "
-        "Return ONLY the plain English sentence without meta commentary, quotes, or JSON."
+        f"You are an expert South African Sign Language (SASL) interpreter and multilingual NLP translator. "
+        f"Convert the raw input stream of SASL Sign Glosses into one natural, grammatically correct sentence in {target_lang}. "
+        f"Return ONLY the plain {target_lang} sentence without meta commentary, quotes, or JSON."
     )
-    user_prompt = f"SASL Gloss Stream: {gloss_str}"
+    user_prompt = f"SASL Gloss Stream: {gloss_str}. Target Output Language: {target_lang}."
 
     ai_sentence = ai_client.generate(system_prompt, user_prompt, max_tokens=100, temperature=0.3)
 
@@ -427,8 +428,10 @@ def gloss_to_sentence():
         return jsonify({
             "original_glosses": clean_glosses,
             "fluent_sentence": ai_sentence,
-            "engine": "OpenRouter AI"
+            "language": target_lang,
+            "engine": "OpenRouter Multilingual AI"
         })
+
 
     # Rule-based fallback
     mapped_words = []

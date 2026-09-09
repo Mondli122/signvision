@@ -1,9 +1,16 @@
 import React, { useState } from 'react';
 import { BookOpen, Search, Sun, HelpCircle, Users, MapPin, Utensils, Clock, Laptop, Type, ArrowRight } from 'lucide-react';
 
-export default function DictionaryCard({ onSelectCategory, onSearch }) {
+export default function DictionaryCard({ onSelectCategory, onSearch, onSelectSign }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCat, setSelectedCat] = useState('Greetings');
+
+  const sampleSigns = [
+    { id: 'hello', word: 'Hello', gloss: 'HELLO', category: 'Greetings', icon: '👋', description: 'Place flat open hand near temple or chest, wave slightly outward.', sasl_note: 'Common SASL greeting.' },
+    { id: 'help', word: 'Help', gloss: 'HELP', category: 'Emergency', icon: '🆘', description: 'Place closed fist with thumb pointing up onto flat open palm and lift together.', sasl_note: 'Bimanual request sign.' },
+    { id: 'water', word: 'Water', gloss: 'WATER', category: 'Basic Needs', icon: '💧', description: 'Form W shape with fingers, tap index finger against chin twice.', sasl_note: 'Vital request sign.' },
+    { id: 'thank_you', word: 'Thank You', gloss: 'THANK YOU', category: 'Etiquette', icon: '🙏', description: 'Touch fingertips of flat hand to chin, then move hand forward.', sasl_note: 'Gratitude sign.' }
+  ];
 
   const categories = [
     { id: 'greetings', label: 'Greetings', icon: Sun },
@@ -19,6 +26,8 @@ export default function DictionaryCard({ onSelectCategory, onSearch }) {
   const handleCatClick = (label) => {
     setSelectedCat(label);
     if (onSelectCategory) onSelectCategory(label);
+    const matched = sampleSigns.find(s => s.category.toLowerCase().includes(label.toLowerCase())) || sampleSigns[0];
+    if (onSelectSign) onSelectSign(matched);
   };
 
   return (
@@ -40,10 +49,10 @@ export default function DictionaryCard({ onSelectCategory, onSearch }) {
         </div>
         <div>
           <h3 style={{ fontSize: '16px', fontWeight: '700', color: '#0F172A' }}>
-            SASL Dictionary
+            SASL Dictionary & 3D Inspector
           </h3>
           <p style={{ fontSize: '12px', color: '#64748B' }}>
-            Explore signs by category
+            Click any category to inspect 3D sign avatar
           </p>
         </div>
       </div>
@@ -61,11 +70,17 @@ export default function DictionaryCard({ onSelectCategory, onSearch }) {
         <Search size={16} color="#94A3B8" />
         <input
           type="text"
-          placeholder="Search for a sign..."
+          placeholder="Search sign & inspect..."
           value={searchTerm}
           onChange={(e) => {
             setSearchTerm(e.target.value);
             if (onSearch) onSearch(e.target.value);
+          }}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' && searchTerm) {
+              const matched = sampleSigns.find(s => s.word.toLowerCase().includes(searchTerm.toLowerCase())) || sampleSigns[0];
+              if (onSelectSign) onSelectSign(matched);
+            }
           }}
           style={{
             border: 'none',
@@ -113,26 +128,32 @@ export default function DictionaryCard({ onSelectCategory, onSearch }) {
         })}
       </div>
 
-      {/* Bottom Link */}
-      <div style={{ marginTop: 'auto', paddingTop: '6px' }}>
-        <button
-          style={{
-            background: 'none',
-            border: 'none',
-            color: '#00A884',
-            fontSize: '13px',
-            fontWeight: '700',
-            fontFamily: 'var(--font-heading)',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '6px',
-            cursor: 'pointer'
-          }}
-        >
-          View All Categories <ArrowRight size={14} />
-        </button>
+      {/* Quick Inspector Badges */}
+      <div style={{ marginTop: 'auto', paddingTop: '6px', display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+        {sampleSigns.map((s) => (
+          <button
+            key={s.id}
+            onClick={() => onSelectSign && onSelectSign(s)}
+            style={{
+              background: '#EFF6FF',
+              border: '1px solid #BFDBFE',
+              color: '#1D4ED8',
+              borderRadius: '8px',
+              padding: '4px 10px',
+              fontSize: '0.78rem',
+              fontWeight: 'bold',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '4px'
+            }}
+          >
+            <span>{s.icon}</span> {s.word}
+          </button>
+        ))}
       </div>
 
     </div>
   );
 }
+

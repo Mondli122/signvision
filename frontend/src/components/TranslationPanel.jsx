@@ -1,15 +1,58 @@
 import React, { useState } from 'react';
-import { Volume2, Play, Pause, Trash2, Bookmark, Repeat, Mic, Hand } from 'lucide-react';
+import { Volume2, Play, Pause, Trash2, Bookmark, Repeat, Mic, Hand, Globe } from 'lucide-react';
+import AudioVisualizer from './AudioVisualizer';
 
 export default function TranslationPanel({
-  glossSequence = ['HELLO', 'HOW', 'ARE', 'YOU'],
-  translatedText = 'Hello! How are you?',
+  glossSequence = ['HELLO', 'WHERE', 'HELP'],
+  translatedText = 'Hello! Where is it? I need help.',
+  targetLanguage = 'English',
+  onSelectLanguage,
   onClear,
   onSave,
   onTranslate
 }) {
   const [activeTab, setActiveTab] = useState('signToText');
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
+  const [isListening, setIsListening] = useState(false);
+
+  const languages = ['English', 'isiZulu', 'isiXhosa', 'Afrikaans', 'Sesotho'];
+
+
+  const handleToggleMic = () => {
+    if (!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
+      alert('Speech recognition is supported in Chrome, Edge, and Safari.');
+      return;
+    }
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const recognition = new SpeechRecognition();
+    recognition.continuous = false;
+    recognition.interimResults = false;
+
+    if (!isListening) {
+      setIsListening(true);
+      recognition.start();
+      recognition.onresult = (event) => {
+        const spokenText = event.results[0][0].transcript;
+        fetch('/api/translate-text', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text: spokenText })
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            if (data.glosses) {
+              onTranslate(data.glosses, spokenText);
+            }
+          });
+        setIsListening(false);
+      };
+      recognition.onerror = () => setIsListening(false);
+      recognition.onend = () => setIsListening(false);
+    } else {
+      setIsListening(false);
+    }
+  };
+
 
   const handlePlayAudio = () => {
     if ('speechSynthesis' in window) {
@@ -78,6 +121,34 @@ export default function TranslationPanel({
         </button>
       </div>
 
+      {/* Multilingual SA Target Language Selector Bar */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(0, 168, 132, 0.08)', padding: '8px 14px', borderRadius: '10px', border: '1px solid rgba(0, 168, 132, 0.2)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.85rem', fontWeight: 'bold', color: '#00A884' }}>
+          <Globe size={16} />
+          <span>Output SA Language:</span>
+        </div>
+        <select
+          value={targetLanguage}
+          onChange={(e) => onSelectLanguage && onSelectLanguage(e.target.value)}
+          style={{
+            background: '#FFFFFF',
+            border: '1px solid #00A884',
+            borderRadius: '8px',
+            padding: '4px 10px',
+            fontSize: '0.85rem',
+            fontWeight: 'bold',
+            color: '#0F172A',
+            cursor: 'pointer'
+          }}
+        >
+          {languages.map((lang) => (
+            <option key={lang} value={lang}>
+              {lang}
+            </option>
+          ))}
+        </select>
+      </div>
+
       {/* Main Translation Output Card */}
       <div style={{
         background: '#F8FAFC',
@@ -88,6 +159,7 @@ export default function TranslationPanel({
         flexDirection: 'column',
         gap: '12px'
       }}>
+
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
           <div style={{
             width: '44px',
@@ -152,8 +224,27 @@ export default function TranslationPanel({
             }} />
           </div>
 
+          <button
+            onClick={handleToggleMic}
+            style={{
+              background: isListening ? '#ef4444' : 'none',
+              border: 'none',
+              color: isListening ? '#FFFFFF' : '#64748B',
+              padding: '4px',
+              borderRadius: '50%',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}
+          >
+            <Mic size={18} />
+          </button>
           <Volume2 size={18} color="#64748B" />
         </div>
+
+        {/* Live Microphone Audio Frequency Waveform Visualizer */}
+        <AudioVisualizer isListening={isListening} />
       </div>
 
       {/* Gloss Sequence Chips */}

@@ -5,6 +5,7 @@ import CameraViewport from './components/CameraViewport';
 import TranslationPanel from './components/TranslationPanel';
 import FeatureCards from './components/FeatureCards';
 import DictionaryCard from './components/DictionaryCard';
+import DictionaryModal from './components/DictionaryModal';
 import ProgressCard from './components/ProgressCard';
 import RecentActivityCard from './components/RecentActivityCard';
 import EmpowerPosterCard from './components/EmpowerPosterCard';
@@ -18,10 +19,14 @@ export default function App() {
   const [activeNavTab, setActiveNavTab] = useState('home');
   const [glossSequence, setGlossSequence] = useState(['HELLO', 'WHERE', 'HELP']);
   const [translatedText, setTranslatedText] = useState('Hello! Where is it? I need help.');
+  const [targetLanguage, setTargetLanguage] = useState('English');
   const [dictionaryItems, setDictionaryItems] = useState([]);
   const [currentProvince, setCurrentProvince] = useState('Gauteng');
   const [showEmergencyModal, setShowEmergencyModal] = useState(false);
   const [showWebRTCModal, setShowWebRTCModal] = useState(false);
+
+  // Dictionary inspector modal state
+  const [selectedInspectorSign, setSelectedInspectorSign] = useState(null);
 
   // Avatar player state
   const [isPlayingAvatar, setIsPlayingAvatar] = useState(false);
@@ -62,20 +67,28 @@ export default function App() {
       .catch(() => alert('Sequence saved locally!'));
   };
 
-  const handleTranslateGloss = () => {
-    if (glossSequence.length === 0) return;
+  const handleTranslateGloss = (customGlosses, customText) => {
+    const glossesToTranslate = customGlosses || glossSequence;
+    if (glossesToTranslate.length === 0) return;
+
+    if (customText) {
+      setTranslatedText(customText);
+      setGlossSequence(glossesToTranslate);
+      return;
+    }
+
     fetch('/api/gloss-to-sentence', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ glosses: glossSequence })
+      body: JSON.stringify({ glosses: glossesToTranslate, language: targetLanguage })
     })
       .then((res) => res.json())
       .then((data) => {
         if (data.fluent_sentence) {
           setTranslatedText(data.fluent_sentence);
           // Play Avatar animation for first gloss
-          if (glossSequence.length > 0) {
-            setActiveAvatarGloss(glossSequence[0]);
+          if (glossesToTranslate.length > 0) {
+            setActiveAvatarGloss(glossesToTranslate[0]);
             setIsPlayingAvatar(true);
           }
         }
@@ -130,6 +143,8 @@ export default function App() {
               <TranslationPanel
                 glossSequence={glossSequence}
                 translatedText={translatedText}
+                targetLanguage={targetLanguage}
+                onSelectLanguage={(lang) => setTargetLanguage(lang)}
                 onClear={handleClear}
                 onSave={handleSaveSequence}
                 onTranslate={handleTranslateGloss}
@@ -151,6 +166,7 @@ export default function App() {
             <DictionaryCard
               onSelectCategory={(cat) => console.log('Selected category:', cat)}
               onSearch={(term) => console.log('Search term:', term)}
+              onSelectSign={(item) => setSelectedInspectorSign(item)}
             />
             <ProgressCard level={3} streak={5} score={150} currentPts={320} totalPts={500} />
             <RecentActivityCard />
@@ -159,6 +175,14 @@ export default function App() {
 
         </main>
       </div>
+
+      {/* Dictionary Inspector Modal */}
+      {selectedInspectorSign && (
+        <DictionaryModal
+          item={selectedInspectorSign}
+          onClose={() => setSelectedInspectorSign(null)}
+        />
+      )}
 
       {/* Emergency First-Responder SOS Modal */}
       {showEmergencyModal && (
