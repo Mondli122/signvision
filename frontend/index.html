@@ -2,12 +2,45 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/svg+xml" href="/icon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>frontend</title>
+    <title>SignVision SA - Real-Time SASL Translator & AI Learning Platform</title>
+    <meta name="description" content="South African Sign Language (SASL) two-way real-time translator, ML sequence engine, 3D avatar signer, and gamified STEM classroom tutor for Robo Rumble 2026." />
+    <meta name="keywords" content="SASL, South African Sign Language, AI Translator, Deaf Education, Robo Rumble 2026, MediaPipe, STEM Innovation, Computer Vision" />
+    <meta name="author" content="SignVision SA Team / Robo Rumble Technomania" />
+
+    <!-- Open Graph / Social Sharing -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="SignVision SA - Real-Time SASL Translator & AI Learning Platform" />
+    <meta property="og:description" content="Empowering South Africa's 12th Official Language with real-time multi-hand computer vision, OpenRouter NLP translation, and gamified classroom learning." />
+    <meta property="og:image" content="/icon.svg" />
+    <meta property="og:locale" content="en_ZA" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="SignVision SA - Real-Time SASL Translator" />
+    <meta name="twitter:description" content="Two-way South African Sign Language AI translator and gamified curriculum for Robo Rumble 2026." />
+    <meta name="twitter:image" content="/icon.svg" />
+
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#00A884" />
+    <link rel="apple-touch-icon" href="/icon.svg" />
+
+    <!-- MediaPipe Global CDN Scripts for Computer Vision Tracking -->
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
   </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js')
+            .then(reg => console.log('✅ PWA Service Worker Registered:', reg.scope))
+            .catch(err => console.warn('PWA Service Worker Registration Failed:', err));
+        });
+      }
+    </script>
   </body>
 </html>

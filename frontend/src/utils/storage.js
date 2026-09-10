@@ -2,16 +2,59 @@
 const STORAGE_KEY = 'signvision_user_progress_v1';
 const THEME_KEY = 'signvision_theme_v1';
 const ONBOARDED_KEY = 'signvision_onboarded_v1';
+const ACTIVITY_KEY = 'signvision_activity_log_v1';
 
 const DEFAULT_PROGRESS = {
-  xp: 320,
-  level: 3,
-  streak: 5,
-  quizzesCompleted: 4,
-  highScore: 180,
-  learnedSigns: ['hello', 'thank_you', 'i_love_you', 'thumbs_up', 'peace'],
+  xp: 0,
+  level: 1,
+  streak: 1,
+  quizzesCompleted: 0,
+  highScore: 0,
+  learnedSigns: [],
   lastActiveDate: new Date().toISOString().split('T')[0]
 };
+
+const DEFAULT_ACTIVITIES = [
+  {
+    id: 'act_1',
+    type: 'welcome',
+    title: 'Welcome to SignVision',
+    detail: 'Joined Robo Rumble Technomania 2026',
+    timestamp: Date.now() - 3600000 * 2
+  }
+];
+
+export function getActivityLog() {
+  try {
+    const raw = localStorage.getItem(ACTIVITY_KEY);
+    if (!raw) {
+      localStorage.setItem(ACTIVITY_KEY, JSON.stringify(DEFAULT_ACTIVITIES));
+      return DEFAULT_ACTIVITIES;
+    }
+    return JSON.parse(raw);
+  } catch (e) {
+    return DEFAULT_ACTIVITIES;
+  }
+}
+
+export function logActivity(type, title, detail) {
+  try {
+    const current = getActivityLog();
+    const newEntry = {
+      id: 'act_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
+      type,
+      title,
+      detail,
+      timestamp: Date.now()
+    };
+    const updated = [newEntry, ...current].slice(0, 20); // Keep latest 20
+    localStorage.setItem(ACTIVITY_KEY, JSON.stringify(updated));
+    window.dispatchEvent(new Event('signvision_activity_updated'));
+    return updated;
+  } catch (e) {
+    console.error('Failed to log activity:', e);
+  }
+}
 
 export function getProgress() {
   try {
@@ -44,6 +87,17 @@ export function getProgress() {
 export function saveProgress(data) {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    
+    // Async background sync with backend /api/user/progress
+    const token = localStorage.getItem('signvision_auth_token_v1') || '';
+    fetch('/api/user/progress', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+      },
+      body: JSON.stringify({ progress: data })
+    }).catch(() => {});
   } catch (e) {
     console.error('Failed to save progress to localStorage', e);
   }
@@ -53,10 +107,11 @@ export function addXP(amount) {
   const progress = getProgress();
   progress.xp += amount;
   
-  // Level threshold calculation (e.g. each level needs level * 150 xp)
+  // Level threshold calculation (each level needs level * 150 xp)
   const requiredForNext = progress.level * 150;
   if (progress.xp >= requiredForNext) {
     progress.level += 1;
+    logActivity('level_up', 'Level Up!', `Advanced to Level ${progress.level}`);
   }
   
   saveProgress(progress);
@@ -74,17 +129,20 @@ export function recordQuizCompletion(score) {
   const requiredForNext = progress.level * 150;
   if (progress.xp >= requiredForNext) {
     progress.level += 1;
+    logActivity('level_up', 'Level Up!', `Advanced to Level ${progress.level}`);
   }
+  logActivity('quiz', 'Quiz completed', `Scored ${score} XP in SASL Speed Quiz`);
   saveProgress(progress);
   window.dispatchEvent(new Event('signvision_progress_updated'));
   return progress;
 }
 
-export function markSignLearned(signId) {
+export function markSignLearned(signId, signName = '') {
   const progress = getProgress();
   if (!progress.learnedSigns.includes(signId)) {
     progress.learnedSigns.push(signId);
     progress.xp += 25;
+    logActivity('sign_learned', 'New sign mastered', signName || signId.toUpperCase());
     saveProgress(progress);
     window.dispatchEvent(new Event('signvision_progress_updated'));
   }

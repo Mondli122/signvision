@@ -6,6 +6,8 @@ export function getStoredToken() {
   return localStorage.getItem(TOKEN_KEY);
 }
 
+export const getAuthToken = getStoredToken;
+
 export function setStoredSession(token, user) {
   if (token) localStorage.setItem(TOKEN_KEY, token);
   if (user) localStorage.setItem(CACHED_USER_KEY, JSON.stringify(user));

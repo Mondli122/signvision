@@ -3,7 +3,7 @@ import { Download, User, Menu, HandMetal, AlertTriangle, Video, Moon, Sun, Setti
 import DialectSelector from './DialectSelector';
 import { getTheme, setTheme } from '../utils/storage';
 
-export default function Header({ currentProvince, onSelectProvince, onOpenEmergency, onOpenWebRTC, onOpenSettings, onOpenOnboarding, currentUser, onOpenAuth, onSignOut }) {
+export default function Header({ currentProvince, onSelectProvince, onOpenEmergency, onOpenWebRTC, onOpenSettings, onOpenOnboarding, currentUser, onOpenAuth, onSignOut, onOpenProfile }) {
   const [theme, setCurrentTheme] = useState(getTheme());
 
   useEffect(() => {
@@ -176,6 +176,7 @@ export default function Header({ currentProvince, onSelectProvince, onOpenEmerge
           {currentUser ? (
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
               <div
+                onClick={onOpenProfile}
                 style={{
                   display: 'flex',
                   alignItems: 'center',
@@ -186,8 +187,10 @@ export default function Header({ currentProvince, onSelectProvince, onOpenEmerge
                   border: '1px solid var(--border-emerald)',
                   color: 'var(--mint-text)',
                   fontSize: '13px',
-                  fontWeight: '700'
+                  fontWeight: '700',
+                  cursor: 'pointer'
                 }}
+                title="View Profile & XP"
               >
                 <User size={16} />
                 <span>{currentUser.user_metadata?.full_name || currentUser.email?.split('@')[0]}</span>

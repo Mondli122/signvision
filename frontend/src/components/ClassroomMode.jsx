@@ -1,26 +1,63 @@
-import React, { useState } from 'react';
-import { Users, Trophy, School, Medal, Plus, LogIn, Flame, Sparkles } from 'lucide-react';
-
-const LEADERBOARD_USERS = [
-  { rank: 1, name: "Thabo Mokoena", school: "Parktown High, JHB", province: "Gauteng", score: 1420, streak: 18, badge: "🥇 Gold Signer" },
-  { rank: 2, name: "Zintle Khumalo", school: "Durban Girls College", province: "KwaZulu-Natal", score: 1290, streak: 14, badge: "🥈 Silver Signer" },
-  { rank: 3, name: "Liam van der Merwe", school: "Rondebosch Boys, CT", province: "Western Cape", score: 1150, streak: 12, badge: "🥉 Bronze Signer" },
-  { rank: 4, name: "Sipho Dlamini", school: "St. Andrews College", province: "Eastern Cape", score: 980, streak: 9, badge: "⭐ Rising Star" },
-  { rank: 5, name: "Lerato Molefe", school: "Grey College, BFN", province: "Free State", score: 860, streak: 7, badge: "⭐ Rising Star" },
-  { rank: 6, name: "You (SignBridge Champion)", school: "Robo Rumble Technomania", province: "National", score: 640, streak: 5, badge: "🚀 Explorer" }
-];
+import React, { useState, useEffect } from 'react';
+import { Users, Trophy, School, Medal, Plus, LogIn, Flame, Sparkles, RefreshCw } from 'lucide-react';
+import { getProgress } from '../utils/storage';
+import { toast } from '../utils/toast';
 
 export default function ClassroomMode() {
   const [roomCode, setRoomCode] = useState('SASL-5821');
   const [joinedRoom, setJoinedRoom] = useState(false);
   const [activeTab, setActiveTab] = useState('leaderboard'); // 'leaderboard' | 'room'
+  const [loading, setLoading] = useState(true);
+  const [leaderboard, setLeaderboard] = useState([]);
+  const [userProgress, setUserProgress] = useState(getProgress());
+
+  const fetchLeaderboard = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch('/api/leaderboard');
+      const data = await res.json();
+      if (data && Array.isArray(data.leaderboard)) {
+        setLeaderboard(data.leaderboard);
+      }
+    } catch (err) {
+      console.warn('Could not fetch leaderboard:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchLeaderboard();
+    const handleProgressUpdate = () => setUserProgress(getProgress());
+    window.addEventListener('signvision_progress_updated', handleProgressUpdate);
+    return () => window.removeEventListener('signvision_progress_updated', handleProgressUpdate);
+  }, []);
 
   const handleJoin = (e) => {
     e.preventDefault();
     if (roomCode.trim()) {
       setJoinedRoom(true);
+      toast.success(`Connected to STEM Classroom: ${roomCode}`, 'Room Joined');
     }
   };
+
+  // Dynamically place user in leaderboard based on their actual XP
+  const userEntry = {
+    name: "You (SignBridge Champion)",
+    school: "Robo Rumble Technomania",
+    province: "National",
+    score: userProgress.xp || 0,
+    streak: userProgress.streak || 1,
+    badge: (userProgress.xp || 0) >= 1000 ? "🥇 Gold Signer" : (userProgress.xp || 0) >= 500 ? "🥈 Silver Signer" : "🚀 Explorer",
+    isCurrentUser: true
+  };
+
+  const combinedList = [...leaderboard, userEntry]
+    .sort((a, b) => b.score - a.score)
+    .map((item, index) => ({
+      ...item,
+      rank: index + 1
+    }));
 
   return (
     <div className="glass-card" style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
@@ -37,36 +74,55 @@ export default function ClassroomMode() {
         </div>
 
         {/* Tab Switcher */}
-        <div style={{ display: 'flex', background: 'var(--bg-card-subtle)', borderRadius: '12px', padding: '4px', border: '1px solid var(--border-light)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <div style={{ display: 'flex', background: 'var(--bg-card-subtle)', borderRadius: '12px', padding: '4px', border: '1px solid var(--border-light)' }}>
+            <button
+              onClick={() => setActiveTab('leaderboard')}
+              style={{
+                padding: '6px 14px',
+                borderRadius: '8px',
+                border: 'none',
+                background: activeTab === 'leaderboard' ? 'var(--primary-emerald)' : 'transparent',
+                color: activeTab === 'leaderboard' ? '#FFF' : 'var(--text-muted)',
+                fontSize: '13px',
+                fontWeight: '700',
+                cursor: 'pointer'
+              }}
+            >
+              National Leaderboard
+            </button>
+            <button
+              onClick={() => setActiveTab('room')}
+              style={{
+                padding: '6px 14px',
+                borderRadius: '8px',
+                border: 'none',
+                background: activeTab === 'room' ? 'var(--primary-emerald)' : 'transparent',
+                color: activeTab === 'room' ? '#FFF' : 'var(--text-muted)',
+                fontSize: '13px',
+                fontWeight: '700',
+                cursor: 'pointer'
+              }}
+            >
+              Classroom Room
+            </button>
+          </div>
+
           <button
-            onClick={() => setActiveTab('leaderboard')}
+            onClick={fetchLeaderboard}
+            title="Refresh rankings"
             style={{
-              padding: '6px 14px',
-              borderRadius: '8px',
-              border: 'none',
-              background: activeTab === 'leaderboard' ? 'var(--primary-emerald)' : 'transparent',
-              color: activeTab === 'leaderboard' ? '#FFF' : 'var(--text-muted)',
-              fontSize: '13px',
-              fontWeight: '700',
-              cursor: 'pointer'
+              background: 'var(--bg-card-subtle)',
+              border: '1px solid var(--border-light)',
+              borderRadius: '10px',
+              padding: '8px',
+              cursor: 'pointer',
+              color: 'var(--text-muted)',
+              display: 'flex',
+              alignItems: 'center'
             }}
           >
-            National Leaderboard
-          </button>
-          <button
-            onClick={() => setActiveTab('room')}
-            style={{
-              padding: '6px 14px',
-              borderRadius: '8px',
-              border: 'none',
-              background: activeTab === 'room' ? 'var(--primary-emerald)' : 'transparent',
-              color: activeTab === 'room' ? '#FFF' : 'var(--text-muted)',
-              fontSize: '13px',
-              fontWeight: '700',
-              cursor: 'pointer'
-            }}
-          >
-            Classroom Challenge Room
+            <RefreshCw size={15} className={loading ? 'animate-spin' : ''} />
           </button>
         </div>
       </div>
@@ -82,48 +138,59 @@ export default function ClassroomMode() {
             <span>Total XP</span>
           </div>
 
-          {LEADERBOARD_USERS.map((user) => {
-            const isUser = user.name.includes("You");
-            return (
-              <div
-                key={user.rank}
-                style={{
-                  display: 'grid',
-                  gridTemplateColumns: '60px 1.5fr 1fr 100px 100px',
-                  alignItems: 'center',
-                  padding: '14px 16px',
-                  borderRadius: '12px',
-                  background: isUser ? 'var(--mint-badge)' : 'var(--bg-card-subtle)',
-                  border: isUser ? '2px solid var(--primary-emerald)' : '1px solid var(--border-light)',
-                  transition: 'transform 0.1s ease'
-                }}
-              >
-                <span style={{ fontSize: '16px', fontWeight: '800', color: user.rank <= 3 ? '#D97706' : 'var(--text-muted)' }}>
-                  #{user.rank}
-                </span>
+          {loading && combinedList.length <= 1 ? (
+            /* Loading Skeleton */
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              {[1, 2, 3, 4, 5].map(n => (
+                <div key={n} className="skeleton-shimmer" style={{ height: '54px', borderRadius: '12px' }} />
+              ))}
+            </div>
+          ) : (
+            combinedList.map((user) => {
+              const isUser = user.isCurrentUser;
+              return (
+                <div
+                  key={user.rank + '-' + user.name}
+                  style={{
+                    display: 'grid',
+                    gridTemplateColumns: '60px 1.5fr 1fr 100px 100px',
+                    alignItems: 'center',
+                    padding: '14px 16px',
+                    borderRadius: '12px',
+                    background: isUser ? '#D1FAE5' : 'var(--bg-card-subtle)',
+                    border: isUser ? '2px solid #00A884' : '1px solid var(--border-light)',
+                    transition: 'transform 0.1s ease',
+                    boxShadow: isUser ? '0 4px 14px rgba(0, 168, 132, 0.15)' : 'none'
+                  }}
+                >
+                  <span style={{ fontSize: '16px', fontWeight: '800', color: user.rank <= 3 ? '#D97706' : 'var(--text-muted)' }}>
+                    #{user.rank}
+                  </span>
 
-                <div>
-                  <div style={{ fontSize: '14px', fontWeight: '700', color: 'var(--text-main)', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    {user.name}
-                    {user.rank <= 3 && <Medal size={16} color="#D97706" />}
+                  <div>
+                    <div style={{ fontSize: '14px', fontWeight: '700', color: isUser ? '#065F46' : 'var(--text-main)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      {user.name}
+                      {user.rank <= 3 && <Medal size={16} color="#D97706" />}
+                      {isUser && <span style={{ fontSize: '11px', background: '#00A884', color: '#FFF', padding: '1px 6px', borderRadius: '8px' }}>YOU</span>}
+                    </div>
+                    <div style={{ fontSize: '12px', color: isUser ? '#047857' : 'var(--text-muted)' }}>{user.school}</div>
                   </div>
-                  <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>{user.school}</div>
+
+                  <span style={{ fontSize: '13px', fontWeight: '600', color: isUser ? '#065F46' : 'var(--text-main)' }}>
+                    {user.province}
+                  </span>
+
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '13px', fontWeight: '700', color: '#F97316' }}>
+                    <Flame size={14} /> {user.streak}d
+                  </div>
+
+                  <span style={{ fontSize: '14px', fontWeight: '800', color: isUser ? '#00A884' : 'var(--primary-emerald)' }}>
+                    {user.score} XP
+                  </span>
                 </div>
-
-                <span style={{ fontSize: '13px', fontWeight: '600', color: 'var(--text-main)' }}>
-                  {user.province}
-                </span>
-
-                <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '13px', fontWeight: '700', color: '#F97316' }}>
-                  <Flame size={14} /> {user.streak}d
-                </div>
-
-                <span style={{ fontSize: '14px', fontWeight: '800', color: 'var(--primary-emerald)' }}>
-                  {user.score} XP
-                </span>
-              </div>
-            );
-          })}
+              );
+            })
+          )}
         </div>
       ) : (
         /* Classroom Challenge Room */
@@ -184,7 +251,11 @@ export default function ClassroomMode() {
               </div>
 
               <div style={{ display: 'flex', gap: '10px' }}>
-                <button className="btn-primary" style={{ flex: 1, justifyContent: 'center' }} onClick={() => alert('Starting live match round!')}>
+                <button
+                  className="btn-primary"
+                  style={{ flex: 1, justifyContent: 'center' }}
+                  onClick={() => toast.success('Live STEM challenge round started! Perform the target sign in camera view.', 'Challenge Active')}
+                >
                   Start Live Challenge Round
                 </button>
                 <button className="btn-outline" onClick={() => setJoinedRoom(false)}>

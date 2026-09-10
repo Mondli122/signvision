@@ -1,5 +1,5 @@
 import React from 'react';
-import { Home, Repeat, GraduationCap, BookOpen, Gamepad2, Database, Settings, Heart, Trophy, Mic } from 'lucide-react';
+import { Home, Repeat, GraduationCap, BookOpen, Gamepad2, Database, Settings, Heart, Trophy, Mic, User, Users } from 'lucide-react';
 
 export default function Sidebar({ activeTab, setActiveTab }) {
   const navItems = [
@@ -9,10 +9,13 @@ export default function Sidebar({ activeTab, setActiveTab }) {
     { id: 'learn', label: 'Learn', icon: GraduationCap },
     { id: 'dictionary', label: 'Dictionary', icon: BookOpen },
     { id: 'quiz', label: 'Quiz Game', icon: Gamepad2 },
+    { id: 'profile', label: 'My Profile & XP', icon: User },
+    { id: 'community', label: 'Community Signs', icon: Users },
     { id: 'classroom', label: 'Classroom & Rank', icon: Trophy },
     { id: 'recorder', label: 'Dataset Recorder', icon: Database },
     { id: 'settings', label: 'Settings', icon: Settings },
   ];
+
 
   return (
     <aside className="app-sidebar" style={{ display: 'flex', flexDirection: 'column', gap: '16px', width: '220px', flexShrink: 0 }}>

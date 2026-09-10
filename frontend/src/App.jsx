@@ -24,8 +24,16 @@ import ReverseTranslator from './components/ReverseTranslator';
 import OnboardingModal from './components/OnboardingModal';
 import ClassroomMode from './components/ClassroomMode';
 import AuthModal from './components/AuthModal';
-import { isOnboarded } from './utils/storage';
-import { getSessionUser, signOutUser } from './utils/supabaseClient';
+import ToastContainer from './components/ToastContainer';
+import ProfilePage from './components/ProfilePage';
+import SignOfTheDayCard from './components/SignOfTheDayCard';
+import ShareModal from './components/ShareModal';
+import AIChatAssistant from './components/AIChatAssistant';
+import CommunitySubmissions from './components/CommunitySubmissions';
+import { isOnboarded, getProgress, saveProgress, logActivity } from './utils/storage';
+import { toast } from './utils/toast';
+import { getSessionUser, signOutUser, getAuthToken } from './utils/supabaseClient';
+import { MessageSquareText } from 'lucide-react';
 
 export default function App() {
   const [activeNavTab, setActiveNavTab] = useState('home');
@@ -35,11 +43,14 @@ export default function App() {
   const [translatedText, setTranslatedText] = useState('Hello! Where is it? I need help.');
   const [targetLanguage, setTargetLanguage] = useState('English');
   const [dictionaryItems, setDictionaryItems] = useState([]);
+  const [isDictionaryLoading, setIsDictionaryLoading] = useState(true);
   const [currentProvince, setCurrentProvince] = useState('Gauteng');
   const [showEmergencyModal, setShowEmergencyModal] = useState(false);
   const [showWebRTCModal, setShowWebRTCModal] = useState(false);
   const [showSettingsModal, setShowSettingsModal] = useState(false);
   const [showOnboardingModal, setShowOnboardingModal] = useState(false);
+  const [showShareModal, setShowShareModal] = useState(false);
+  const [showAIChatModal, setShowAIChatModal] = useState(false);
 
   // Dictionary inspector modal state
   const [selectedInspectorSign, setSelectedInspectorSign] = useState(null);
@@ -52,6 +63,45 @@ export default function App() {
   const [lastDetectedSign, setLastDetectedSign] = useState('HELP');
   const [lastConfidence, setLastConfidence] = useState(0.88);
 
+  // Sync user progress with persistent backend database
+  const syncCloudProgress = async () => {
+    try {
+      const token = getAuthToken();
+      if (!token) return;
+
+      const res = await fetch('/api/user/progress', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const data = await res.json();
+      if (data.success && data.progress) {
+        const local = getProgress();
+        const cloud = data.progress;
+        const merged = {
+          xp: Math.max(local.xp || 0, cloud.xp || 0),
+          level: Math.max(local.level || 1, cloud.level || 1),
+          streak: Math.max(local.streak || 1, cloud.streak || 1),
+          signsLearned: Array.from(new Set([...(local.signsLearned || []), ...(cloud.signsLearned || [])])),
+          quizzesCompleted: Math.max(local.quizzesCompleted || 0, cloud.quizzesCompleted || 0),
+          accuracy: Math.max(local.accuracy || 85, cloud.accuracy || 85)
+        };
+        saveProgress(merged);
+        window.dispatchEvent(new Event('signvision_progress_updated'));
+
+        // Push merged state back to server
+        fetch('/api/user/progress', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ progress: merged })
+        }).catch(() => {});
+      }
+    } catch (err) {
+      console.warn('Cloud progress sync skipped:', err);
+    }
+  };
+
   // Check onboarding on first run
   useEffect(() => {
     if (!isOnboarded()) {
@@ -59,11 +109,14 @@ export default function App() {
     }
   }, []);
 
-  // Check initial Supabase auth session
+  // Check initial Supabase auth session & sync cloud progress
   useEffect(() => {
     const refreshUser = () => {
       getSessionUser().then(user => {
         setCurrentUser(user || null);
+        if (user) {
+          syncCloudProgress();
+        }
       });
     };
 
@@ -79,6 +132,7 @@ export default function App() {
 
   // Fetch dictionary from Flask API
   useEffect(() => {
+    setIsDictionaryLoading(true);
     fetch('/api/dictionary')
       .then((res) => res.json())
       .then((data) => {
@@ -86,7 +140,8 @@ export default function App() {
           setDictionaryItems(data);
         }
       })
-      .catch((err) => console.warn('Could not fetch dictionary from backend API:', err));
+      .catch((err) => console.warn('Could not fetch dictionary from backend API:', err))
+      .finally(() => setIsDictionaryLoading(false));
   }, []);
 
   const handleClear = () => {
@@ -103,9 +158,13 @@ export default function App() {
     })
       .then((res) => res.json())
       .then(() => {
-        alert('Sequence saved to dataset record!');
+        logActivity('dataset', 'Saved Dataset Sequence', `Saved [${glossSequence.join(' ')}] for ML model training`);
+        toast.success(`Saved sequence (${glossSequence.join(' ')}) to dataset repository!`, 'Sequence Saved');
       })
-      .catch(() => alert('Sequence saved locally!'));
+      .catch(() => {
+        logActivity('dataset', 'Saved Local Sequence', `Stored [${glossSequence.join(' ')}] in device session`);
+        toast.info('Sequence saved locally to your device session.', 'Saved Locally');
+      });
   };
 
   const handleTranslateGloss = (customGlosses, customText) => {
@@ -115,6 +174,7 @@ export default function App() {
     if (customText) {
       setTranslatedText(customText);
       setGlossSequence(glossesToTranslate);
+      logActivity('translation', 'Translated SASL Sequence', `${glossesToTranslate.join(' ')} → "${customText}"`);
       return;
     }
 
@@ -127,6 +187,7 @@ export default function App() {
       .then((data) => {
         if (data.fluent_sentence) {
           setTranslatedText(data.fluent_sentence);
+          logActivity('translation', 'Translated SASL Sequence', `${glossesToTranslate.join(' ')} → "${data.fluent_sentence}"`);
           // Play Avatar animation for first gloss
           if (glossesToTranslate.length > 0) {
             setActiveAvatarGloss(glossesToTranslate[0]);
@@ -156,6 +217,7 @@ export default function App() {
         currentUser={currentUser}
         onOpenAuth={() => setShowAuthModal(true)}
         onSignOut={handleSignOut}
+        onOpenProfile={() => setActiveNavTab('profile')}
       />
 
       {/* Main Body: Sidebar + Main Content Grid */}
@@ -170,6 +232,20 @@ export default function App() {
           {/* VIEW: QUIZ GAME */}
           {activeNavTab === 'quiz' && (
             <QuizGame onBackToHome={() => setActiveNavTab('home')} />
+          )}
+
+          {/* VIEW: USER PROFILE & XP */}
+          {activeNavTab === 'profile' && (
+            <ProfilePage
+              currentUser={currentUser}
+              onOpenShare={() => setShowShareModal(true)}
+              onOpenAuth={() => setShowAuthModal(true)}
+            />
+          )}
+
+          {/* VIEW: COMMUNITY SIGNS REPOSITORY */}
+          {activeNavTab === 'community' && (
+            <CommunitySubmissions />
           )}
 
           {/* VIEW: LEARN MODE */}
@@ -195,27 +271,17 @@ export default function App() {
             <ClassroomMode />
           )}
 
-          {/* VIEW: SETTINGS TAB TRIGGER */}
+          {/* VIEW: FULL INLINE SETTINGS PAGE */}
           {activeNavTab === 'settings' && (
-            <div className="glass-card" style={{ padding: '24px', textAlign: 'center' }}>
-              <h3 style={{ fontSize: '18px', fontWeight: '800', color: 'var(--text-main)', marginBottom: '8px' }}>
-                SignVision Preferences & Hardware
-              </h3>
-              <p style={{ color: 'var(--text-muted)', marginBottom: '16px' }}>
-                Configure camera sources, dark/light themes, and speech synthesizers.
-              </p>
-              <button className="btn-primary" onClick={() => setShowSettingsModal(true)} style={{ margin: '0 auto' }}>
-                Open Settings Configuration
-              </button>
-            </div>
+            <SettingsModal isInline={true} />
           )}
 
           {/* VIEW: DICTIONARY TAB */}
           {activeNavTab === 'dictionary' && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
               <DictionaryCard
-                onSelectCategory={(cat) => console.log('Selected category:', cat)}
-                onSearch={(term) => console.log('Search term:', term)}
+                items={dictionaryItems}
+                isLoading={isDictionaryLoading}
                 onSelectSign={(item) => setSelectedInspectorSign(item)}
               />
             </div>
@@ -224,6 +290,9 @@ export default function App() {
           {/* VIEW: HOME & TRANSLATOR DEFAULT VIEW */}
           {(activeNavTab === 'home' || activeNavTab === 'translator') && (
             <>
+              {/* Daily Sign Challenge Widget */}
+              <SignOfTheDayCard onInspectSign={(sign) => setSelectedInspectorSign(sign)} />
+
               {/* Top Section: Camera Stream + Translation Output Panel */}
               <div className="app-top-grid" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1.4fr) minmax(0, 1fr)', gap: '16px', alignItems: 'start' }}>
                 <div>
@@ -267,8 +336,8 @@ export default function App() {
               {/* Bottom Grid: Dictionary + Progress + Recent Activity + Poster */}
               <div className="app-bottom-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '16px', alignItems: 'stretch' }}>
                 <DictionaryCard
-                  onSelectCategory={(cat) => console.log('Selected category:', cat)}
-                  onSearch={(term) => console.log('Search term:', term)}
+                  items={dictionaryItems}
+                  isLoading={isDictionaryLoading}
                   onSelectSign={(item) => setSelectedInspectorSign(item)}
                 />
                 <ProgressCard />
@@ -309,13 +378,49 @@ export default function App() {
         <OnboardingModal onClose={() => setShowOnboardingModal(false)} />
       )}
 
-      {/* Supabase Authentication Modal */}
-      {showAuthModal && (
-        <AuthModal
-          onClose={() => setShowAuthModal(false)}
-          onAuthSuccess={(user) => setCurrentUser(user)}
+      {/* Share Progress & Milestone Modal */}
+      {showShareModal && (
+        <ShareModal
+          progress={getProgress()}
+          onClose={() => setShowShareModal(false)}
         />
       )}
+
+      {/* AI SASL Chat Assistant Panel */}
+      {showAIChatModal && (
+        <AIChatAssistant onClose={() => setShowAIChatModal(false)} />
+      )}
+
+      {/* Floating AI Tutor Launcher Button */}
+      {!showAIChatModal && (
+        <button
+          onClick={() => setShowAIChatModal(true)}
+          style={{
+            position: 'fixed',
+            bottom: '24px',
+            left: '24px',
+            zIndex: 1000,
+            background: 'linear-gradient(135deg, #00A884 0%, #059669 100%)',
+            color: '#FFFFFF',
+            border: 'none',
+            borderRadius: '30px',
+            padding: '12px 20px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            boxShadow: '0 8px 24px rgba(0, 168, 132, 0.4)',
+            cursor: 'pointer',
+            fontWeight: '700',
+            fontSize: '13px'
+          }}
+        >
+          <MessageSquareText size={18} />
+          <span>Ask AI SASL Tutor</span>
+        </button>
+      )}
+
+      {/* Global Animated Toast Notification System */}
+      <ToastContainer />
 
       {/* Competition Footer */}
       <Footer />

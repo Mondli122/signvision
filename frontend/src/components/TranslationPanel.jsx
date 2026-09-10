@@ -247,31 +247,60 @@ export default function TranslationPanel({
         <AudioVisualizer isListening={isListening} />
       </div>
 
-      {/* Gloss Sequence Chips */}
+      {/* Gloss Sequence Chips with Sign-to-Emoji Mapper */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-        <span style={{ fontSize: '13px', fontWeight: '700', color: '#334155', fontFamily: 'var(--font-heading)' }}>
-          Gloss Sequence
-        </span>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <span style={{ fontSize: '13px', fontWeight: '700', color: 'var(--text-main)', fontFamily: 'var(--font-heading)' }}>
+            Gloss Sequence Stream
+          </span>
+          <span style={{ fontSize: '11px', color: 'var(--primary-emerald)', fontWeight: '700' }}>
+            ⚡ Live Sign-to-Emoji
+          </span>
+        </div>
 
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', minHeight: '38px', alignItems: 'center' }}>
-          {glossSequence.map((gloss, idx) => (
-            <span
-              key={idx}
-              style={{
-                background: '#EFF6FF',
-                color: '#1D4ED8',
-                border: '1px solid #BFDBFE',
-                padding: '6px 14px',
-                borderRadius: '10px',
-                fontSize: '12px',
-                fontWeight: '700',
-                fontFamily: 'var(--font-heading)',
-                boxShadow: '0 1px 3px rgba(0, 0, 0, 0.02)'
-              }}
-            >
-              {gloss}
-            </span>
-          ))}
+          {glossSequence.map((gloss, idx) => {
+            const emojiMap = {
+              'HELLO': '👋',
+              'THANK YOU': '🙏',
+              'HELP': '🆘',
+              'WATER': '💧',
+              'I LOVE YOU': '🤟',
+              'YES': '👍',
+              'NO': '🙅‍♂️',
+              'WHERE': '❓',
+              'PLEASE': '🤲',
+              'SORRY': '😔',
+              'FOOD': '🍲',
+              'DRINK': '🥤',
+              'FAMILY': '👨‍👩‍👧‍👦',
+              'FRIEND': '🧑‍🤝‍🧑',
+              'SCHOOL': '🏫'
+            };
+            const emoji = emojiMap[gloss.toUpperCase()] || '✋';
+            return (
+              <span
+                key={idx}
+                style={{
+                  background: 'var(--mint-badge)',
+                  color: 'var(--mint-text)',
+                  border: '1px solid var(--border-emerald)',
+                  padding: '6px 14px',
+                  borderRadius: '10px',
+                  fontSize: '12px',
+                  fontWeight: '700',
+                  fontFamily: 'var(--font-heading)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)'
+                }}
+              >
+                <span>{emoji}</span>
+                <span>{gloss}</span>
+              </span>
+            );
+          })}
         </div>
       </div>
 

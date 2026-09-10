@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Mic, MicOff, Send, Sparkles, Volume2, ArrowRight } from 'lucide-react';
+import AudioVisualizer from './AudioVisualizer';
+import { toast } from '../utils/toast';
 
 export default function ReverseTranslator({ onPlayAvatar }) {
   const [inputText, setInputText] = useState('');
@@ -11,7 +13,7 @@ export default function ReverseTranslator({ onPlayAvatar }) {
   const handleSpeechInput = () => {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SpeechRecognition) {
-      alert('Speech Recognition is not supported in this browser. Please use Google Chrome or type text directly.');
+      toast.warning('Speech Recognition is not supported in this browser. Please type text directly or use Google Chrome.', 'Microphone Notice');
       return;
     }
 
@@ -20,9 +22,15 @@ export default function ReverseTranslator({ onPlayAvatar }) {
     recognition.continuous = false;
     recognition.interimResults = false;
 
-    recognition.onstart = () => setIsListening(true);
+    recognition.onstart = () => {
+      setIsListening(true);
+      toast.info('Listening for South African speech...', 'Microphone Active');
+    };
     recognition.onend = () => setIsListening(false);
-    recognition.onerror = () => setIsListening(false);
+    recognition.onerror = () => {
+      setIsListening(false);
+      toast.error('Microphone audio not recognized. Please try speaking again.', 'Voice Input');
+    };
 
     recognition.onresult = (event) => {
       const transcript = event.results[0][0].transcript;
@@ -32,6 +40,7 @@ export default function ReverseTranslator({ onPlayAvatar }) {
 
     recognition.start();
   };
+
 
   const triggerReverseTranslation = (textToTranslate) => {
     const query = textToTranslate || inputText;
@@ -124,6 +133,13 @@ export default function ReverseTranslator({ onPlayAvatar }) {
           <Send size={16} /> {isTranslating ? 'Translating...' : 'Convert to Signs'}
         </button>
       </div>
+
+      {/* Audio Visualizer Waveform during voice input */}
+      {isListening && (
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <AudioVisualizer isListening={isListening} />
+        </div>
+      )}
 
       {/* Gloss Sequence Chips */}
       {resultGlosses.length > 0 && (
