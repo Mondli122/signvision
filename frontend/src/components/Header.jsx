@@ -19,102 +19,92 @@ export default function Header({ currentProvince, onSelectProvince, onOpenEmerge
   };
 
   return (
-    <header className="glass-card" style={{ padding: '12px 24px', borderRadius: '18px', position: 'relative', overflow: 'hidden' }}>
-      {/* Decorative top colored accent line matching South African rainbow gradient */}
-      <div 
-        style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          height: '4px',
-          background: 'linear-gradient(90deg, #00A884 0%, #0284C7 25%, #EAB308 50%, #DC2626 75%, #059669 100%)'
-        }} 
-      />
-
+    <header
+      className="glass-card"
+      style={{
+        padding: '14px 28px',
+        borderRadius: '20px',
+        position: 'relative',
+        overflow: 'hidden',
+        background: 'var(--bg-card)',
+        boxShadow: '0 4px 24px rgba(45, 137, 139, 0.08)',
+        border: '1px solid var(--border-light)'
+      }}
+    >
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '16px' }}>
         
-        {/* Left Logo & Tagline */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-          <div style={{
-            width: '46px',
-            height: '46px',
-            borderRadius: '14px',
-            background: 'linear-gradient(135deg, #00A884 0%, #059669 100%)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: '#FFFFFF',
-            boxShadow: '0 4px 12px rgba(0, 168, 132, 0.3)'
-          }}>
-            <HandMetal size={28} />
-          </div>
-          <div>
-            <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px' }}>
-              <span style={{ fontSize: '24px', fontWeight: '800', color: 'var(--primary-emerald)', fontFamily: 'var(--font-heading)', letterSpacing: '-0.5px' }}>
-                SignVision
-              </span>
-              <span style={{ fontSize: '13px', fontWeight: '700', color: 'var(--text-main)', fontFamily: 'var(--font-heading)' }}>
-                SignBridge SA
-              </span>
+        {/* Left: Logo & Nav Links (Connect | Translate | Learn | Empower) */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '28px', flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer' }}>
+            <div
+              style={{
+                width: '44px',
+                height: '44px',
+                borderRadius: '13px',
+                background: 'linear-gradient(135deg, #2D898B 0%, #3587A4 100%)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: '#FFFFFF',
+                boxShadow: '0 4px 14px rgba(45, 137, 139, 0.3)'
+              }}
+            >
+              <HandMetal size={26} />
             </div>
-            <p style={{ fontSize: '12px', color: 'var(--text-muted)', fontWeight: '500' }}>
-              Bridging Communication. Building a More Inclusive SA.
-            </p>
+            <div>
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px' }}>
+                <span style={{ fontSize: '22px', fontWeight: '800', color: '#2D898B', fontFamily: 'var(--font-heading)', letterSpacing: '-0.5px' }}>
+                  SignVision SA
+                </span>
+              </div>
+              <div style={{ fontSize: '11px', fontWeight: '700', color: '#5C7B8A', letterSpacing: '0.4px', marginTop: '-2px' }}>
+                SignBridge
+              </div>
+            </div>
+          </div>
+
+          {/* Top Sub-Navigation Links */}
+          <div className="header-actions-desktop" style={{ display: 'flex', alignItems: 'center', gap: '18px', fontSize: '13.5px', fontWeight: '600', color: '#5C7B8A', borderLeft: '1.5px solid #D0E5F0', paddingLeft: '24px' }}>
+            <span style={{ cursor: 'pointer', transition: 'color 0.15s' }} onMouseEnter={(e) => e.target.style.color = '#2D898B'} onMouseLeave={(e) => e.target.style.color = '#5C7B8A'} onClick={onOpenWebRTC}>Connect</span>
+            <span style={{ color: '#D0E5F0' }}>|</span>
+            <span style={{ cursor: 'pointer', color: '#2D898B', fontWeight: '700' }}>Translate</span>
+            <span style={{ color: '#D0E5F0' }}>|</span>
+            <span style={{ cursor: 'pointer', transition: 'color 0.15s' }} onMouseEnter={(e) => e.target.style.color = '#2D898B'} onMouseLeave={(e) => e.target.style.color = '#5C7B8A'}>Learn</span>
+            <span style={{ color: '#D0E5F0' }}>|</span>
+            <span style={{ cursor: 'pointer', transition: 'color 0.15s' }} onMouseEnter={(e) => e.target.style.color = '#2D898B'} onMouseLeave={(e) => e.target.style.color = '#5C7B8A'}>Empower</span>
           </div>
         </div>
 
-        {/* Center: SASL Dialect Selector & Quick Launchers */}
-        <div className="header-actions-desktop" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <DialectSelector
-            currentProvince={currentProvince || 'Gauteng'}
-            onSelectProvince={onSelectProvince}
-          />
+        {/* Center/Right: Dialect Selector, Quick Emergency, Icons, User Pill */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <div className="header-actions-desktop" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <DialectSelector
+              currentProvince={currentProvince || 'Gauteng'}
+              onSelectProvince={onSelectProvince}
+            />
 
-          <button
-            onClick={onOpenWebRTC}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-              background: 'rgba(56, 189, 248, 0.15)',
-              border: '1px solid #38bdf8',
-              color: '#0284c7',
-              padding: '8px 14px',
-              borderRadius: '10px',
-              cursor: 'pointer',
-              fontWeight: '600',
-              fontSize: '0.85rem'
-            }}
-          >
-            <Video size={16} />
-            <span>Video Call</span>
-          </button>
+            <button
+              onClick={onOpenEmergency}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                background: '#FEE2E2',
+                border: '1px solid #FCA5A5',
+                color: '#DC2626',
+                padding: '7px 12px',
+                borderRadius: '10px',
+                cursor: 'pointer',
+                fontWeight: '700',
+                fontSize: '0.8rem',
+                transition: 'all 0.15s'
+              }}
+            >
+              <AlertTriangle size={14} />
+              <span>SOS</span>
+            </button>
+          </div>
 
-          <button
-            onClick={onOpenEmergency}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-              background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
-              border: 'none',
-              color: '#ffffff',
-              padding: '8px 14px',
-              borderRadius: '10px',
-              cursor: 'pointer',
-              fontWeight: 'bold',
-              fontSize: '0.85rem',
-              boxShadow: '0 2px 10px rgba(239, 68, 68, 0.4)'
-            }}
-          >
-            <AlertTriangle size={16} />
-            <span>Emergency SOS</span>
-          </button>
-        </div>
-
-        {/* Right: Theme Toggle, Settings, Onboarding, Status */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           {/* Theme Switcher Button */}
           <button
             onClick={handleToggleTheme}
@@ -131,10 +121,10 @@ export default function Header({ currentProvince, onSelectProvince, onOpenEmerge
             }}
             title="Toggle Light / Dark Theme"
           >
-            {theme === 'dark' ? <Sun size={18} color="#EAB308" /> : <Moon size={18} color="var(--text-main)" />}
+            {theme === 'dark' ? <Sun size={17} color="#88CCF1" /> : <Moon size={17} color="#2D848A" />}
           </button>
 
-          {/* Tour / Guide Button */}
+          {/* Tour Button */}
           <button
             onClick={onOpenOnboarding}
             style={{
@@ -142,7 +132,7 @@ export default function Header({ currentProvince, onSelectProvince, onOpenEmerge
               borderRadius: '10px',
               border: '1px solid var(--border-light)',
               background: 'var(--bg-card-subtle)',
-              color: 'var(--text-main)',
+              color: '#3587A4',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
@@ -150,10 +140,10 @@ export default function Header({ currentProvince, onSelectProvince, onOpenEmerge
             }}
             title="Welcome Guide"
           >
-            <HelpCircle size={18} color="var(--primary-emerald)" />
+            <HelpCircle size={17} color="#3587A4" />
           </button>
 
-          {/* Settings Trigger Button */}
+          {/* Settings Button */}
           <button
             onClick={onOpenSettings}
             style={{
@@ -161,7 +151,7 @@ export default function Header({ currentProvince, onSelectProvince, onOpenEmerge
               borderRadius: '10px',
               border: '1px solid var(--border-light)',
               background: 'var(--bg-card-subtle)',
-              color: 'var(--text-main)',
+              color: 'var(--text-muted)',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
@@ -169,62 +159,51 @@ export default function Header({ currentProvince, onSelectProvince, onOpenEmerge
             }}
             title="Open Settings"
           >
-            <Settings size={18} color="var(--text-main)" />
+            <Settings size={17} color="#5C7B8A" />
           </button>
 
-          {/* User Auth Profile Button / Chip */}
-          {currentUser ? (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <div
-                onClick={onOpenProfile}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  padding: '6px 12px',
-                  borderRadius: '12px',
-                  background: 'var(--mint-badge)',
-                  border: '1px solid var(--border-emerald)',
-                  color: 'var(--mint-text)',
-                  fontSize: '13px',
-                  fontWeight: '700',
-                  cursor: 'pointer'
-                }}
-                title="View Profile & XP"
-              >
-                <User size={16} />
-                <span>{currentUser.user_metadata?.full_name || currentUser.email?.split('@')[0]}</span>
-              </div>
-              <button
-                onClick={onSignOut}
-                style={{
-                  padding: '6px 10px',
-                  borderRadius: '10px',
-                  border: '1px solid var(--border-light)',
-                  background: 'var(--bg-card-subtle)',
-                  color: 'var(--text-muted)',
-                  fontSize: '11px',
-                  fontWeight: '700',
-                  cursor: 'pointer'
-                }}
-                title="Sign Out"
-              >
-                Sign Out
-              </button>
-            </div>
-          ) : (
-            <button
-              onClick={onOpenAuth}
-              className="btn-primary"
-              style={{ padding: '8px 14px', borderRadius: '10px', fontSize: '13px' }}
+          {/* User Auth Profile / Student Avatar Pill (Matches Top Right of Design Mockup) */}
+          <div
+            onClick={currentUser ? onOpenProfile : onOpenAuth}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '10px',
+              padding: '5px 14px 5px 6px',
+              borderRadius: '24px',
+              background: 'var(--bg-card-subtle)',
+              border: '1.5px solid #C1DFF0',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+              boxShadow: '0 2px 8px rgba(45, 137, 139, 0.08)'
+            }}
+            title={currentUser ? 'View My Profile & XP' : 'Click to Sign In'}
+          >
+            <div
+              style={{
+                width: '34px',
+                height: '34px',
+                borderRadius: '50%',
+                background: 'linear-gradient(135deg, #3587A4 0%, #2D898B 100%)',
+                color: '#FFFFFF',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '14px',
+                fontWeight: '800',
+                border: '2px solid #FFFFFF'
+              }}
             >
-              <User size={15} /> Sign In
-            </button>
-          )}
-
-          <div className="status-pill">
-            <span className="status-dot"></span>
-            AI Live
+              {currentUser?.email ? currentUser.email.charAt(0).toUpperCase() : '👨‍🎓'}
+            </div>
+            <div style={{ textAlign: 'left', display: 'flex', flexDirection: 'column' }}>
+              <span style={{ fontSize: '13px', fontWeight: '800', color: '#133340', lineHeight: '1.2' }}>
+                {currentUser?.user_metadata?.full_name || (currentUser?.email ? currentUser.email.split('@')[0] : 'Mondli Nkuna')}
+              </span>
+              <span style={{ fontSize: '10.5px', color: '#5C7B8A', fontWeight: '600' }}>
+                {currentUser ? 'Active Learner' : 'Student'}
+              </span>
+            </div>
           </div>
         </div>
 

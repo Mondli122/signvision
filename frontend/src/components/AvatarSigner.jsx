@@ -208,38 +208,101 @@ export default function AvatarSigner({ activeGloss, isPlaying, onFinish }) {
     };
   }, [isPlaying, activeGloss]);
 
+  const gloss = (activeGloss || 'HELLO').toUpperCase().trim();
+
   return (
-    <div style={{
-      background: 'rgba(15, 23, 42, 0.8)',
-      border: '1px solid rgba(56, 189, 248, 0.3)',
-      borderRadius: '16px',
-      padding: '16px',
-      textAlign: 'center',
-      marginTop: '16px'
-    }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-        <h4 style={{ margin: 0, color: '#38bdf8', fontSize: '0.95rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
-          <span>🧍</span>
-          <span>3D SASL Sign Avatar</span>
+    <div
+      style={{
+        background: '#0F172A',
+        border: '1.5px solid rgba(136, 204, 241, 0.3)',
+        borderRadius: '18px',
+        padding: '14px',
+        textAlign: 'center',
+        marginTop: '12px',
+        boxShadow: '0 8px 24px rgba(15, 23, 42, 0.4)'
+      }}
+    >
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+        <h4 style={{ margin: 0, color: '#88CCF1', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '6px', fontWeight: '800' }}>
+          <span>▶</span>
+          <span>3D Avatar Signer</span>
         </h4>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <span style={{ fontSize: '0.75rem', color: isPlaying ? '#00F59B' : '#94A3B8', fontWeight: '700' }}>
-            {isPlaying ? '● ANIMATING' : 'IDLE'}
-          </span>
-        </div>
+        <span style={{ fontSize: '0.72rem', color: isPlaying ? '#88CCF1' : '#94A3B8', fontWeight: '800', letterSpacing: '0.5px' }}>
+          {isPlaying ? '● ANIMATING' : 'IDLE'}
+        </span>
       </div>
+
       <canvas
         ref={canvasRef}
         width={320}
-        height={220}
+        height={180}
         style={{
           width: '100%',
-          maxHeight: '220px',
+          maxHeight: '180px',
           borderRadius: '12px',
-          background: '#0b0f19',
-          border: '1px solid rgba(255, 255, 255, 0.1)'
+          background: '#070A12',
+          border: '1px solid rgba(255, 255, 255, 0.08)'
         }}
       />
+      {/* Bottom control bar */}
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '10px',
+          marginTop: '10px',
+          background: 'rgba(15, 23, 42, 0.7)',
+          padding: '6px 12px',
+          borderRadius: '10px',
+          border: '1px solid rgba(136, 204, 241, 0.15)'
+        }}
+      >
+        <button
+          onClick={() => {
+            if (!isPlaying) {
+              const canvas = canvasRef.current;
+              if (canvas) canvas.click();
+            }
+          }}
+          style={{
+            width: '26px',
+            height: '26px',
+            borderRadius: '50%',
+            background: '#88CCF1',
+            border: 'none',
+            color: '#133340',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: 'pointer'
+          }}
+        >
+          <Play size={13} style={{ marginLeft: '1px' }} />
+        </button>
+
+        <span style={{ fontSize: '11px', fontWeight: '800', color: '#88CCF1', minWidth: '50px' }}>
+          {gloss}
+        </span>
+
+        {/* Scrubber bar */}
+        <div style={{ flex: 1, height: '4px', background: 'rgba(255, 255, 255, 0.2)', borderRadius: '2px', position: 'relative', overflow: 'hidden' }}>
+          <div
+            style={{
+              width: `${Math.min(100, Math.round((currentFrame / totalFrames) * 100))}%`,
+              height: '100%',
+              background: '#88CCF1',
+              borderRadius: '2px'
+            }}
+          />
+        </div>
+
+        {/* Carousel indicators */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', color: '#94A3B8' }}>
+          <span style={{ cursor: 'pointer', color: '#88CCF1' }}>‹</span>
+          <span style={{ fontWeight: '700', color: '#FFFFFF' }}>1/5</span>
+          <span style={{ cursor: 'pointer', color: '#88CCF1' }}>›</span>
+        </div>
+      </div>
     </div>
   );
 }

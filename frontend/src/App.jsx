@@ -30,6 +30,9 @@ import SignOfTheDayCard from './components/SignOfTheDayCard';
 import ShareModal from './components/ShareModal';
 import AIChatAssistant from './components/AIChatAssistant';
 import CommunitySubmissions from './components/CommunitySubmissions';
+import HeroBanner from './components/HeroBanner';
+import StemLearningCard from './components/StemLearningCard';
+import MiniLeaderboardCard from './components/MiniLeaderboardCard';
 import { isOnboarded, getProgress, saveProgress, logActivity } from './utils/storage';
 import { toast } from './utils/toast';
 import { getSessionUser, signOutUser, getAuthToken } from './utils/supabaseClient';
@@ -297,28 +300,78 @@ export default function App() {
           {/* VIEW: HOME & TRANSLATOR DEFAULT VIEW */}
           {(activeNavTab === 'home' || activeNavTab === 'translator') && (
             <>
-              {/* Daily Sign Challenge Widget */}
-              <SignOfTheDayCard onInspectSign={(sign) => setSelectedInspectorSign(sign)} />
+              {/* Top Hero Banner Matching Design Mockup */}
+              <HeroBanner />
 
-              {/* Top Section: Camera Stream + Translation Output Panel */}
-              <div className="app-top-grid" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1.4fr) minmax(0, 1fr)', gap: '16px', alignItems: 'start' }}>
-                <div>
-                  <CameraViewport
-                    onPrediction={(label) => {
-                      setGlossSequence((prev) => [...prev, label]);
-                      setLastDetectedSign(label);
-                      setLastConfidence(0.92);
+              {/* Main 2-Column Dashboard Grid (Left: Translation & Vision, Right: Progress & STEM & Leaderboard) */}
+              <div
+                className="app-top-grid"
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'minmax(0, 1.7fr) minmax(320px, 1fr)',
+                  gap: '18px',
+                  alignItems: 'start'
+                }}
+              >
+                {/* Left Column: Live Translation with Dual Viewport (Camera + 3D Avatar) & Translation Control Panel */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                  
+                  {/* Live Translation Header Card */}
+                  <div
+                    className="glass-card"
+                    style={{
+                      padding: '16px 20px',
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      flexWrap: 'wrap',
+                      gap: '12px'
                     }}
-                  />
-                  {/* AI Sign Tutor Pose Coach */}
-                  <AICoachCard
-                    currentSign={lastDetectedSign}
-                    currentConfidence={lastConfidence}
-                    landmarkCount={42}
-                  />
-                </div>
+                  >
+                    <div>
+                      <h3 style={{ fontSize: '18px', fontWeight: '800', color: '#133340', fontFamily: 'var(--font-heading)', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <span>📊</span> Live Translation
+                      </h3>
+                      <p style={{ fontSize: '12px', color: '#5C7B8A', marginTop: '2px' }}>
+                        Use your webcam or mic to translate between SASL and text/voice in real-time.
+                      </p>
+                    </div>
 
-                <div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <div className="status-pill" style={{ background: '#C1DFF0', color: '#2D848A', border: '1px solid #88CCF1' }}>
+                        <span className="status-dot" style={{ background: '#2D898B', boxShadow: '0 0 8px #2D898B' }} />
+                        Tracking: ON
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Dual Video Grid: Camera Viewport + 3D Avatar Signer Side-by-Side (Matching Mockup) */}
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                      <CameraViewport
+                        onPrediction={(label) => {
+                          setGlossSequence((prev) => [...prev, label]);
+                          setLastDetectedSign(label);
+                          setLastConfidence(0.92);
+                        }}
+                      />
+                      <AICoachCard
+                        currentSign={lastDetectedSign}
+                        currentConfidence={lastConfidence}
+                        landmarkCount={42}
+                      />
+                    </div>
+
+                    <div>
+                      <AvatarSigner
+                        activeGloss={activeAvatarGloss}
+                        isPlaying={isPlayingAvatar}
+                        onFinish={() => setIsPlayingAvatar(false)}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Interactive Translation Panel with Quick Signs */}
                   <TranslationPanel
                     glossSequence={glossSequence}
                     translatedText={translatedText}
@@ -328,26 +381,32 @@ export default function App() {
                     onSave={handleSaveSequence}
                     onTranslate={handleTranslateGloss}
                   />
-                  {/* 3D Visual Sign Avatar */}
-                  <AvatarSigner
-                    activeGloss={activeAvatarGloss}
-                    isPlaying={isPlayingAvatar}
-                    onFinish={() => setIsPlayingAvatar(false)}
-                  />
+                </div>
+
+                {/* Right Column: Your Progress, STEM Learning, and National Leaderboard (Matching Mockup) */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                  {/* Your Progress Widget */}
+                  <ProgressCard />
+
+                  {/* STEM Learning Card */}
+                  <StemLearningCard onPlayNow={() => setActiveNavTab('learn')} />
+
+                  {/* National Leaderboard Card */}
+                  <MiniLeaderboardCard onViewAll={() => setActiveNavTab('classroom')} />
                 </div>
               </div>
 
-              {/* Middle Row: 4 Feature Shortcut Cards */}
+              {/* Middle Row: Feature Shortcut Cards (Offline Ready, Dual Hand, ML Engine, Multi-language) */}
               <FeatureCards onSelectFeature={handleSelectFeature} />
 
-              {/* Bottom Grid: Dictionary + Progress + Recent Activity + Poster */}
-              <div className="app-bottom-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '16px', alignItems: 'stretch' }}>
+              {/* Bottom Grid: Dictionary + Recent Activity + Poster + Daily Sign */}
+              <div className="app-bottom-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '16px', alignItems: 'stretch' }}>
+                <SignOfTheDayCard onInspectSign={(sign) => setSelectedInspectorSign(sign)} />
                 <DictionaryCard
                   items={dictionaryItems}
                   isLoading={isDictionaryLoading}
                   onSelectSign={(item) => setSelectedInspectorSign(item)}
                 />
-                <ProgressCard />
                 <RecentActivityCard />
                 <EmpowerPosterCard />
               </div>

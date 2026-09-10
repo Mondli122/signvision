@@ -5,25 +5,38 @@ export default function Sidebar({ activeTab, setActiveTab }) {
   const navItems = [
     { id: 'home', label: 'Home', icon: Home },
     { id: 'translator', label: 'Translator', icon: Repeat },
-    { id: 'reverse', label: 'Voice-to-Sign', icon: Mic },
-    { id: 'learn', label: 'Learn', icon: GraduationCap },
+    { id: 'reverse', label: 'Live Call Room', icon: Mic },
+    { id: 'learn', label: 'Learning & Games', icon: GraduationCap },
+    { id: 'classroom', label: 'Leaderboard', icon: Trophy },
     { id: 'dictionary', label: 'Dictionary', icon: BookOpen },
-    { id: 'quiz', label: 'Quiz Game', icon: Gamepad2 },
-    { id: 'profile', label: 'My Profile & XP', icon: User },
-    { id: 'community', label: 'Community Signs', icon: Users },
-    { id: 'classroom', label: 'Classroom & Rank', icon: Trophy },
+    { id: 'quiz', label: 'AI Coach', icon: Gamepad2 },
     { id: 'recorder', label: 'Dataset Recorder', icon: Database },
+    { id: 'profile', label: 'Profile', icon: User },
+    { id: 'community', label: 'Community', icon: Users },
     { id: 'settings', label: 'Settings', icon: Settings },
   ];
 
-
   return (
-    <aside className="app-sidebar" style={{ display: 'flex', flexDirection: 'column', gap: '16px', width: '220px', flexShrink: 0 }}>
+    <aside
+      className="app-sidebar"
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '16px',
+        width: '230px',
+        flexShrink: 0,
+        background: 'linear-gradient(180deg, #2D848A 0%, #205E63 100%)',
+        padding: '16px 12px',
+        borderRadius: '22px',
+        boxShadow: '0 10px 30px rgba(45, 132, 138, 0.25)',
+        color: '#FFFFFF'
+      }}
+    >
       {/* Navigation Card */}
-      <nav aria-label="Main Navigation" className="glass-card app-sidebar-nav" style={{ padding: '12px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+      <nav aria-label="Main Navigation" style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
         {navItems.map((item) => {
           const Icon = item.icon;
-          const isActive = activeTab === item.id;
+          const isActive = activeTab === item.id || (item.id === 'reverse' && activeTab === 'reverse');
           return (
             <button
               key={item.id}
@@ -38,55 +51,62 @@ export default function Sidebar({ activeTab, setActiveTab }) {
                 padding: '11px 16px',
                 borderRadius: '12px',
                 border: 'none',
-                background: isActive ? '#D1FAE5' : 'transparent',
-                color: isActive ? '#00A884' : '#475569',
-                fontWeight: isActive ? '700' : '500',
-                fontSize: '14px',
+                background: isActive ? '#FFFFFF' : 'transparent',
+                color: isActive ? '#2D848A' : 'rgba(255, 255, 255, 0.88)',
+                fontWeight: isActive ? '800' : '600',
+                fontSize: '13.5px',
                 fontFamily: 'var(--font-heading)',
                 cursor: 'pointer',
-                transition: 'all 0.15s ease',
-                textAlign: 'left'
+                transition: 'all 0.18s ease',
+                textAlign: 'left',
+                boxShadow: isActive ? '0 4px 14px rgba(0, 0, 0, 0.12)' : 'none'
               }}
             >
-              <Icon size={18} color={isActive ? '#00A884' : '#64748B'} aria-hidden="true" />
+              <Icon size={18} color={isActive ? '#2D848A' : 'rgba(255, 255, 255, 0.85)'} aria-hidden="true" />
               {item.label}
             </button>
           );
         })}
       </nav>
 
-      {/* SA Promo Banner Card */}
+      {/* SA SASL Official Language Promo Card (matches bottom left mockup) */}
       <div
-        className="glass-card"
         style={{
-          padding: '24px 18px',
-          borderRadius: '18px',
-          background: 'linear-gradient(180deg, #E0F2FE 0%, #F0FDF4 100%)',
-          border: '1px solid #BAE6FD',
+          marginTop: 'auto',
+          padding: '18px 14px',
+          borderRadius: '16px',
+          background: 'rgba(0, 0, 0, 0.18)',
+          border: '1px solid rgba(193, 223, 240, 0.25)',
           display: 'flex',
           flexDirection: 'column',
-          alignItems: 'center',
-          textAlign: 'center',
-          position: 'relative',
-          overflow: 'hidden'
+          gap: '10px'
         }}
       >
-        {/* Ribbon visual accents */}
-        <div style={{
-          width: '120px',
-          height: '60px',
-          marginBottom: '12px',
-          background: 'linear-gradient(135deg, #00A884 0%, #0284C7 50%, #EAB308 100%)',
-          borderRadius: '12px 12px 50% 50%',
-          opacity: 0.85,
-          boxShadow: '0 4px 12px rgba(2, 132, 199, 0.2)'
-        }} />
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <div
+            style={{
+              width: '32px',
+              height: '32px',
+              borderRadius: '8px',
+              background: '#88CCF1',
+              color: '#2D848A',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontWeight: '800',
+              fontSize: '16px'
+            }}
+          >
+            🇿🇦
+          </div>
+          <div>
+            <div style={{ fontSize: '12px', fontWeight: '800', color: '#FFFFFF' }}>SASL</div>
+            <div style={{ fontSize: '10px', color: '#C1DFF0' }}>12th Official Language</div>
+          </div>
+        </div>
 
-        <h4 style={{ fontSize: '18px', fontWeight: '800', color: '#0F172A', lineHeight: '1.25', marginBottom: '8px' }}>
-          Same Language.<br />More Possibilities.
-        </h4>
-        <div style={{ color: '#00A884', display: 'flex', alignItems: 'center', gap: '4px', fontSize: '14px', fontWeight: '600' }}>
-          <Heart size={16} fill="#00A884" />
+        <div style={{ fontSize: '11px', color: '#C1DFF0', lineHeight: '1.3', fontStyle: 'italic' }}>
+          Communication has no barriers
         </div>
       </div>
     </aside>

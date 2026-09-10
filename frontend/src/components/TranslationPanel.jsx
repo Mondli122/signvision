@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Volume2, Play, Pause, Trash2, Bookmark, Repeat, Mic, Hand, Globe } from 'lucide-react';
+import { Volume2, Play, Pause, Trash2, Bookmark, Repeat, Mic, Hand, Globe, ChevronDown } from 'lucide-react';
 import AudioVisualizer from './AudioVisualizer';
 import { toast } from '../utils/toast';
 
@@ -71,10 +71,10 @@ export default function TranslationPanel({
   };
 
   return (
-    <div className="glass-card" style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '16px', height: '100%' }}>
+    <div className="glass-card" style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '14px', height: '100%' }}>
       
       {/* Mode Switcher Tabs */}
-      <div style={{ display: 'flex', gap: '8px', background: '#F1F5F9', padding: '4px', borderRadius: '12px' }}>
+      <div style={{ display: 'flex', gap: '8px', background: '#F0F7FB', padding: '4px', borderRadius: '12px', border: '1px solid #D0E5F0' }}>
         <button
           onClick={() => setActiveTab('signToText')}
           style={{
@@ -82,9 +82,9 @@ export default function TranslationPanel({
             padding: '8px 12px',
             borderRadius: '10px',
             border: 'none',
-            background: activeTab === 'signToText' ? '#00A884' : 'transparent',
-            color: activeTab === 'signToText' ? '#FFFFFF' : '#475569',
-            fontWeight: '600',
+            background: activeTab === 'signToText' ? '#2D848A' : 'transparent',
+            color: activeTab === 'signToText' ? '#FFFFFF' : '#5C7B8A',
+            fontWeight: '700',
             fontSize: '13px',
             cursor: 'pointer',
             display: 'flex',
@@ -105,9 +105,9 @@ export default function TranslationPanel({
             padding: '8px 12px',
             borderRadius: '10px',
             border: 'none',
-            background: activeTab === 'textToSign' ? '#00A884' : 'transparent',
-            color: activeTab === 'textToSign' ? '#FFFFFF' : '#475569',
-            fontWeight: '600',
+            background: activeTab === 'textToSign' ? '#2D848A' : 'transparent',
+            color: activeTab === 'textToSign' ? '#FFFFFF' : '#5C7B8A',
+            fontWeight: '700',
             fontSize: '13px',
             cursor: 'pointer',
             display: 'flex',
@@ -118,208 +118,330 @@ export default function TranslationPanel({
           }}
         >
           <Mic size={15} />
-          Text / Speech → Sign
+          Voice / Text → Sign
         </button>
       </div>
 
-      {/* Multilingual SA Target Language Selector Bar */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(0, 168, 132, 0.08)', padding: '8px 14px', borderRadius: '10px', border: '1px solid rgba(0, 168, 132, 0.2)' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.85rem', fontWeight: 'bold', color: '#00A884' }}>
-          <Globe size={16} />
-          <span>Output SA Language:</span>
-        </div>
-        <select
-          value={targetLanguage}
-          onChange={(e) => onSelectLanguage && onSelectLanguage(e.target.value)}
-          style={{
-            background: '#FFFFFF',
-            border: '1px solid #00A884',
-            borderRadius: '8px',
-            padding: '4px 10px',
-            fontSize: '0.85rem',
-            fontWeight: 'bold',
-            color: '#0F172A',
-            cursor: 'pointer'
-          }}
-        >
-          {languages.map((lang) => (
-            <option key={lang} value={lang}>
-              {lang}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      {/* Main Translation Output Card */}
-      <div style={{
-        background: '#F8FAFC',
-        border: '1px solid #E2E8F0',
-        borderRadius: '16px',
-        padding: '16px 20px',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '12px'
-      }}>
-
-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-          <div style={{
-            width: '44px',
-            height: '44px',
-            borderRadius: '12px',
-            background: '#D1FAE5',
-            color: '#00A884',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}>
-            <Hand size={24} />
-          </div>
-
-          <div style={{ flex: 1 }}>
-            <h2 style={{ fontSize: '24px', fontWeight: '800', color: '#0F172A', fontFamily: 'var(--font-heading)', lineHeight: '1.1' }}>
-              {glossSequence.length > 0 ? glossSequence[0] : 'READY'}
-            </h2>
-            <p style={{ fontSize: '14px', color: '#475569', fontWeight: '500', fontStyle: 'italic', marginTop: '2px' }}>
-              "{translatedText}"
-            </p>
-          </div>
-        </div>
-
-        {/* Speech Audio Bar */}
-        <div style={{
-          display: 'flex',
+      {/* From Language <-> To Language Interactive Selection Bar (From Design Mockup) */}
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: '1fr auto 1fr auto',
           alignItems: 'center',
           gap: '12px',
-          background: '#FFFFFF',
-          padding: '8px 14px',
-          borderRadius: '9999px',
-          border: '1px solid #E2E8F0',
-          marginTop: '4px'
-        }}>
-          <button
-            onClick={handlePlayAudio}
+          background: '#F0F7FB',
+          padding: '10px 14px',
+          borderRadius: '16px',
+          border: '1px solid #D0E5F0'
+        }}
+      >
+        {/* From Box */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <div style={{ width: '18px', height: '18px', borderRadius: '50%', background: '#C1DFF0', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#2D848A' }}>
+              <Hand size={11} />
+            </div>
+            <span style={{ fontSize: '11px', fontWeight: '800', color: '#3587A4' }}>
+              From SASL <span style={{ fontSize: '9.5px', color: '#64748B', fontWeight: '600' }}>(Sign Language)</span>
+            </span>
+          </div>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              background: '#FFFFFF',
+              border: '1px solid #C1DFF0',
+              borderRadius: '10px',
+              padding: '6px 10px',
+              gap: '6px'
+            }}
+          >
+            <span style={{ fontSize: '12px', fontWeight: '700', color: '#133340' }}>Detect from camera</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+              <ChevronDown size={14} color="#5C7B8A" />
+              <button
+                onClick={handleToggleMic}
+                style={{
+                  background: isListening ? '#FEE2E2' : '#E0F2FE',
+                  border: 'none',
+                  borderRadius: '50%',
+                  width: '22px',
+                  height: '22px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  color: isListening ? '#EF4444' : '#2D848A',
+                  marginLeft: '4px'
+                }}
+                title={isListening ? 'Listening...' : 'Use microphone'}
+              >
+                <Mic size={12} />
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Swap Arrow Icon */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: '16px' }}>
+          <div
             style={{
               width: '28px',
               height: '28px',
               borderRadius: '50%',
-              background: '#00A884',
-              border: 'none',
-              color: '#FFFFFF',
+              background: '#FFFFFF',
+              border: '1px solid #C1DFF0',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              cursor: 'pointer'
+              color: '#2D848A',
+              boxShadow: '0 1px 4px rgba(45, 132, 138, 0.1)'
             }}
           >
-            {isPlayingAudio ? <Pause size={14} /> : <Play size={14} style={{ marginLeft: '1px' }} />}
-          </button>
-
-          {/* Audio Wave Line Bar */}
-          <div style={{ flex: 1, height: '6px', background: '#E2E8F0', borderRadius: '3px', position: 'relative', overflow: 'hidden' }}>
-            <div style={{
-              width: isPlayingAudio ? '100%' : '60%',
-              height: '100%',
-              background: '#00A884',
-              borderRadius: '3px',
-              transition: isPlayingAudio ? 'width 2.5s linear' : 'width 0.3s'
-            }} />
+            <Repeat size={13} />
           </div>
+        </div>
 
-          <button
-            onClick={handleToggleMic}
+        {/* To Box */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <div style={{ width: '18px', height: '18px', borderRadius: '50%', background: '#C1DFF0', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#2D848A' }}>
+              <Globe size={11} />
+            </div>
+            <span style={{ fontSize: '11px', fontWeight: '800', color: '#3587A4' }}>
+              To Language
+            </span>
+          </div>
+          <div
             style={{
-              background: isListening ? '#ef4444' : 'none',
-              border: 'none',
-              color: isListening ? '#FFFFFF' : '#64748B',
-              padding: '4px',
-              borderRadius: '50%',
-              cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
-              justifyContent: 'center'
+              background: '#FFFFFF',
+              border: '1px solid #C1DFF0',
+              borderRadius: '10px',
+              padding: '2px 8px'
             }}
           >
-            <Mic size={18} />
-          </button>
-          <Volume2 size={18} color="#64748B" />
+            <select
+              value={targetLanguage}
+              onChange={(e) => onSelectLanguage && onSelectLanguage(e.target.value)}
+              style={{
+                width: '100%',
+                border: 'none',
+                background: 'transparent',
+                outline: 'none',
+                padding: '5px 0',
+                fontSize: '12px',
+                fontWeight: '700',
+                color: '#133340',
+                cursor: 'pointer'
+              }}
+            >
+              {languages.map((lang) => (
+                <option key={lang} value={lang}>{lang}</option>
+              ))}
+            </select>
+          </div>
         </div>
 
-        {/* Live Microphone Audio Frequency Waveform Visualizer */}
-        <AudioVisualizer isListening={isListening} />
+        {/* Translate Button */}
+        <div style={{ marginTop: '16px' }}>
+          <button
+            onClick={onTranslate}
+            className="btn-primary"
+            style={{
+              padding: '7px 14px',
+              borderRadius: '10px',
+              fontSize: '12px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              whiteSpace: 'nowrap'
+            }}
+          >
+            <Repeat size={13} />
+            <span>Translate</span>
+          </button>
+        </div>
       </div>
 
-      {/* Gloss Sequence Chips with Sign-to-Emoji Mapper */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+      {/* Live Translation Output & Quick Signs 2-Column Section (From Mockup) */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1.2fr) minmax(0, 1fr)', gap: '12px', alignItems: 'stretch' }}>
+        
+        {/* Left: Live Output Speech Bubble */}
+        <div
+          style={{
+            background: '#FFFFFF',
+            border: '1.5px solid #C1DFF0',
+            borderRadius: '16px',
+            padding: '14px',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '10px',
+            boxShadow: '0 2px 10px rgba(45, 137, 139, 0.05)'
+          }}
+        >
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <span style={{ fontSize: '11px', fontWeight: '700', color: '#5C7B8A', display: 'flex', alignItems: 'center', gap: '4px' }}>
+              <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#2D898B' }} />
+              Live Translation Output
+            </span>
+            <span style={{ fontSize: '11px', fontWeight: '700', color: '#2D848A', background: '#C1DFF0', padding: '2px 8px', borderRadius: '10px' }}>
+              {targetLanguage}
+            </span>
+          </div>
+
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' }}>
+            <h3 style={{ fontSize: '16px', fontWeight: '800', color: '#133340', lineHeight: '1.3' }}>
+              "{translatedText}"
+            </h3>
+            <button
+              onClick={handlePlayAudio}
+              style={{
+                width: '32px',
+                height: '32px',
+                borderRadius: '50%',
+                background: '#C1DFF0',
+                border: 'none',
+                color: '#2D848A',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                flexShrink: 0
+              }}
+              title="Speak translated text"
+            >
+              <Volume2 size={16} />
+            </button>
+          </div>
+
+          <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '6px', marginTop: 'auto', paddingTop: '6px', borderTop: '1px solid #EAF3F8' }}>
+            <span style={{ fontSize: '10px', color: '#5C7B8A' }}>Other languages:</span>
+            {languages.slice(1).map((l) => (
+              <span
+                key={l}
+                onClick={() => onSelectLanguage && onSelectLanguage(l)}
+                style={{
+                  fontSize: '10px',
+                  fontWeight: '600',
+                  padding: '2px 6px',
+                  borderRadius: '6px',
+                  background: '#F0F7FB',
+                  color: '#2D848A',
+                  cursor: 'pointer'
+                }}
+              >
+                {l}
+              </span>
+            ))}
+          </div>
+        </div>
+
+        {/* Right: Quick Signs (Hello, Help, Water, Thank You, Emergency) */}
+        <div
+          style={{
+            background: '#FFFFFF',
+            border: '1.5px solid #C1DFF0',
+            borderRadius: '16px',
+            padding: '14px',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '8px'
+          }}
+        >
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <span style={{ fontSize: '11px', fontWeight: '700', color: '#133340' }}>⭐ Quick Signs</span>
+            <span style={{ fontSize: '10px', color: '#5C7B8A' }}>Popular SASL</span>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '4px' }}>
+            {[
+              { gloss: 'HELLO', label: 'Hello', icon: '👋', bg: '#C1DFF0', color: '#2D848A' },
+              { gloss: 'HELP', label: 'Help', icon: '🆘', bg: '#C1DFF0', color: '#2D848A' },
+              { gloss: 'WATER', label: 'Water', icon: '💧', bg: '#C1DFF0', color: '#2D848A' },
+              { gloss: 'THANK YOU', label: 'Thank You', icon: '🙏', bg: '#C1DFF0', color: '#2D848A' },
+              { gloss: 'EMERGENCY', label: 'Emergency', icon: '🚨', bg: '#FEE2E2', color: '#DC2626' },
+            ].map((qs) => (
+              <button
+                key={qs.label}
+                onClick={() => {
+                  fetch('/api/translate-text', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text: qs.label })
+                  })
+                    .then(res => res.json())
+                    .then(d => {
+                      if (d.glosses) onTranslate(d.glosses, qs.label);
+                    });
+                }}
+                style={{
+                  padding: '6px 2px',
+                  borderRadius: '10px',
+                  border: '1px solid #D0E5F0',
+                  background: qs.bg,
+                  color: qs.color,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  gap: '2px',
+                  fontSize: '9.5px',
+                  fontWeight: '700'
+                }}
+              >
+                <span style={{ fontSize: '16px' }}>{qs.icon}</span>
+                <span>{qs.label}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Live Gloss Sequence Stream */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <span style={{ fontSize: '13px', fontWeight: '700', color: 'var(--text-main)', fontFamily: 'var(--font-heading)' }}>
+          <span style={{ fontSize: '12px', fontWeight: '700', color: '#133340', fontFamily: 'var(--font-heading)' }}>
             Gloss Sequence Stream
           </span>
-          <span style={{ fontSize: '11px', color: 'var(--primary-emerald)', fontWeight: '700' }}>
-            ⚡ Live Sign-to-Emoji
+          <span style={{ fontSize: '11px', color: '#2D898B', fontWeight: '700' }}>
+            ● Active MediaPipe Multi-Hand
           </span>
         </div>
 
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', minHeight: '38px', alignItems: 'center' }}>
-          {glossSequence.map((gloss, idx) => {
-            const emojiMap = {
-              'HELLO': '👋',
-              'THANK YOU': '🙏',
-              'HELP': '🆘',
-              'WATER': '💧',
-              'I LOVE YOU': '🤟',
-              'YES': '👍',
-              'NO': '🙅‍♂️',
-              'WHERE': '❓',
-              'PLEASE': '🤲',
-              'SORRY': '😔',
-              'FOOD': '🍲',
-              'DRINK': '🥤',
-              'FAMILY': '👨‍👩‍👧‍👦',
-              'FRIEND': '🧑‍🤝‍🧑',
-              'SCHOOL': '🏫'
-            };
-            const emoji = emojiMap[gloss.toUpperCase()] || '✋';
-            return (
-              <span
-                key={idx}
-                style={{
-                  background: 'var(--mint-badge)',
-                  color: 'var(--mint-text)',
-                  border: '1px solid var(--border-emerald)',
-                  padding: '6px 14px',
-                  borderRadius: '10px',
-                  fontSize: '12px',
-                  fontWeight: '700',
-                  fontFamily: 'var(--font-heading)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                  boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)'
-                }}
-              >
-                <span>{emoji}</span>
-                <span>{gloss}</span>
-              </span>
-            );
-          })}
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', minHeight: '34px', alignItems: 'center' }}>
+          {glossSequence.map((gloss, idx) => (
+            <span
+              key={idx}
+              style={{
+                background: '#C1DFF0',
+                color: '#2D848A',
+                border: '1px solid #88CCF1',
+                padding: '4px 10px',
+                borderRadius: '8px',
+                fontSize: '11.5px',
+                fontWeight: '800',
+                fontFamily: 'var(--font-heading)'
+              }}
+            >
+              {gloss}
+            </span>
+          ))}
         </div>
       </div>
 
       {/* Action Buttons Bar */}
-      <div style={{ display: 'flex', gap: '10px', marginTop: 'auto' }}>
-        <button className="btn-outline" onClick={onClear} style={{ flex: 1, justifyContent: 'center', padding: '9px 12px', fontSize: '13px' }}>
-          <Trash2 size={15} />
-          Clear
+      <div style={{ display: 'flex', gap: '8px', marginTop: 'auto' }}>
+        <button className="btn-outline" onClick={onClear} style={{ flex: 1, justifyContent: 'center', padding: '8px', fontSize: '12.5px' }}>
+          <Trash2 size={14} /> Clear
         </button>
-
-        <button className="btn-outline" onClick={onSave} style={{ flex: 1, justifyContent: 'center', padding: '9px 12px', fontSize: '13px' }}>
-          <Bookmark size={15} />
-          Save
+        <button className="btn-outline" onClick={onSave} style={{ flex: 1, justifyContent: 'center', padding: '8px', fontSize: '12.5px' }}>
+          <Bookmark size={14} /> Save
         </button>
-
-        <button className="btn-primary" onClick={onTranslate} style={{ flex: 1.2, justifyContent: 'center', padding: '9px 14px', fontSize: '13px' }}>
-          <Repeat size={15} />
-          Translate
+        <button className="btn-primary" onClick={onTranslate} style={{ flex: 1.2, justifyContent: 'center', padding: '8px', fontSize: '12.5px' }}>
+          <Repeat size={14} /> Translate
         </button>
       </div>
 

@@ -141,8 +141,8 @@ export default function CameraViewport({ onPrediction }) {
         setLandmarksCount(results.multiHandLandmarks.length * 21);
 
         results.multiHandLandmarks.forEach((landmarks, handIdx) => {
-          const mainColor = handIdx === 0 ? '#10B981' : '#A855F7';
-          const pointColor = handIdx === 0 ? '#00E5FF' : '#F43F5E';
+          const mainColor = handIdx === 0 ? '#88CCF1' : '#C084FC';
+          const pointColor = handIdx === 0 ? '#2D898B' : '#E879F9';
 
           // Draw connections
           ctx.strokeStyle = mainColor;
@@ -266,36 +266,77 @@ export default function CameraViewport({ onPrediction }) {
         }}
       />
 
-      {/* Top Left Badges */}
+      {/* Top Badges */}
       <div style={{ position: 'absolute', top: '14px', left: '14px', display: 'flex', gap: '8px', zIndex: 10 }}>
         <div style={{
           background: 'rgba(15, 23, 42, 0.85)',
           backdropFilter: 'blur(8px)',
-          color: '#10B981',
+          color: '#88CCF1',
           padding: '6px 12px',
           borderRadius: '8px',
           fontSize: '12px',
           fontWeight: '700',
+          border: '1px solid rgba(136, 204, 241, 0.35)',
           display: 'flex',
           alignItems: 'center',
-          gap: '6px',
-          border: '1px solid rgba(16, 185, 129, 0.3)'
+          gap: '6px'
         }}>
-          <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#10B981', boxShadow: '0 0 6px #10B981' }}></span>
-          {isCameraActive ? 'CV ENGINE LIVE' : 'SIMULATION MODE'}
+          <span>📷</span>
+          <span>{fps} FPS</span>
         </div>
 
         <div style={{
           background: 'rgba(15, 23, 42, 0.85)',
           backdropFilter: 'blur(8px)',
-          color: '#FFFFFF',
+          color: '#C1DFF0',
           padding: '6px 12px',
           borderRadius: '8px',
           fontSize: '12px',
           fontWeight: '700',
-          border: '1px solid rgba(255, 255, 255, 0.15)'
+          border: '1px solid rgba(193, 223, 240, 0.25)',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '6px'
         }}>
-          {fps} FPS
+          <span>🖐️</span>
+          <span>Hands: {handsDetected || 2}/2</span>
+        </div>
+      </div>
+
+      {/* Bottom Left: Dominant & Non-Dominant Legend from Mockup */}
+      <div style={{ position: 'absolute', bottom: '14px', left: '14px', display: 'flex', gap: '10px', zIndex: 10 }}>
+        <div style={{
+          background: 'rgba(15, 23, 42, 0.88)',
+          backdropFilter: 'blur(8px)',
+          padding: '5px 10px',
+          borderRadius: '20px',
+          fontSize: '11px',
+          fontWeight: '700',
+          color: '#88CCF1',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '6px',
+          border: '1px solid rgba(136, 204, 241, 0.3)'
+        }}>
+          <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#88CCF1' }} />
+          Dominant Hand
+        </div>
+
+        <div style={{
+          background: 'rgba(15, 23, 42, 0.88)',
+          backdropFilter: 'blur(8px)',
+          padding: '5px 10px',
+          borderRadius: '20px',
+          fontSize: '11px',
+          fontWeight: '700',
+          color: '#C084FC',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '6px',
+          border: '1px solid rgba(192, 132, 252, 0.3)'
+        }}>
+          <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#C084FC' }} />
+          Non-Dominant Hand
         </div>
       </div>
 
