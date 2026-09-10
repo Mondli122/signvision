@@ -218,7 +218,11 @@ export default function AvatarSigner({ activeGloss, isPlaying, onFinish }) {
         borderRadius: '18px',
         padding: '14px',
         textAlign: 'center',
-        marginTop: '12px',
+        marginTop: '0',
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between',
         boxShadow: '0 8px 24px rgba(15, 23, 42, 0.4)'
       }}
     >
