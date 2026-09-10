@@ -1,9 +1,22 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Brain, Flame, Star } from 'lucide-react';
+import { getProgress } from '../utils/storage';
 
-export default function ProgressCard({ level = 3, streak = 5, score = 150, currentPts = 320, totalPts = 500 }) {
-  const percentage = Math.round((currentPts / totalPts) * 100);
-  const strokeDashoffset = 283 - (283 * percentage) / 100;
+export default function ProgressCard() {
+  const [prog, setProg] = useState(getProgress());
+
+  useEffect(() => {
+    const handleUpdate = () => setProg(getProgress());
+    window.addEventListener('signvision_progress_updated', handleUpdate);
+    return () => window.removeEventListener('signvision_progress_updated', handleUpdate);
+  }, []);
+
+  const level = prog.level || 1;
+  const streak = prog.streak || 1;
+  const score = prog.highScore || 0;
+  const currentPts = prog.xp || 0;
+  const totalPts = level * 150;
+  const percentage = Math.min(100, Math.round((currentPts / totalPts) * 100));
 
   return (
     <div className="glass-card" style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '14px', height: '100%' }}>

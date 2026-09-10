@@ -10,6 +10,7 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from models.gesture_classifier import GestureClassifier
 from utils.openrouter_client import OpenRouterClient
+from utils.supabase_backend import SupabaseBackendClient
 
 FRONTEND_DIST = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'frontend', 'dist')
 if os.path.exists(FRONTEND_DIST):
@@ -20,6 +21,7 @@ else:
 CORS(app)
 classifier = GestureClassifier()
 ai_client = OpenRouterClient()
+supabase_auth = SupabaseBackendClient()
 
 # Dataset storage directory
 DATASET_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'dataset')
@@ -664,6 +666,71 @@ def translate_text():
         "glosses": glosses,
         "cards": matched_cards
     })
+
+# ==========================================
+# BACKEND SUPABASE AUTHENTICATION ENDPOINTS
+# ==========================================
+
+@app.route('/api/auth/signup', methods=['POST'])
+def auth_signup():
+    """Registers a new user through Supabase Auth REST service."""
+    data = request.json or {}
+    email = data.get('email', '').strip()
+    password = data.get('password', '')
+    full_name = data.get('fullName', '').strip()
+
+    if not email or not password:
+        return jsonify({"error": "Email and password are required"}), 400
+
+    result, err = supabase_auth.sign_up(email, password, full_name)
+    if err:
+        return jsonify({"error": err}), 400
+
+    user = result.get('user') or (result.get('session') and result['session'].get('user'))
+    token = result.get('access_token') or (result.get('session') and result['session'].get('access_token'))
+    return jsonify({"success": True, "user": user, "token": token})
+
+@app.route('/api/auth/login', methods=['POST'])
+def auth_login():
+    """Authenticates a user through Supabase Auth REST service."""
+    data = request.json or {}
+    email = data.get('email', '').strip()
+    password = data.get('password', '')
+
+    if not email or not password:
+        return jsonify({"error": "Email and password are required"}), 400
+
+    result, err = supabase_auth.sign_in(email, password)
+    if err:
+        return jsonify({"error": err}), 400
+
+    user = result.get('user')
+    token = result.get('access_token')
+    return jsonify({"success": True, "user": user, "token": token})
+
+@app.route('/api/auth/logout', methods=['POST'])
+def auth_logout():
+    """Logs out user and terminates Supabase session."""
+    auth_header = request.headers.get('Authorization', '')
+    token = auth_header.replace('Bearer ', '').strip() if 'Bearer ' in auth_header else ''
+
+    supabase_auth.sign_out(token)
+    return jsonify({"success": True, "message": "Signed out successfully"})
+
+@app.route('/api/auth/user', methods=['GET'])
+def auth_user():
+    """Retrieves authenticated user details via access token."""
+    auth_header = request.headers.get('Authorization', '')
+    token = auth_header.replace('Bearer ', '').strip() if 'Bearer ' in auth_header else ''
+
+    if not token:
+        return jsonify({"user": None}), 200
+
+    user, err = supabase_auth.get_user(token)
+    if err:
+        return jsonify({"user": None, "error": err}), 200
+
+    return jsonify({"user": user})
 
 if __name__ == '__main__':
     print("[SignBridge SA] Starting Server on http://127.0.0.1:5000 ...")

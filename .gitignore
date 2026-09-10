@@ -10,6 +10,7 @@ venv/
 .vscode/
 .idea/
 *.pkl
+frontend/.env
 node_modules/
 **/node_modules/
 dist/

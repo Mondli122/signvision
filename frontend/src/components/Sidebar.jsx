@@ -1,21 +1,23 @@
 import React from 'react';
-import { Home, Repeat, GraduationCap, BookOpen, Gamepad2, Database, Settings, Heart } from 'lucide-react';
+import { Home, Repeat, GraduationCap, BookOpen, Gamepad2, Database, Settings, Heart, Trophy, Mic } from 'lucide-react';
 
 export default function Sidebar({ activeTab, setActiveTab }) {
   const navItems = [
     { id: 'home', label: 'Home', icon: Home },
     { id: 'translator', label: 'Translator', icon: Repeat },
+    { id: 'reverse', label: 'Voice-to-Sign', icon: Mic },
     { id: 'learn', label: 'Learn', icon: GraduationCap },
     { id: 'dictionary', label: 'Dictionary', icon: BookOpen },
-    { id: 'quiz', label: 'Quiz', icon: Gamepad2 },
+    { id: 'quiz', label: 'Quiz Game', icon: Gamepad2 },
+    { id: 'classroom', label: 'Classroom & Rank', icon: Trophy },
     { id: 'recorder', label: 'Dataset Recorder', icon: Database },
     { id: 'settings', label: 'Settings', icon: Settings },
   ];
 
   return (
-    <aside style={{ display: 'flex', flexDirection: 'column', gap: '16px', width: '220px', flexShrink: 0 }}>
+    <aside className="app-sidebar" style={{ display: 'flex', flexDirection: 'column', gap: '16px', width: '220px', flexShrink: 0 }}>
       {/* Navigation Card */}
-      <div className="glass-card" style={{ padding: '12px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+      <div className="glass-card app-sidebar-nav" style={{ padding: '12px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
         {navItems.map((item) => {
           const Icon = item.icon;
           const isActive = activeTab === item.id;
