@@ -71,39 +71,60 @@ export default function RecentActivityCard() {
 
       {/* Activity Timeline Items */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '4px', overflowY: 'auto', maxHeight: '230px' }}>
-        {activities.slice(0, 5).map((act) => {
-          const { icon: Icon, color, bg } = getIconConfig(act.type);
-          return (
-            <div key={act.id} style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <div style={{
-                width: '32px',
-                height: '32px',
-                borderRadius: '50%',
-                background: bg,
-                color: color,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                flexShrink: 0
-              }}>
-                <Icon size={16} />
-              </div>
-
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontSize: '12px', fontWeight: '600', color: '#64748B' }}>
-                  {act.title}
+        {activities && activities.length > 0 ? (
+          activities.slice(0, 5).map((act) => {
+            const { icon: Icon, color, bg } = getIconConfig(act.type);
+            return (
+              <div key={act.id} style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <div style={{
+                  width: '32px',
+                  height: '32px',
+                  borderRadius: '50%',
+                  background: bg,
+                  color: color,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flexShrink: 0
+                }}>
+                  <Icon size={16} />
                 </div>
-                <div style={{ fontSize: '13px', fontWeight: '700', color: '#0F172A', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                  {act.detail}
+
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontSize: '12px', fontWeight: '600', color: '#64748B' }}>
+                    {act.title}
+                  </div>
+                  <div style={{ fontSize: '13px', fontWeight: '700', color: '#0F172A', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                    {act.detail}
+                  </div>
+                </div>
+
+                <div style={{ fontSize: '11px', color: '#94A3B8', whiteSpace: 'nowrap' }}>
+                  {formatTimeAgo(act.timestamp)}
                 </div>
               </div>
-
-              <div style={{ fontSize: '11px', color: '#94A3B8', whiteSpace: 'nowrap' }}>
-                {formatTimeAgo(act.timestamp)}
-              </div>
+            );
+          })
+        ) : (
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '24px 12px',
+            textAlign: 'center',
+            color: '#94A3B8',
+            gap: '8px'
+          }}>
+            <Sparkles size={24} color="#00A884" />
+            <div style={{ fontSize: '13px', fontWeight: '600', color: '#64748B' }}>
+              No recent activity yet
             </div>
-          );
-        })}
+            <div style={{ fontSize: '11px', color: '#94A3B8' }}>
+              Translate a sign or start a quiz to see your live activity stream!
+            </div>
+          </div>
+        )}
       </div>
 
     </div>

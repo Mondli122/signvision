@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { User, Award, Flame, Zap, ShieldCheck, Trophy, Calendar, CheckCircle2, Cloud, Sparkles, BookOpen, Share2 } from 'lucide-react';
+import { User, Award, Flame, Zap, ShieldCheck, Trophy, Calendar, CheckCircle2, Cloud, Sparkles, BookOpen, Share2, Printer } from 'lucide-react';
 import { getProgress } from '../utils/storage';
 import { toast } from '../utils/toast';
 
@@ -88,7 +88,28 @@ export default function ProfilePage({ currentUser, onOpenShare, onOpenAuth }) {
           </div>
         </div>
 
-        <div style={{ display: 'flex', gap: '10px' }}>
+        <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+          <button
+            onClick={() => {
+              window.print();
+              toast.info('Opening print dialog for official SASL certificate...', 'Print / Export');
+            }}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              padding: '10px 18px',
+              borderRadius: '12px',
+              border: '1px solid var(--border-light)',
+              background: 'var(--bg-card)',
+              color: 'var(--text-main)',
+              fontWeight: '700',
+              cursor: 'pointer'
+            }}
+          >
+            <Printer size={16} color="var(--primary-emerald)" /> Print / Export PDF
+          </button>
+
           <button
             onClick={() => onOpenShare && onOpenShare()}
             className="btn-primary"
@@ -219,7 +240,13 @@ export default function ProfilePage({ currentUser, onOpenShare, onOpenAuth }) {
 
           <div style={{ display: 'flex', justifyContent: 'space-between', gap: '8px' }}>
             {daysOfWeek.map((day, idx) => {
-              const isActive = idx < (progress.streak % 7 || 3);
+              // Calculate day of week index where 0 is Monday and 6 is Sunday
+              const todayDayIndex = (new Date().getDay() + 6) % 7; // Mon=0 .. Sun=6
+              const streakDays = Math.max(1, Math.min(7, progress.streak || 1));
+              const isToday = idx === todayDayIndex;
+              // Active if it's within the recent streak window ending today
+              const isActive = (idx <= todayDayIndex) && (todayDayIndex - idx < streakDays);
+              
               return (
                 <div key={day} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px' }}>
                   <div
@@ -228,18 +255,32 @@ export default function ProfilePage({ currentUser, onOpenShare, onOpenAuth }) {
                       height: '36px',
                       borderRadius: '10px',
                       background: isActive ? 'var(--mint-badge)' : 'var(--bg-card-subtle)',
-                      border: `1px solid ${isActive ? 'var(--primary-emerald)' : 'var(--border-light)'}`,
+                      border: `1.5px solid ${isToday ? 'var(--primary-emerald)' : (isActive ? 'var(--border-emerald)' : 'var(--border-light)')}`,
                       color: isActive ? 'var(--primary-emerald)' : 'var(--text-muted)',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
                       fontWeight: '700',
-                      fontSize: '13px'
+                      fontSize: '13px',
+                      position: 'relative'
                     }}
                   >
                     {isActive ? '✓' : '•'}
+                    {isToday && (
+                      <div style={{
+                        position: 'absolute',
+                        top: '-3px',
+                        right: '-3px',
+                        width: '8px',
+                        height: '8px',
+                        borderRadius: '50%',
+                        background: 'var(--primary-emerald)'
+                      }} />
+                    )}
                   </div>
-                  <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>{day}</span>
+                  <span style={{ fontSize: '11px', fontWeight: isToday ? '700' : '500', color: isToday ? 'var(--primary-emerald)' : 'var(--text-muted)' }}>
+                    {day}
+                  </span>
                 </div>
               );
             })}

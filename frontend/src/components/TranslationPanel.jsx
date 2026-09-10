@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Volume2, Play, Pause, Trash2, Bookmark, Repeat, Mic, Hand, Globe } from 'lucide-react';
 import AudioVisualizer from './AudioVisualizer';
+import { toast } from '../utils/toast';
 
 export default function TranslationPanel({
   glossSequence = ['HELLO', 'WHERE', 'HELP'],
@@ -20,7 +21,7 @@ export default function TranslationPanel({
 
   const handleToggleMic = () => {
     if (!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
-      alert('Speech recognition is supported in Chrome, Edge, and Safari.');
+      toast.warning('Speech recognition is supported in Chrome, Edge, and Safari.', 'Speech Recognition');
       return;
     }
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;

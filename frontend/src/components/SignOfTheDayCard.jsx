@@ -129,6 +129,69 @@ const DAILY_SIGNS = [
     category: 'Expressions',
     culturalContext: 'Open 5-hand circles the face clockwise and closes gently into a fist as it passes the chin.',
     bonusXP: 55
+  },
+  {
+    id: 'mother',
+    word: 'Mother / Umama / Mmé',
+    gloss: 'MOTHER',
+    icon: '👩',
+    category: 'Family',
+    culturalContext: 'Thumb of an open 5-hand gently taps the chin twice, honoring maternal matriarchs in South African society.',
+    bonusXP: 50
+  },
+  {
+    id: 'father',
+    word: 'Father / Ubaba / Ntate',
+    gloss: 'FATHER',
+    icon: '👨',
+    category: 'Family',
+    culturalContext: 'Thumb of an open 5-hand taps the forehead twice, reflecting parental reverence across provinces.',
+    bonusXP: 50
+  },
+  {
+    id: 'robot',
+    word: 'Robot / Irobhothi / Roboto',
+    gloss: 'ROBOT',
+    icon: '🤖',
+    category: 'STEM & Tech',
+    culturalContext: 'Right-angled forearm motions showcasing mechanical precision, celebrating the Robo Rumble 2026 challenge.',
+    bonusXP: 60
+  },
+  {
+    id: 'computer',
+    word: 'Computer / Ikhompyutha / Khomphutha',
+    gloss: 'COMPUTER',
+    icon: '💻',
+    category: 'STEM & Tech',
+    culturalContext: 'Forming a "C" handshape arcing smoothly upward along the forearm, bridging digital literacy with SASL.',
+    bonusXP: 55
+  },
+  {
+    id: 'home',
+    word: 'Home / Ikhaya / Hae',
+    gloss: 'HOME',
+    icon: '🏠',
+    category: 'Community',
+    culturalContext: 'Fingertips touching the cheek near the mouth then transitioning to touch near the ear, representing warmth and shelter.',
+    bonusXP: 50
+  },
+  {
+    id: 'hospital',
+    word: 'Hospital / Isibhedlela / Sepetlele',
+    gloss: 'HOSPITAL',
+    icon: '🏥',
+    category: 'Emergency',
+    culturalContext: 'Index and middle fingers trace a symbolic cross on the opposite upper arm, critical for healthcare access.',
+    bonusXP: 65
+  },
+  {
+    id: 'peace',
+    word: 'Peace / Ukuthula / Khotso',
+    gloss: 'PEACE',
+    icon: '✌️',
+    category: 'Expressions',
+    culturalContext: 'Extending index and middle fingers in an open V-sign radiating calm and unity in our rainbow nation.',
+    bonusXP: 45
   }
 ];
 

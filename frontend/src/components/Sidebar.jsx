@@ -20,7 +20,7 @@ export default function Sidebar({ activeTab, setActiveTab }) {
   return (
     <aside className="app-sidebar" style={{ display: 'flex', flexDirection: 'column', gap: '16px', width: '220px', flexShrink: 0 }}>
       {/* Navigation Card */}
-      <div className="glass-card app-sidebar-nav" style={{ padding: '12px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+      <nav aria-label="Main Navigation" className="glass-card app-sidebar-nav" style={{ padding: '12px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
         {navItems.map((item) => {
           const Icon = item.icon;
           const isActive = activeTab === item.id;
@@ -28,6 +28,8 @@ export default function Sidebar({ activeTab, setActiveTab }) {
             <button
               key={item.id}
               onClick={() => setActiveTab(item.id)}
+              aria-label={item.label}
+              aria-current={isActive ? 'page' : undefined}
               style={{
                 display: 'flex',
                 alignItems: 'center',
@@ -46,12 +48,12 @@ export default function Sidebar({ activeTab, setActiveTab }) {
                 textAlign: 'left'
               }}
             >
-              <Icon size={18} color={isActive ? '#00A884' : '#64748B'} />
+              <Icon size={18} color={isActive ? '#00A884' : '#64748B'} aria-hidden="true" />
               {item.label}
             </button>
           );
         })}
-      </div>
+      </nav>
 
       {/* SA Promo Banner Card */}
       <div

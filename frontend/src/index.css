@@ -285,4 +285,36 @@ body.font-large {
   font-size: 115% !important;
 }
 
+/* Keyboard Navigation & Focus Accessibility */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 2.5px solid var(--primary-emerald) !important;
+  outline-offset: 2px !important;
+}
 
+/* Clean Print / PDF Export Styles for Learner Certificates */
+@media print {
+  header,
+  aside,
+  footer,
+  .app-sidebar,
+  .btn-primary,
+  button,
+  .toast-container {
+    display: none !important;
+  }
+  
+  body {
+    background: #FFFFFF !important;
+    color: #000000 !important;
+  }
+
+  .glass-card {
+    box-shadow: none !important;
+    border: 1px solid #CCCCCC !important;
+    background: #FFFFFF !important;
+    color: #000000 !important;
+  }
+}

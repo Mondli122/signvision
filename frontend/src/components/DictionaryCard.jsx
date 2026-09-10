@@ -7,7 +7,25 @@ const FALLBACK_SIGNS = [
   { id: 'water', word: 'Water', gloss: 'WATER', category: 'Needs', icon: '💧', description: 'Form W shape with fingers, tap index finger against chin twice.', sasl_note: 'Vital request sign.' },
   { id: 'thank_you', word: 'Thank You', gloss: 'THANK YOU', category: 'Greetings', icon: '🙏', description: 'Touch fingertips of flat hand to chin, then move hand forward.', sasl_note: 'Gratitude sign.' },
   { id: 'yes', word: 'Yes / Agree', gloss: 'YES', category: 'Greetings', icon: '👍', description: 'Thumb up fist nodding up and down.', sasl_note: 'Affirmative response.' },
-  { id: 'peace', word: 'Peace / V', gloss: 'PEACE', category: 'General', icon: '✌️', description: 'Index and middle fingers in V-shape.', sasl_note: 'Peace or number two.' }
+  { id: 'peace', word: 'Peace / V', gloss: 'PEACE', category: 'General', icon: '✌️', description: 'Index and middle fingers in V-shape.', sasl_note: 'Peace or number two.' },
+  { id: 'please', word: 'Please', gloss: 'PLEASE', category: 'Greetings', icon: '🤲', description: 'Open flat hand moving clockwise over heart.', sasl_note: 'Polite request sign.' },
+  { id: 'family', word: 'Family', gloss: 'FAMILY', category: 'Family', icon: '👨‍👩‍👦', description: 'F handshapes starting together, drawing circle out to meet.', sasl_note: 'Community union sign.' },
+  { id: 'mother', word: 'Mother / Mama', gloss: 'MOTHER', category: 'Family', icon: '👩', description: 'Thumb of open 5-hand tapping chin twice.', sasl_note: 'Female family marker.' },
+  { id: 'father', word: 'Father / Tata', gloss: 'FATHER', category: 'Family', icon: '👨', description: 'Thumb of open 5-hand tapping forehead twice.', sasl_note: 'Male family marker.' },
+  { id: 'friend', word: 'Friend', gloss: 'FRIEND', category: 'Family', icon: '🤝', description: 'Interlocking index fingers hooked reciprocal motion.', sasl_note: 'Companionship sign.' },
+  { id: 'where', word: 'Where?', gloss: 'WHERE', category: 'Questions', icon: '❓', description: 'Both palms facing upward, gently shaking side-to-side.', sasl_note: 'Inquisitive interrogative.' },
+  { id: 'who', word: 'Who?', gloss: 'WHO', category: 'Questions', icon: '🤔', description: 'Index finger circling near pursed lips.', sasl_note: 'Person inquiry.' },
+  { id: 'when', word: 'When?', gloss: 'WHEN', category: 'Questions', icon: '⏰', description: 'Index finger circling and landing on opposite index tip.', sasl_note: 'Temporal inquiry.' },
+  { id: 'school', word: 'School', gloss: 'SCHOOL', category: 'Education', icon: '🏫', description: 'Clap dominant flat palm downward twice on base palm.', sasl_note: 'Academic context.' },
+  { id: 'teacher', word: 'Teacher', gloss: 'TEACHER', category: 'Education', icon: '👩‍🏫', description: 'Flattened O-hands pushing from temples forward.', sasl_note: 'Educator sign.' },
+  { id: 'learn', word: 'Learn', gloss: 'LEARN', category: 'Education', icon: '📖', description: 'Gathering knowledge from palm up into forehead.', sasl_note: 'Core STEM concept.' },
+  { id: 'computer', word: 'Computer', gloss: 'COMPUTER', category: 'Tech', icon: '💻', description: 'C-hand moving up along opposite forearm or typing motion.', sasl_note: 'Digital technology.' },
+  { id: 'robot', word: 'Robot / AI', gloss: 'ROBOT', category: 'Tech', icon: '🤖', description: 'Rigid right-angle arm and mechanical hand movement.', sasl_note: 'Robo Rumble 2026.' },
+  { id: 'hospital', word: 'Hospital', gloss: 'HOSPITAL', category: 'Places', icon: '🏥', description: 'Draw cross on opposite upper arm with index/middle fingers.', sasl_note: 'Emergency facility.' },
+  { id: 'home', word: 'Home', gloss: 'HOME', category: 'Places', icon: '🏠', description: 'Fingertips touching chin then ear, forming sanctuary.', sasl_note: 'Residence sign.' },
+  { id: 'today', word: 'Today / Now', gloss: 'TODAY', category: 'Time', icon: '📅', description: 'Both Y-hands dropped downward firmly twice in front of body.', sasl_note: 'Present moment.' },
+  { id: 'tomorrow', word: 'Tomorrow', gloss: 'TOMORROW', category: 'Time', icon: '🌅', description: 'Thumb of A-hand flicks forward from cheek bone.', sasl_note: 'Future time marker.' },
+  { id: 'love', word: 'I Love You', gloss: 'I LOVE YOU', category: 'Greetings', icon: '🤟', description: 'Thumb, index, and pinky extended together.', sasl_note: 'Universal icon of love.' }
 ];
 
 export default function DictionaryCard({ items, isLoading = false, onSelectCategory, onSearch, onSelectSign }) {
