@@ -47,15 +47,17 @@ const MODULES = [
 
 export default function LearnMode({ onInspectSign }) {
   const [activeModuleId, setActiveModuleId] = useState('alphabet');
-  const [completedSigns, setCompletedSigns] = useState(['letter_a', 'hello']);
+  const [completedSigns, setCompletedSigns] = useState(() => {
+    const p = getProgress();
+    return Array.from(new Set([...(p.learnedSigns || []), 'letter_a', 'hello']));
+  });
 
   const activeModule = MODULES.find(m => m.id === activeModuleId) || MODULES[0];
 
   const handleCompleteSign = (sign) => {
     if (!completedSigns.includes(sign.id)) {
       setCompletedSigns(prev => [...prev, sign.id]);
-      markSignLearned(sign.id);
-      addXP(15);
+      markSignLearned(sign.id, sign.word);
     }
   };
 
@@ -160,7 +162,7 @@ export default function LearnMode({ onInspectSign }) {
                     }}
                   >
                     {isDone ? <CheckCircle size={14} color="#10B981" /> : null}
-                    {isDone ? 'Mastered (+15 XP)' : 'Mark Learned'}
+                    {isDone ? 'Mastered (+25 XP)' : 'Mark Learned'}
                   </button>
                 </div>
 

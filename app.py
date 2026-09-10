@@ -475,45 +475,55 @@ def gloss_to_sentence():
 def ai_coach():
     """
     Evaluates user sign pose alignment & provides AI sign language tutor tips.
+    Combines pose-specific SASL heuristics with OpenRouter LLM generation.
     """
     data = request.json or {}
-    target_sign = data.get('target_sign', 'HELP')
-    detected_sign = data.get('detected_sign', '')
-    confidence = float(data.get('confidence', 0.0))
-    landmark_count = int(data.get('landmark_count', 21))
+    target_sign = data.get('target_sign', 'HELLO').upper()
+    detected_sign = data.get('detected_sign', target_sign).upper()
+    confidence = float(data.get('confidence', 0.85))
+    landmark_count = int(data.get('landmark_count', 42))
 
-    # Ask OpenRouter LLM for personalized sign feedback
-    system_prompt = (
-        "You are an AI Sign Language Tutor for South African Sign Language (SASL). "
-        "Given a student's target sign, detected sign, and confidence, provide a concise 2-sentence coaching tip "
-        "on how to adjust hand alignment, finger extension, or dominant hand posture. "
-        "Return ONLY the direct 2-sentence tip without any chain-of-thought, prelude, or meta commentary."
-    )
+    alignment_score = min(98, max(45, int(confidence * 100) + (5 if landmark_count >= 42 else -5)))
 
-    user_prompt = f"Target Sign: {target_sign}. Detected Sign: {detected_sign}. Accuracy Confidence: {confidence*100:.1f}%. Joint Landmarks Tracked: {landmark_count}."
+    # Pose specific coaching advice
+    coaching_tips = {
+        "HELLO": "Keep your palm facing outward and wave from the wrist without swaying your forearm excessively.",
+        "HELP": "Rest your dominant thumb-up fist firmly upon your flat non-dominant palm before lifting together smoothly.",
+        "WATER": "Make a clear 'W' handshape with your middle 3 fingers spread evenly, tapping twice against the chin.",
+        "THANK YOU": "Touch flat fingertips gently to your chin, then smoothly project the hand forward with palm facing upward.",
+        "I LOVE YOU": "Ensure your thumb, index, and pinky are fully extended while holding middle and ring fingers down firmly.",
+        "YES": "Nod your fist steadily up and down with crisp wrist articulation to signal clear affirmation.",
+        "PEACE": "Spread your index and middle fingers into a balanced V shape while thumb firmly locks remaining fingers.",
+        "WHERE": "Turn both open palms upward at chest level and shift hands slightly side-to-side with questioning eyebrows.",
+        "PLEASE": "Place your flat open hand flat on your chest and rub in smooth clockwise circles.",
+        "SORRY": "Make a fist on your chest and gently make small circular motions with sincere facial expression."
+    }
 
-    ai_feedback = ai_client.generate(system_prompt, user_prompt, max_tokens=150, temperature=0.5)
+    ai_feedback = coaching_tips.get(target_sign, "Maintain a steady wrist elevation and keep finger spacing crisp and distinct in view of the camera.")
 
-    if not ai_feedback:
-        if confidence >= 0.85:
-            ai_feedback = f"Great form on '{target_sign}'! Keep hand stable and maintain wrist orientation."
-        elif confidence >= 0.5:
-            ai_feedback = f"Good attempt for '{target_sign}'. Spread fingers slightly wider and raise non-dominant hand higher."
-        else:
-            ai_feedback = f"Form adjustment needed for '{target_sign}'. Ensure both hands are clearly visible in the camera frame."
-
-    # Compute pose alignment score %
-    pose_score = min(99, max(40, int(confidence * 100) if confidence > 0 else 75))
+    # Try generating personalized AI tip via LLM
+    try:
+        system_prompt = (
+            "You are an AI Sign Language Tutor for South African Sign Language (SASL). "
+            "Given a student's target sign, detected sign, and confidence, provide a concise 1-2 sentence coaching tip "
+            "on hand alignment, finger extension, or palm orientation. Do not include prelude or meta commentary."
+        )
+        user_prompt = f"Target Sign: {target_sign}. Detected Sign: {detected_sign}. Accuracy Confidence: {confidence*100:.1f}%. Joint Landmarks: {landmark_count}."
+        llm_tip = ai_client.generate(system_prompt, user_prompt, max_tokens=100, temperature=0.5)
+        if llm_tip and len(llm_tip) > 10:
+            ai_feedback = llm_tip.strip()
+    except Exception:
+        pass
 
     return jsonify({
         "target_sign": target_sign,
         "detected_sign": detected_sign,
-        "alignment_score": pose_score,
+        "alignment_score": alignment_score,
         "coaching_tip": ai_feedback,
         "feedback_details": {
-            "wrist_posture": "Optimal" if pose_score > 80 else "Adjust Angle",
-            "finger_spacing": "Wide & Clear" if pose_score > 70 else "Extend Fully",
-            "hand_count": "Dual Hand (2)" if landmark_count > 21 else "Single Hand (1)"
+            "wrist_posture": "Optimal" if confidence > 0.8 else "Adjust Angle",
+            "finger_spacing": "Wide & Clear" if landmark_count >= 21 else "Keep Fingers Visible",
+            "hand_count": "Dual Hand (42 landmarks)" if landmark_count >= 42 else "Single Hand (21 landmarks)"
         }
     })
 
@@ -782,48 +792,6 @@ def user_progress():
     stored = all_progress.get(user_id, {}).get('progress')
     return jsonify({"success": True, "progress": stored, "user_id": user_id})
 
-@app.route('/api/ai-coach', methods=['POST'])
-def ai_coach():
-    """Provides posture coaching and feedback for MediaPipe hand tracking."""
-    data = request.json or {}
-    target_sign = data.get('target_sign', 'HELLO').upper()
-    detected_sign = data.get('detected_sign', 'HELLO').upper()
-    confidence = float(data.get('confidence', 0.88))
-    landmark_count = int(data.get('landmark_count', 42))
-
-    alignment_score = min(98, max(70, int(confidence * 100) + (5 if landmark_count >= 42 else -5)))
-
-    # Pose specific coaching advice
-    coaching_tips = {
-        "HELLO": "Keep your palm facing outward and wave from the wrist without swaying your forearm excessively.",
-        "HELP": "Rest your dominant thumb-up fist firmly upon your flat non-dominant palm before lifting together smoothly.",
-        "WATER": "Make a clear 'W' handshape with your middle 3 fingers spread evenly, tapping twice against the chin.",
-        "THANK YOU": "Touch flat fingertips gently to your chin, then smoothly project the hand forward with palm facing upward.",
-        "I LOVE YOU": "Ensure your thumb, index, and pinky are fully extended while holding middle and ring fingers down firmly.",
-        "YES": "Nod your fist steadily up and down with crisp wrist articulation to signal clear affirmation.",
-        "PEACE": "Spread your index and middle fingers into a balanced V shape while thumb firmly locks remaining fingers."
-    }
-
-    tip = coaching_tips.get(target_sign, "Maintain a steady wrist elevation and keep finger spacing crisp and distinct in view of the camera.")
-
-    # Generate custom AI tip via LLM if available
-    try:
-        llm_prompt = f"Give one short, expert 1-sentence tip on how to properly form the SASL sign '{target_sign}' with good hand posture."
-        llm_tip = ai_client.generate("You are an expert SASL instructor.", llm_prompt, max_tokens=60)
-        if llm_tip and len(llm_tip) > 10:
-            tip = llm_tip.strip()
-    except Exception:
-        pass
-
-    return jsonify({
-        "alignment_score": alignment_score,
-        "coaching_tip": tip,
-        "feedback_details": {
-            "wrist_posture": "Optimal" if confidence > 0.8 else "Adjust Angle",
-            "finger_spacing": "Crisp & Clear" if landmark_count >= 21 else "Keep Fingers Visible",
-            "hand_count": "Dual Hand (42 landmarks)" if landmark_count >= 42 else "Single Hand (21 landmarks)"
-        }
-    })
 
 @app.route('/api/leaderboard', methods=['GET'])
 def get_leaderboard():

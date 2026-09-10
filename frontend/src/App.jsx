@@ -80,8 +80,12 @@ export default function App() {
           xp: Math.max(local.xp || 0, cloud.xp || 0),
           level: Math.max(local.level || 1, cloud.level || 1),
           streak: Math.max(local.streak || 1, cloud.streak || 1),
-          signsLearned: Array.from(new Set([...(local.signsLearned || []), ...(cloud.signsLearned || [])])),
+          learnedSigns: Array.from(new Set([
+            ...(local.learnedSigns || local.signsLearned || []),
+            ...(cloud.learnedSigns || cloud.signsLearned || [])
+          ])),
           quizzesCompleted: Math.max(local.quizzesCompleted || 0, cloud.quizzesCompleted || 0),
+          highScore: Math.max(local.highScore || 0, cloud.highScore || 0),
           accuracy: Math.max(local.accuracy || 85, cloud.accuracy || 85)
         };
         saveProgress(merged);
@@ -255,10 +259,13 @@ export default function App() {
 
           {/* VIEW: REVERSE VOICE-TO-SIGN TRANSLATOR */}
           {activeNavTab === 'reverse' && (
-            <ReverseTranslator onPlayAvatar={(gloss) => {
-              setActiveAvatarGloss(gloss);
-              setIsPlayingAvatar(true);
-            }} />
+            <ReverseTranslator
+              onPlayAvatar={(gloss) => {
+                setActiveAvatarGloss(gloss);
+                setIsPlayingAvatar(true);
+              }}
+              onInspectCard={(card) => setSelectedInspectorSign(card)}
+            />
           )}
 
           {/* VIEW: DATASET RECORDER */}

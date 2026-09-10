@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import { Mic, MicOff, Send, Sparkles, Volume2, ArrowRight } from 'lucide-react';
 import AudioVisualizer from './AudioVisualizer';
 import { toast } from '../utils/toast';
+import { logActivity } from '../utils/storage';
 
-export default function ReverseTranslator({ onPlayAvatar }) {
+export default function ReverseTranslator({ onPlayAvatar, onInspectCard }) {
   const [inputText, setInputText] = useState('');
   const [isListening, setIsListening] = useState(false);
   const [isTranslating, setIsTranslating] = useState(false);
@@ -55,8 +56,17 @@ export default function ReverseTranslator({ onPlayAvatar }) {
       .then(res => res.json())
       .then(data => {
         setIsTranslating(false);
-        setResultGlosses(data.glosses || []);
-        setResultCards(data.cards || []);
+        const glosses = data.glosses || [];
+        const cards = data.cards || [];
+        setResultGlosses(glosses);
+        setResultCards(cards);
+
+        if (glosses.length > 0) {
+          logActivity('reverse_translation', 'Voice/Text to Signs', `"${query}" → [${glosses.join(' ')}]`);
+          if (onPlayAvatar) {
+            onPlayAvatar(glosses[0]);
+          }
+        }
       })
       .catch(err => {
         setIsTranslating(false);
@@ -182,6 +192,7 @@ export default function ReverseTranslator({ onPlayAvatar }) {
               <div
                 key={card.id}
                 className="clickable-card"
+                onClick={() => onInspectCard && onInspectCard(card)}
                 style={{
                   padding: '16px',
                   background: 'var(--bg-card)',
@@ -189,7 +200,8 @@ export default function ReverseTranslator({ onPlayAvatar }) {
                   border: '1px solid var(--border-light)',
                   display: 'flex',
                   flexDirection: 'column',
-                  gap: '8px'
+                  gap: '8px',
+                  cursor: onInspectCard ? 'pointer' : 'default'
                 }}
               >
                 <div style={{ fontSize: '32px' }}>{card.icon}</div>
