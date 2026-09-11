@@ -26,15 +26,15 @@ export default function ProgressCard() {
   ];
 
   return (
-    <div className="glass-card" style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '16px', height: '100%' }}>
+    <div className="glass-card" style={{ padding: '14px', display: 'flex', flexDirection: 'column', gap: '12px', height: '100%' }}>
       {/* Header */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
           <div
             style={{
-              width: '40px',
-              height: '40px',
-              borderRadius: '12px',
+              width: '32px',
+              height: '32px',
+              borderRadius: '2px',
               background: '#C1DFF0',
               color: '#2D848A',
               display: 'flex',
@@ -42,13 +42,13 @@ export default function ProgressCard() {
               justifyContent: 'center'
             }}
           >
-            <BarChart3 size={22} />
+            <BarChart3 size={18} />
           </div>
           <div>
-            <h3 style={{ fontSize: '17px', fontWeight: '800', color: '#133340', fontFamily: 'var(--font-heading)' }}>
+            <h3 style={{ fontSize: '15px', fontWeight: '800', color: '#133340', fontFamily: 'var(--font-heading)', margin: 0 }}>
               Your Progress
             </h3>
-            <p style={{ fontSize: '12px', color: '#5C7B8A' }}>
+            <p style={{ fontSize: '11px', color: '#5C7B8A', margin: 0 }}>
               Keep going! You're doing great!
             </p>
           </div>
@@ -56,11 +56,11 @@ export default function ProgressCard() {
 
         <div
           style={{
-            padding: '4px 12px',
-            borderRadius: '20px',
+            padding: '3px 8px',
+            borderRadius: '2px',
             background: 'linear-gradient(135deg, #2D848A 0%, #3587A4 100%)',
             color: '#FFFFFF',
-            fontSize: '12px',
+            fontSize: '11px',
             fontWeight: '800',
             fontFamily: 'var(--font-heading)'
           }}
@@ -70,61 +70,61 @@ export default function ProgressCard() {
       </div>
 
       {/* Progress Bar & XP indicator */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-        <div style={{ width: '100%', height: '10px', background: '#D0E5F0', borderRadius: '6px', overflow: 'hidden' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+        <div style={{ width: '100%', height: '8px', background: '#E2EFF7', borderRadius: '2px', overflow: 'hidden' }}>
           <div
             style={{
               width: `${percentage}%`,
               height: '100%',
               background: 'linear-gradient(90deg, #88CCF1 0%, #2D898B 100%)',
-              borderRadius: '6px',
+              borderRadius: '2px',
               transition: 'width 0.4s ease'
             }}
           />
         </div>
-        <div style={{ display: 'flex', justifyContent: 'flex-end', fontSize: '12px', fontWeight: '700', color: '#5C7B8A' }}>
+        <div style={{ display: 'flex', justifyContent: 'flex-end', fontSize: '11px', fontWeight: '700', color: '#5C7B8A' }}>
           <span>{currentPts} / {totalPts} XP</span>
         </div>
       </div>
 
-      {/* 4 Stat Boxes (Day Streak, Badges, Skills, Leaderboard) */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '8px', marginTop: 'auto' }}>
+      {/* 4 Boxy Stat Boxes */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '6px', marginTop: 'auto' }}>
         {statBoxes.map((stat) => {
           const Icon = stat.icon;
           return (
             <div
               key={stat.label}
               style={{
-                padding: '12px 6px',
-                borderRadius: '14px',
-                background: '#F0F7FB',
-                border: '1px solid #D0E5F0',
+                padding: '8px 4px',
+                borderRadius: '2px',
+                background: '#F5F9FC',
+                border: '1px solid #C1DFF0',
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
                 textAlign: 'center',
-                gap: '4px'
+                gap: '2px'
               }}
             >
               <div
                 style={{
-                  width: '28px',
-                  height: '28px',
-                  borderRadius: '50%',
+                  width: '22px',
+                  height: '22px',
+                  borderRadius: '2px',
                   background: stat.bg,
                   color: stat.color,
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  marginBottom: '2px'
+                  marginBottom: '1px'
                 }}
               >
-                <Icon size={15} />
+                <Icon size={13} />
               </div>
-              <span style={{ fontSize: '16px', fontWeight: '800', color: '#133340', fontFamily: 'var(--font-heading)', lineHeight: '1.1' }}>
+              <span style={{ fontSize: '14px', fontWeight: '800', color: '#133340', fontFamily: 'var(--font-heading)', lineHeight: '1.1' }}>
                 {stat.value}
               </span>
-              <span style={{ fontSize: '10px', color: '#5C7B8A', fontWeight: '600' }}>
+              <span style={{ fontSize: '9.5px', color: '#5C7B8A', fontWeight: '600' }}>
                 {stat.label}
               </span>
             </div>

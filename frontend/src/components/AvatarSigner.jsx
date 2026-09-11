@@ -214,24 +214,24 @@ export default function AvatarSigner({ activeGloss, isPlaying, onFinish }) {
     <div
       style={{
         background: '#0F172A',
-        border: '1.5px solid rgba(136, 204, 241, 0.3)',
-        borderRadius: '18px',
-        padding: '14px',
+        border: '1px solid #3587A4',
+        borderRadius: '4px',
+        padding: '12px',
         textAlign: 'center',
         marginTop: '0',
         height: '100%',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
-        boxShadow: '0 8px 24px rgba(15, 23, 42, 0.4)'
+        boxShadow: '0 4px 16px rgba(15, 23, 42, 0.3)'
       }}
     >
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-        <h4 style={{ margin: 0, color: '#88CCF1', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '6px', fontWeight: '800' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+        <h4 style={{ margin: 0, color: '#88CCF1', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '6px', fontWeight: '800' }}>
           <span>▶</span>
           <span>3D Avatar Signer</span>
         </h4>
-        <span style={{ fontSize: '0.72rem', color: isPlaying ? '#88CCF1' : '#94A3B8', fontWeight: '800', letterSpacing: '0.5px' }}>
+        <span style={{ fontSize: '0.7rem', color: isPlaying ? '#88CCF1' : '#94A3B8', fontWeight: '800', letterSpacing: '0.5px' }}>
           {isPlaying ? '● ANIMATING' : 'IDLE'}
         </span>
       </div>
@@ -243,7 +243,7 @@ export default function AvatarSigner({ activeGloss, isPlaying, onFinish }) {
         style={{
           width: '100%',
           maxHeight: '180px',
-          borderRadius: '12px',
+          borderRadius: '2px',
           background: '#070A12',
           border: '1px solid rgba(255, 255, 255, 0.08)'
         }}
@@ -253,12 +253,12 @@ export default function AvatarSigner({ activeGloss, isPlaying, onFinish }) {
         style={{
           display: 'flex',
           alignItems: 'center',
-          gap: '10px',
-          marginTop: '10px',
-          background: 'rgba(15, 23, 42, 0.7)',
-          padding: '6px 12px',
-          borderRadius: '10px',
-          border: '1px solid rgba(136, 204, 241, 0.15)'
+          gap: '8px',
+          marginTop: '8px',
+          background: 'rgba(15, 23, 42, 0.8)',
+          padding: '5px 10px',
+          borderRadius: '2px',
+          border: '1px solid #3587A4'
         }}
       >
         <button
@@ -269,9 +269,9 @@ export default function AvatarSigner({ activeGloss, isPlaying, onFinish }) {
             }
           }}
           style={{
-            width: '26px',
-            height: '26px',
-            borderRadius: '50%',
+            width: '24px',
+            height: '24px',
+            borderRadius: '2px',
             background: '#88CCF1',
             border: 'none',
             color: '#133340',
@@ -281,7 +281,7 @@ export default function AvatarSigner({ activeGloss, isPlaying, onFinish }) {
             cursor: 'pointer'
           }}
         >
-          <Play size={13} style={{ marginLeft: '1px' }} />
+          <Play size={12} style={{ marginLeft: '1px' }} />
         </button>
 
         <span style={{ fontSize: '11px', fontWeight: '800', color: '#88CCF1', minWidth: '50px' }}>

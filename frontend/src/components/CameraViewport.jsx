@@ -229,14 +229,15 @@ export default function CameraViewport({ onPrediction }) {
       className="glass-card"
       style={{
         position: 'relative',
-        borderRadius: '20px',
+        borderRadius: '4px',
         overflow: 'hidden',
         background: '#0F172A',
         aspectRatio: '16/9',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        boxShadow: '0 10px 30px rgba(0, 0, 0, 0.25)'
+        boxShadow: '0 4px 16px rgba(0, 0, 0, 0.2)',
+        border: '1px solid #3587A4'
       }}
     >
       {/* Video Stream */}
@@ -267,94 +268,89 @@ export default function CameraViewport({ onPrediction }) {
       />
 
       {/* Top Badges */}
-      <div style={{ position: 'absolute', top: '14px', left: '14px', display: 'flex', gap: '8px', zIndex: 10 }}>
+      <div style={{ position: 'absolute', top: '10px', left: '10px', display: 'flex', gap: '6px', zIndex: 10 }}>
         <div style={{
-          background: 'rgba(15, 23, 42, 0.85)',
-          backdropFilter: 'blur(8px)',
+          background: 'rgba(15, 23, 42, 0.9)',
           color: '#88CCF1',
-          padding: '6px 12px',
-          borderRadius: '8px',
-          fontSize: '12px',
+          padding: '4px 8px',
+          borderRadius: '2px',
+          fontSize: '11px',
           fontWeight: '700',
-          border: '1px solid rgba(136, 204, 241, 0.35)',
+          border: '1px solid #3587A4',
           display: 'flex',
           alignItems: 'center',
-          gap: '6px'
+          gap: '5px'
         }}>
           <span>📷</span>
           <span>{fps} FPS</span>
         </div>
 
         <div style={{
-          background: 'rgba(15, 23, 42, 0.85)',
-          backdropFilter: 'blur(8px)',
+          background: 'rgba(15, 23, 42, 0.9)',
           color: '#C1DFF0',
-          padding: '6px 12px',
-          borderRadius: '8px',
-          fontSize: '12px',
+          padding: '4px 8px',
+          borderRadius: '2px',
+          fontSize: '11px',
           fontWeight: '700',
-          border: '1px solid rgba(193, 223, 240, 0.25)',
+          border: '1px solid rgba(193, 223, 240, 0.3)',
           display: 'flex',
           alignItems: 'center',
-          gap: '6px'
+          gap: '5px'
         }}>
           <span>🖐️</span>
           <span>Hands: {handsDetected || 2}/2</span>
         </div>
       </div>
 
-      {/* Bottom Left: Dominant & Non-Dominant Legend from Mockup */}
-      <div style={{ position: 'absolute', bottom: '14px', left: '14px', display: 'flex', gap: '10px', zIndex: 10 }}>
+      {/* Bottom Left: Dominant & Non-Dominant Legend (Boxy & Consistent Palette) */}
+      <div style={{ position: 'absolute', bottom: '10px', left: '10px', display: 'flex', gap: '6px', zIndex: 10 }}>
         <div style={{
-          background: 'rgba(15, 23, 42, 0.88)',
-          backdropFilter: 'blur(8px)',
-          padding: '5px 10px',
-          borderRadius: '20px',
-          fontSize: '11px',
+          background: 'rgba(15, 23, 42, 0.92)',
+          padding: '3px 8px',
+          borderRadius: '2px',
+          fontSize: '10.5px',
           fontWeight: '700',
           color: '#88CCF1',
           display: 'flex',
           alignItems: 'center',
-          gap: '6px',
+          gap: '5px',
           border: '1px solid rgba(136, 204, 241, 0.3)'
         }}>
-          <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#88CCF1' }} />
-          Dominant Hand
+          <span style={{ width: '6px', height: '6px', borderRadius: '1px', background: '#88CCF1' }} />
+          Dominant
         </div>
 
         <div style={{
-          background: 'rgba(15, 23, 42, 0.88)',
-          backdropFilter: 'blur(8px)',
-          padding: '5px 10px',
-          borderRadius: '20px',
-          fontSize: '11px',
+          background: 'rgba(15, 23, 42, 0.92)',
+          padding: '3px 8px',
+          borderRadius: '2px',
+          fontSize: '10.5px',
           fontWeight: '700',
-          color: '#C084FC',
+          color: '#C1DFF0',
           display: 'flex',
           alignItems: 'center',
-          gap: '6px',
-          border: '1px solid rgba(192, 132, 252, 0.3)'
+          gap: '5px',
+          border: '1px solid rgba(193, 223, 240, 0.3)'
         }}>
-          <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#C084FC' }} />
-          Non-Dominant Hand
+          <span style={{ width: '6px', height: '6px', borderRadius: '1px', background: '#C1DFF0' }} />
+          Non-Dominant
         </div>
       </div>
 
       {/* Top Right Live Telemetry */}
       <div style={{
         position: 'absolute',
-        top: '14px',
-        right: '14px',
-        background: 'rgba(15, 23, 42, 0.88)',
-        backdropFilter: 'blur(8px)',
-        border: '1px solid rgba(255, 255, 255, 0.15)',
-        borderRadius: '12px',
-        padding: '10px 14px',
+        top: '10px',
+        right: '10px',
+        background: 'rgba(15, 23, 42, 0.92)',
+        border: '1px solid #3587A4',
+        borderRadius: '3px',
+        padding: '6px 10px',
         color: '#FFFFFF',
-        fontSize: '12px',
+        fontSize: '11px',
         display: 'flex',
         flexDirection: 'column',
-        gap: '4px',
+        gap: '2px',
         zIndex: 10
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>

@@ -40,6 +40,7 @@ import { MessageSquareText } from 'lucide-react';
 
 export default function App() {
   const [activeNavTab, setActiveNavTab] = useState('home');
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [currentUser, setCurrentUser] = useState(null);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [glossSequence, setGlossSequence] = useState(['HELLO', 'WHERE', 'HELP']);
@@ -225,18 +226,25 @@ export default function App() {
         onOpenAuth={() => setShowAuthModal(true)}
         onSignOut={handleSignOut}
         onOpenProfile={() => setActiveNavTab('profile')}
+        isSidebarOpen={isSidebarOpen}
+        onToggleSidebar={() => setIsSidebarOpen((prev) => !prev)}
       />
 
       {/* Main Body: Sidebar + Main Content Grid */}
-      <div className="app-main-layout" style={{ display: 'flex', gap: '16px', alignItems: 'stretch' }}>
+      <div className="app-main-layout" style={{ display: 'flex', gap: '12px', alignItems: 'stretch', width: '100%', flex: 1 }}>
         
-        {/* Left Navigation Sidebar */}
-        <Sidebar activeTab={activeNavTab} setActiveTab={setActiveNavTab} />
+        {/* Left Navigation Sidebar (Collapsible) */}
+        <Sidebar
+          activeTab={activeNavTab}
+          setActiveTab={setActiveNavTab}
+          isOpen={isSidebarOpen}
+          onToggle={() => setIsSidebarOpen((prev) => !prev)}
+        />
 
         {/* Main Content Dashboard */}
-        <main style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '16px', minWidth: 0 }}>
+        <main style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '12px', minWidth: 0 }}>
           
-          {/* VIEW: QUIZ GAME */}
+          {/* VIEW: QUIZ GAME / AI COACH */}
           {activeNavTab === 'quiz' && (
             <QuizGame onBackToHome={() => setActiveNavTab('home')} />
           )}
@@ -288,7 +296,7 @@ export default function App() {
 
           {/* VIEW: DICTIONARY TAB */}
           {activeNavTab === 'dictionary' && (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
               <DictionaryCard
                 items={dictionaryItems}
                 isLoading={isDictionaryLoading}
@@ -300,54 +308,54 @@ export default function App() {
           {/* VIEW: HOME & TRANSLATOR DEFAULT VIEW */}
           {(activeNavTab === 'home' || activeNavTab === 'translator') && (
             <>
-              {/* Top Hero Banner Matching Design Mockup */}
+              {/* Top Hero Banner (Boxy, Compact, Decluttered) */}
               <HeroBanner />
 
-              {/* Main 2-Column Dashboard Grid (Left: Translation & Vision, Right: Progress & STEM & Leaderboard) */}
+              {/* Main 2-Column Dashboard Grid */}
               <div
                 className="app-top-grid"
                 style={{
                   display: 'grid',
-                  gridTemplateColumns: 'minmax(0, 1.7fr) minmax(320px, 1fr)',
-                  gap: '18px',
+                  gridTemplateColumns: 'minmax(0, 1.85fr) minmax(320px, 1fr)',
+                  gap: '12px',
                   alignItems: 'start'
                 }}
               >
                 {/* Left Column: Live Translation with Dual Viewport (Camera + 3D Avatar) & Translation Control Panel */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                   
                   {/* Live Translation Header Card */}
                   <div
                     className="glass-card"
                     style={{
-                      padding: '16px 20px',
+                      padding: '10px 16px',
                       display: 'flex',
                       justifyContent: 'space-between',
                       alignItems: 'center',
                       flexWrap: 'wrap',
-                      gap: '12px'
+                      gap: '8px'
                     }}
                   >
                     <div>
-                      <h3 style={{ fontSize: '18px', fontWeight: '800', color: '#133340', fontFamily: 'var(--font-heading)', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <h3 style={{ fontSize: '15px', fontWeight: '800', color: '#133340', fontFamily: 'var(--font-heading)', margin: 0, display: 'flex', alignItems: 'center', gap: '6px' }}>
                         <span>📊</span> Live Translation
                       </h3>
-                      <p style={{ fontSize: '12px', color: '#5C7B8A', marginTop: '2px' }}>
-                        Use your webcam or mic to translate between SASL and text/voice in real-time.
+                      <p style={{ fontSize: '11px', color: '#5C7B8A', margin: 0 }}>
+                        Translate between SASL and text/voice in real-time with dual camera and 3D avatar.
                       </p>
                     </div>
 
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <div className="status-pill" style={{ background: '#C1DFF0', color: '#2D848A', border: '1px solid #88CCF1' }}>
-                        <span className="status-dot" style={{ background: '#2D898B', boxShadow: '0 0 8px #2D898B' }} />
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <div className="status-pill">
+                        <span className="status-dot" />
                         Tracking: ON
                       </div>
                     </div>
                   </div>
 
-                  {/* Dual Video Grid: Camera Viewport + 3D Avatar Signer Side-by-Side (Matching Mockup) */}
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                  {/* Dual Video Grid: Camera Viewport + 3D Avatar Signer Side-by-Side at equal height */}
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', alignItems: 'stretch' }}>
+                    <div style={{ flex: 1, minHeight: 0 }}>
                       <CameraViewport
                         onPrediction={(label) => {
                           setGlossSequence((prev) => [...prev, label]);
@@ -355,14 +363,9 @@ export default function App() {
                           setLastConfidence(0.92);
                         }}
                       />
-                      <AICoachCard
-                        currentSign={lastDetectedSign}
-                        currentConfidence={lastConfidence}
-                        landmarkCount={42}
-                      />
                     </div>
 
-                    <div>
+                    <div style={{ flex: 1, minHeight: 0 }}>
                       <AvatarSigner
                         activeGloss={activeAvatarGloss}
                         isPlaying={isPlayingAvatar}
@@ -383,8 +386,8 @@ export default function App() {
                   />
                 </div>
 
-                {/* Right Column: Your Progress, STEM Learning, and National Leaderboard (Matching Mockup) */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                {/* Right Column: Your Progress, STEM Learning, and National Leaderboard */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                   {/* Your Progress Widget */}
                   <ProgressCard />
 
@@ -396,20 +399,8 @@ export default function App() {
                 </div>
               </div>
 
-              {/* Middle Row: Feature Shortcut Cards (Offline Ready, Dual Hand, ML Engine, Multi-language) */}
+              {/* Bottom Feature Shortcuts Strip (Boxy 5-Badge Row) */}
               <FeatureCards onSelectFeature={handleSelectFeature} />
-
-              {/* Bottom Grid: Dictionary + Recent Activity + Poster + Daily Sign */}
-              <div className="app-bottom-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '16px', alignItems: 'stretch' }}>
-                <SignOfTheDayCard onInspectSign={(sign) => setSelectedInspectorSign(sign)} />
-                <DictionaryCard
-                  items={dictionaryItems}
-                  isLoading={isDictionaryLoading}
-                  onSelectSign={(item) => setSelectedInspectorSign(item)}
-                />
-                <RecentActivityCard />
-                <EmpowerPosterCard />
-              </div>
             </>
           )}
 

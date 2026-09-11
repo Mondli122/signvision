@@ -16,21 +16,21 @@ export default function MiniLeaderboardCard({ onViewAll }) {
     <div
       className="glass-card"
       style={{
-        padding: '20px',
+        padding: '14px',
         display: 'flex',
         flexDirection: 'column',
-        gap: '14px',
+        gap: '10px',
         height: '100%'
       }}
     >
       {/* Header */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <div
             style={{
-              width: '36px',
-              height: '36px',
-              borderRadius: '10px',
+              width: '30px',
+              height: '30px',
+              borderRadius: '2px',
               background: '#C1DFF0',
               color: '#2D848A',
               display: 'flex',
@@ -38,9 +38,9 @@ export default function MiniLeaderboardCard({ onViewAll }) {
               justifyContent: 'center'
             }}
           >
-            <Trophy size={18} />
+            <Trophy size={16} />
           </div>
-          <h3 style={{ fontSize: '16px', fontWeight: '800', color: '#133340', fontFamily: 'var(--font-heading)' }}>
+          <h3 style={{ fontSize: '15px', fontWeight: '800', color: '#133340', fontFamily: 'var(--font-heading)', margin: 0 }}>
             National Leaderboard
           </h3>
         </div>
@@ -51,15 +51,15 @@ export default function MiniLeaderboardCard({ onViewAll }) {
             background: 'none',
             border: 'none',
             color: '#2D848A',
-            fontSize: '12px',
+            fontSize: '11.5px',
             fontWeight: '700',
             cursor: 'pointer',
             display: 'flex',
             alignItems: 'center',
-            gap: '3px'
+            gap: '2px'
           }}
         >
-          View All <ChevronRight size={14} />
+          View All <ChevronRight size={13} />
         </button>
       </div>
 
@@ -67,22 +67,22 @@ export default function MiniLeaderboardCard({ onViewAll }) {
       <div
         style={{
           display: 'flex',
-          gap: '6px',
-          background: '#F0F7FB',
-          padding: '4px',
-          borderRadius: '10px',
-          border: '1px solid #D0E5F0'
+          gap: '4px',
+          background: '#F5F9FC',
+          padding: '3px',
+          borderRadius: '2px',
+          border: '1px solid #C1DFF0'
         }}
       >
         <button
           style={{
             flex: 1,
-            padding: '5px 8px',
-            borderRadius: '8px',
+            padding: '4px 6px',
+            borderRadius: '2px',
             border: 'none',
             background: '#2D848A',
             color: '#FFFFFF',
-            fontSize: '11px',
+            fontSize: '10.5px',
             fontWeight: '700',
             cursor: 'pointer'
           }}
@@ -92,12 +92,12 @@ export default function MiniLeaderboardCard({ onViewAll }) {
         <button
           style={{
             flex: 1,
-            padding: '5px 8px',
-            borderRadius: '8px',
+            padding: '4px 6px',
+            borderRadius: '2px',
             border: 'none',
             background: 'transparent',
             color: '#5C7B8A',
-            fontSize: '11px',
+            fontSize: '10.5px',
             fontWeight: '600',
             cursor: 'pointer'
           }}
@@ -107,12 +107,12 @@ export default function MiniLeaderboardCard({ onViewAll }) {
         <button
           style={{
             flex: 1,
-            padding: '5px 8px',
-            borderRadius: '8px',
+            padding: '4px 6px',
+            borderRadius: '2px',
             border: 'none',
             background: 'transparent',
             color: '#5C7B8A',
-            fontSize: '11px',
+            fontSize: '10.5px',
             fontWeight: '600',
             cursor: 'pointer'
           }}
@@ -125,12 +125,12 @@ export default function MiniLeaderboardCard({ onViewAll }) {
       <div
         style={{
           display: 'grid',
-          gridTemplateColumns: '28px 1.5fr 1fr 1fr',
-          fontSize: '11px',
+          gridTemplateColumns: '24px 1.5fr 1fr 1fr',
+          fontSize: '10.5px',
           fontWeight: '700',
           color: '#5C7B8A',
-          padding: '4px 8px',
-          borderBottom: '1px solid #D0E5F0'
+          padding: '3px 6px',
+          borderBottom: '1px solid #C1DFF0'
         }}
       >
         <span>#</span>
@@ -140,16 +140,16 @@ export default function MiniLeaderboardCard({ onViewAll }) {
       </div>
 
       {/* Rows */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
         {topLearners.map((item) => (
           <div
             key={item.rank}
             style={{
               display: 'grid',
-              gridTemplateColumns: '28px 1.5fr 1fr 1fr',
-              fontSize: '12px',
-              padding: '7px 8px',
-              borderRadius: '8px',
+              gridTemplateColumns: '24px 1.5fr 1fr 1fr',
+              fontSize: '11.5px',
+              padding: '5px 6px',
+              borderRadius: '2px',
               color: '#133340',
               fontWeight: '600',
               alignItems: 'center'
@@ -157,45 +157,45 @@ export default function MiniLeaderboardCard({ onViewAll }) {
           >
             <span style={{ color: item.rank <= 3 ? '#2D898B' : '#5C7B8A', fontWeight: '800' }}>{item.rank}</span>
             <span style={{ fontWeight: '700' }}>{item.name}</span>
-            <span style={{ color: '#5C7B8A', fontSize: '11px' }}>{item.province}</span>
+            <span style={{ color: '#5C7B8A', fontSize: '10.5px' }}>{item.province}</span>
             <span style={{ textAlign: 'right', fontWeight: '700', color: '#2D848A' }}>{item.xp}</span>
           </div>
         ))}
 
-        {/* Current User Row Highlight (Matching #8 in design mockup) */}
+        {/* Current User Row Highlight (Boxy) */}
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: '28px 1.5fr 1fr 1fr',
-            fontSize: '12px',
-            padding: '8px',
-            borderRadius: '10px',
-            background: 'linear-gradient(90deg, rgba(193, 223, 240, 0.7) 0%, rgba(136, 204, 241, 0.3) 100%)',
-            border: '1.5px solid #88CCF1',
+            gridTemplateColumns: '24px 1.5fr 1fr 1fr',
+            fontSize: '11.5px',
+            padding: '6px',
+            borderRadius: '2px',
+            background: '#F0F6FA',
+            border: '1px solid #88CCF1',
             color: '#133340',
             fontWeight: '800',
             alignItems: 'center',
-            marginTop: '4px'
+            marginTop: '2px'
           }}
         >
           <div
             style={{
-              width: '20px',
-              height: '20px',
-              borderRadius: '50%',
+              width: '18px',
+              height: '18px',
+              borderRadius: '2px',
               background: '#2D898B',
               color: '#FFFFFF',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              fontSize: '10px',
+              fontSize: '9.5px',
               fontWeight: '800'
             }}
           >
             {currentUser.rank}
           </div>
           <span>{currentUser.name}</span>
-          <span style={{ color: '#2D848A', fontSize: '11px' }}>{currentUser.province}</span>
+          <span style={{ color: '#2D848A', fontSize: '10.5px' }}>{currentUser.province}</span>
           <span style={{ textAlign: 'right', color: '#2D898B' }}>{currentUser.xp} ↑</span>
         </div>
       </div>

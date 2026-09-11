@@ -15,3 +15,5 @@ node_modules/
 **/node_modules/
 dist/
 **/dist/
+dataset/user_progress.json
+*.db

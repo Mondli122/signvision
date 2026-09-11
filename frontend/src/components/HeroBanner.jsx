@@ -16,84 +16,67 @@ export default function HeroBanner() {
     <div
       className="glass-card"
       style={{
-        padding: '24px 28px',
-        borderRadius: '20px',
+        padding: '14px 20px',
+        borderRadius: '4px',
         background: 'linear-gradient(135deg, #2D898B 0%, #2D848A 50%, #3587A4 100%)',
         color: '#FFFFFF',
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
         flexWrap: 'wrap',
-        gap: '20px',
-        boxShadow: '0 10px 30px rgba(45, 137, 139, 0.25)',
-        position: 'relative',
-        overflow: 'hidden'
+        gap: '14px',
+        boxShadow: '0 2px 8px rgba(45, 137, 139, 0.15)',
+        border: '1px solid #3587A4'
       }}
     >
-      {/* Decorative wave glow in corner */}
-      <div
-        style={{
-          position: 'absolute',
-          top: '-50px',
-          right: '-50px',
-          width: '200px',
-          height: '200px',
-          borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(136, 204, 241, 0.25) 0%, transparent 70%)',
-          pointerEvents: 'none'
-        }}
-      />
-
-      <div style={{ display: 'flex', alignItems: 'center', gap: '20px', zIndex: 1 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
         <div
           style={{
-            width: '64px',
-            height: '64px',
-            borderRadius: '18px',
+            width: '42px',
+            height: '42px',
+            borderRadius: '3px',
             background: 'rgba(255, 255, 255, 0.15)',
-            backdropFilter: 'blur(8px)',
-            border: '1.5px solid rgba(193, 223, 240, 0.4)',
+            border: '1px solid rgba(193, 223, 240, 0.4)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             color: '#FFFFFF',
-            boxShadow: '0 4px 16px rgba(0, 0, 0, 0.15)'
+            flexShrink: 0
           }}
         >
-          <HandMetal size={34} />
+          <HandMetal size={24} />
         </div>
 
         <div>
           <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px' }}>
-            <h2 style={{ fontSize: '26px', fontWeight: '800', fontFamily: 'var(--font-heading)', letterSpacing: '-0.5px' }}>
+            <h2 style={{ fontSize: '20px', fontWeight: '800', fontFamily: 'var(--font-heading)', letterSpacing: '-0.3px', margin: 0 }}>
               SignVision SA
             </h2>
-            <span style={{ fontSize: '15px', fontWeight: '600', color: '#C1DFF0', fontFamily: 'var(--font-heading)' }}>
+            <span style={{ fontSize: '12px', fontWeight: '700', color: '#C1DFF0' }}>
               SignBridge
             </span>
           </div>
 
-          <p style={{ fontSize: '13px', color: 'rgba(255, 255, 255, 0.9)', marginTop: '4px', maxWidth: '620px', lineHeight: '1.4' }}>
-            Real-Time Two-Way South African Sign Language (SASL) AI Translator, ML Sequence Engine & Gamified STEM Learning Platform
+          <p style={{ fontSize: '12px', color: 'rgba(255, 255, 255, 0.92)', marginTop: '2px', margin: '2px 0 6px 0', lineHeight: '1.3' }}>
+            Real-Time Two-Way South African Sign Language (SASL) AI Translator & STEM Learning Platform
           </p>
 
-          {/* Tech Badges Row */}
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginTop: '14px' }}>
+          {/* Boxy Tech Tags */}
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px' }}>
             {pills.map((pill) => (
               <span
                 key={pill.label}
                 style={{
                   display: 'inline-flex',
                   alignItems: 'center',
-                  gap: '5px',
-                  padding: '4px 10px',
-                  borderRadius: '20px',
-                  fontSize: '11px',
+                  gap: '4px',
+                  padding: '2px 7px',
+                  borderRadius: '2px',
+                  fontSize: '10.5px',
                   fontWeight: '700',
-                  background: 'rgba(255, 255, 255, 0.18)',
-                  backdropFilter: 'blur(6px)',
-                  border: '1px solid rgba(255, 255, 255, 0.25)',
-                  color: '#FFFFFF'
+                  background: 'rgba(255, 255, 255, 0.15)',
+                  color: '#FFFFFF',
+                  border: '1px solid rgba(193, 223, 240, 0.3)'
                 }}
               >
                 <span>{pill.icon}</span>
@@ -104,19 +87,20 @@ export default function HeroBanner() {
         </div>
       </div>
 
-      {/* Right Tagline quote pill */}
+      {/* Right Side Motto */}
       <div
         style={{
-          borderLeft: '2px solid rgba(193, 223, 240, 0.4)',
-          paddingLeft: '18px',
-          maxWidth: '180px',
-          zIndex: 1
+          textAlign: 'right',
+          borderLeft: '1px solid rgba(193, 223, 240, 0.3)',
+          paddingLeft: '16px'
         }}
       >
-        <span style={{ fontSize: '13px', fontStyle: 'italic', fontWeight: '600', color: '#C1DFF0', lineHeight: '1.35', display: 'block' }}>
-          Inclusive Technology for a Brighter Tomorrow
-        </span>
-        <div style={{ width: '32px', height: '3px', background: '#88CCF1', borderRadius: '2px', marginTop: '8px' }} />
+        <div style={{ fontSize: '12px', fontWeight: '800', color: '#C1DFF0', letterSpacing: '0.4px' }}>
+          Inclusive Technology
+        </div>
+        <div style={{ fontSize: '11px', color: 'rgba(255, 255, 255, 0.85)', marginTop: '2px' }}>
+          For a Brighter Tomorrow
+        </div>
       </div>
     </div>
   );
