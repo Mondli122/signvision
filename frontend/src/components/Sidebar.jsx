@@ -12,7 +12,6 @@ export default function Sidebar({ activeTab, setActiveTab, isOpen = true, onTogg
     { id: 'aicoach', label: 'AI Coach', icon: Brain },
     { id: 'emergency', label: 'Emergency SOS', icon: AlertTriangle },
     { id: 'profile', label: 'Profile', icon: User },
-    { id: 'auth', label: 'Sign In / Register', icon: LogIn },
     { id: 'settings', label: 'Settings', icon: Settings },
   ];
 

@@ -46,6 +46,7 @@ export default function App() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [currentUser, setCurrentUser] = useState(null);
   const [showAuthModal, setShowAuthModal] = useState(false);
+  const [authModalMode, setAuthModalMode] = useState('login');
   const [glossSequence, setGlossSequence] = useState(['HELLO', 'WHERE', 'HELP']);
   const [translatedText, setTranslatedText] = useState('Hello! Where is it? I need help.');
   const [targetLanguage, setTargetLanguage] = useState('English');
@@ -224,7 +225,10 @@ export default function App() {
         onOpenSettings={() => setShowSettingsModal(true)}
         onOpenOnboarding={() => setShowOnboardingModal(true)}
         currentUser={currentUser}
-        onOpenAuth={() => setShowAuthModal(true)}
+        onOpenAuth={(mode = 'login') => {
+          setAuthModalMode(mode);
+          setShowAuthModal(true);
+        }}
         onSignOut={handleSignOut}
         onOpenProfile={() => setActiveNavTab('profile')}
         isSidebarOpen={isSidebarOpen}
@@ -422,9 +426,6 @@ export default function App() {
           {/* VIEW: MAIN HOME DASHBOARD */}
           {activeNavTab === 'home' && (
             <>
-              {/* Top Hero Banner (Boxy, Compact, Decluttered) */}
-              <HeroBanner />
-
               {/* Main 2-Column Dashboard Grid */}
               <div
                 className="app-top-grid"
@@ -642,6 +643,19 @@ export default function App() {
           <MessageSquareText size={17} />
           <span>AI Tutor</span>
         </button>
+      )}
+
+      {/* Authentication Modal */}
+      {showAuthModal && (
+        <AuthModal
+          defaultMode={authModalMode}
+          onClose={() => setShowAuthModal(false)}
+          onAuthSuccess={(user) => {
+            setCurrentUser(user);
+            setShowAuthModal(false);
+            syncCloudProgress();
+          }}
+        />
       )}
 
       {/* Global Animated Toast Notification System */}
