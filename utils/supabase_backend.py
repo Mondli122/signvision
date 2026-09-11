@@ -123,11 +123,26 @@ class SupabaseBackendClient:
                 }, None
             return None, "No token provided"
 
-        endpoint = f"{self.url}/auth/v1/user"
-        req = urllib.request.Request(endpoint, headers=self._headers(access_token), method='GET')
+    def reset_password_for_email(self, email):
+        """Sends password reset email/recovery via Supabase Auth REST endpoint."""
+        if not self.is_configured:
+            # Fallback mock response for demo preview
+            return {'message': f'Password recovery instructions dispatched to {email}'}, None
+
+        endpoint = f"{self.url}/auth/v1/recover"
+        payload = json.dumps({'email': email}).encode('utf-8')
+        req = urllib.request.Request(endpoint, data=payload, headers=self._headers(), method='POST')
         try:
-            with urllib.request.urlopen(req, timeout=6) as response:
+            with urllib.request.urlopen(req, timeout=8) as response:
                 res_data = json.loads(response.read().decode('utf-8'))
                 return res_data, None
+        except urllib.error.HTTPError as e:
+            err_body = e.read().decode('utf-8')
+            try:
+                err_json = json.loads(err_body)
+                return None, err_json.get('msg') or err_json.get('error_description') or str(e)
+            except:
+                return None, str(e)
         except Exception as ex:
             return None, str(ex)
+

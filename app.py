@@ -742,6 +742,24 @@ def auth_user():
 
     return jsonify({"user": user})
 
+@app.route('/api/auth/forgot-password', methods=['POST'])
+def auth_forgot_password():
+    """Dispatches password recovery email through Supabase Auth REST service."""
+    data = request.json or {}
+    email = data.get('email', '').strip()
+
+    if not email:
+        return jsonify({"error": "Email address is required"}), 400
+
+    result, err = supabase_auth.reset_password_for_email(email)
+    if err:
+        return jsonify({"error": err}), 400
+
+    return jsonify({
+        "success": True,
+        "message": f"Password reset instructions have been sent to {email}. Check your inbox!"
+    })
+
 # ==========================================
 # CLOUD PROGRESS SYNC, AI COACH & LEADERBOARD
 # ==========================================

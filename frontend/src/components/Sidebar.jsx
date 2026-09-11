@@ -1,5 +1,5 @@
 import React from 'react';
-import { Home, MessageSquare, Video, Gamepad2, Trophy, BookOpen, Brain, AlertTriangle, User, Settings, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Home, MessageSquare, Video, Gamepad2, Trophy, BookOpen, Brain, AlertTriangle, User, Settings, LogIn, ChevronLeft, ChevronRight } from 'lucide-react';
 
 export default function Sidebar({ activeTab, setActiveTab, isOpen = true, onToggle }) {
   const navItems = [
@@ -12,6 +12,7 @@ export default function Sidebar({ activeTab, setActiveTab, isOpen = true, onTogg
     { id: 'aicoach', label: 'AI Coach', icon: Brain },
     { id: 'emergency', label: 'Emergency SOS', icon: AlertTriangle },
     { id: 'profile', label: 'Profile', icon: User },
+    { id: 'auth', label: 'Sign In / Register', icon: LogIn },
     { id: 'settings', label: 'Settings', icon: Settings },
   ];
 

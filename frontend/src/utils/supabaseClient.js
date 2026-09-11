@@ -97,3 +97,21 @@ export async function getSessionUser() {
   const cached = localStorage.getItem(CACHED_USER_KEY);
   return cached ? JSON.parse(cached) : null;
 }
+
+export async function forgotPassword(email) {
+  try {
+    const res = await fetch('/api/auth/forgot-password', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email })
+    });
+    const data = await res.json();
+    if (!res.ok || data.error) {
+      return { data: null, error: new Error(data.error || 'Failed to send reset link') };
+    }
+    return { data, error: null };
+  } catch (err) {
+    return { data: null, error: err };
+  }
+}
+

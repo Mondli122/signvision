@@ -35,6 +35,7 @@ import MiniLeaderboardCard from './components/MiniLeaderboardCard';
 import AICoachPage from './components/AICoachPage';
 import DictionaryPage from './components/DictionaryPage';
 import LearningGamesPage from './components/LearningGamesPage';
+import AuthPage from './components/AuthPage';
 import { isOnboarded, getProgress, saveProgress, logActivity } from './utils/storage';
 import { toast } from './utils/toast';
 import { getSessionUser, signOutUser, getAuthToken } from './utils/supabaseClient';
@@ -284,7 +285,18 @@ export default function App() {
             <ProfilePage
               currentUser={currentUser}
               onOpenShare={() => setShowShareModal(true)}
-              onOpenAuth={() => setShowAuthModal(true)}
+              onOpenAuth={() => setActiveNavTab('auth')}
+            />
+          )}
+
+          {/* VIEW: LOGIN, REGISTER & FORGOT PASSWORD */}
+          {activeNavTab === 'auth' && (
+            <AuthPage
+              onAuthSuccess={(user) => {
+                setCurrentUser(user);
+                setActiveNavTab('profile');
+              }}
+              onBackToHome={() => setActiveNavTab('home')}
             />
           )}
 
