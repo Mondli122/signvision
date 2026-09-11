@@ -46,7 +46,7 @@ export default function FeatureCards({ onSelectFeature }) {
   ];
 
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))', gap: '8px', marginTop: '12px' }}>
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))', gap: '10px', marginTop: '10px' }}>
       {cards.map((card) => {
         const Icon = card.icon;
         return (
@@ -55,28 +55,30 @@ export default function FeatureCards({ onSelectFeature }) {
             onClick={() => onSelectFeature && onSelectFeature(card.id)}
             style={{
               background: '#FFFFFF',
-              borderRadius: '3px',
-              padding: '8px 12px',
+              borderRadius: '14px',
+              padding: '10px 14px',
               display: 'flex',
               alignItems: 'center',
-              gap: '10px',
-              border: '1px solid #C1DFF0',
-              boxShadow: '0 1px 3px rgba(45, 132, 138, 0.04)',
+              gap: '12px',
+              border: '1px solid rgba(136, 204, 241, 0.4)',
+              boxShadow: '0 2px 8px rgba(45, 137, 139, 0.04)',
               cursor: 'pointer',
-              transition: 'border-color 0.12s ease'
+              transition: 'all 0.15s ease'
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.borderColor = '#3587A4';
+              e.currentTarget.style.borderColor = '#2D848A';
+              e.currentTarget.style.transform = 'translateY(-1px)';
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.borderColor = '#C1DFF0';
+              e.currentTarget.style.borderColor = 'rgba(136, 204, 241, 0.4)';
+              e.currentTarget.style.transform = 'translateY(0)';
             }}
           >
             <div
               style={{
-                width: '30px',
-                height: '30px',
-                borderRadius: '2px',
+                width: '36px',
+                height: '36px',
+                borderRadius: '10px',
                 background: card.iconBg,
                 color: card.iconColor,
                 display: 'flex',
@@ -85,14 +87,14 @@ export default function FeatureCards({ onSelectFeature }) {
                 flexShrink: 0
               }}
             >
-              <Icon size={16} />
+              <Icon size={18} />
             </div>
 
             <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ fontSize: '11.5px', fontWeight: '800', color: '#133340', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+              <div style={{ fontSize: '12px', fontWeight: '800', color: '#133340', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                 {card.title}
               </div>
-              <div style={{ fontSize: '10px', color: '#5C7B8A', marginTop: '1px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+              <div style={{ fontSize: '10.5px', color: '#5C7B8A', marginTop: '1px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                 {card.subtitle}
               </div>
             </div>

@@ -3,80 +3,83 @@ import { HandMetal, Sparkles, Cpu, Layers, Radio, Globe, ShieldCheck } from 'luc
 
 export default function HeroBanner() {
   const pills = [
-    { label: 'Competition-Ready', icon: '🏆', color: '#2D898B' },
-    { label: 'Python 3.9+', icon: '🐍', color: '#3587A4' },
-    { label: 'Flask', icon: '⚡', color: '#2D848A' },
-    { label: 'React 18 + Vite', icon: '⚛️', color: '#88CCF1' },
-    { label: 'MediaPipe', icon: '🖐️', color: '#3587A4' },
-    { label: 'PWA', icon: '📱', color: '#2D898B' },
-    { label: 'SASL', icon: '🇿🇦', color: '#2D848A' }
+    { label: 'Competition-Ready', icon: '🏆' },
+    { label: 'Python 3.9+', icon: '🐍' },
+    { label: 'Flask', icon: '⚡' },
+    { label: 'React 18 + Vite', icon: '⚛️' },
+    { label: 'MediaPipe', icon: '🖐️' },
+    { label: 'PWA', icon: '📱' },
+    { label: 'SASL', icon: '🇿🇦' }
   ];
 
   return (
     <div
       className="glass-card"
       style={{
-        padding: '14px 20px',
-        borderRadius: '4px',
-        background: 'linear-gradient(135deg, #2D898B 0%, #2D848A 50%, #3587A4 100%)',
+        padding: '16px 24px',
+        borderRadius: '18px',
+        background: 'linear-gradient(135deg, #2D848A 0%, #2D898B 45%, #3587A4 100%)',
         color: '#FFFFFF',
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
         flexWrap: 'wrap',
-        gap: '14px',
-        boxShadow: '0 2px 8px rgba(45, 137, 139, 0.15)',
-        border: '1px solid #3587A4'
+        gap: '16px',
+        boxShadow: '0 8px 24px rgba(45, 137, 139, 0.18)',
+        border: '1px solid rgba(255, 255, 255, 0.15)'
       }}
     >
-      <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '18px' }}>
         <div
           style={{
-            width: '42px',
-            height: '42px',
-            borderRadius: '3px',
-            background: 'rgba(255, 255, 255, 0.15)',
-            border: '1px solid rgba(193, 223, 240, 0.4)',
+            width: '56px',
+            height: '56px',
+            borderRadius: '50%',
+            background: 'rgba(255, 255, 255, 0.18)',
+            border: '2px solid rgba(255, 255, 255, 0.35)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             color: '#FFFFFF',
-            flexShrink: 0
+            flexShrink: 0,
+            boxShadow: '0 4px 14px rgba(0, 0, 0, 0.12)'
           }}
         >
-          <HandMetal size={24} />
+          <HandMetal size={30} />
         </div>
 
         <div>
-          <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px' }}>
-            <h2 style={{ fontSize: '20px', fontWeight: '800', fontFamily: 'var(--font-heading)', letterSpacing: '-0.3px', margin: 0 }}>
+          <div style={{ display: 'flex', alignItems: 'baseline', gap: '10px' }}>
+            <h1 style={{ fontSize: '24px', fontWeight: '800', fontFamily: 'var(--font-heading)', letterSpacing: '-0.4px', margin: 0, color: '#FFFFFF' }}>
               SignVision SA
-            </h2>
-            <span style={{ fontSize: '12px', fontWeight: '700', color: '#C1DFF0' }}>
+            </h1>
+            <span style={{ fontSize: '15px', fontWeight: '700', color: '#C1DFF0' }}>
               SignBridge
             </span>
           </div>
 
-          <p style={{ fontSize: '12px', color: 'rgba(255, 255, 255, 0.92)', marginTop: '2px', margin: '2px 0 6px 0', lineHeight: '1.3' }}>
-            Real-Time Two-Way South African Sign Language (SASL) AI Translator & STEM Learning Platform
+          <p style={{ fontSize: '12.5px', color: 'rgba(255, 255, 255, 0.92)', margin: '3px 0 8px 0', lineHeight: '1.35', maxWidth: '620px' }}>
+            Real-Time Two-Way South African Sign Language (SASL) <br />
+            AI Translator, ML Sequence Engine & Gamified STEM Learning Platform
           </p>
 
-          {/* Boxy Tech Tags */}
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px' }}>
+          {/* Rounded Pill Tech Badges */}
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
             {pills.map((pill) => (
               <span
                 key={pill.label}
                 style={{
                   display: 'inline-flex',
                   alignItems: 'center',
-                  gap: '4px',
-                  padding: '2px 7px',
-                  borderRadius: '2px',
-                  fontSize: '10.5px',
+                  gap: '5px',
+                  padding: '4px 11px',
+                  borderRadius: '9999px',
+                  fontSize: '11px',
                   fontWeight: '700',
-                  background: 'rgba(255, 255, 255, 0.15)',
+                  background: 'rgba(255, 255, 255, 0.16)',
                   color: '#FFFFFF',
-                  border: '1px solid rgba(193, 223, 240, 0.3)'
+                  border: '1px solid rgba(255, 255, 255, 0.28)',
+                  backdropFilter: 'blur(4px)'
                 }}
               >
                 <span>{pill.icon}</span>
@@ -87,20 +90,21 @@ export default function HeroBanner() {
         </div>
       </div>
 
-      {/* Right Side Motto */}
+      {/* Right Side Quote */}
       <div
         style={{
-          textAlign: 'right',
-          borderLeft: '1px solid rgba(193, 223, 240, 0.3)',
-          paddingLeft: '16px'
+          borderLeft: '2px solid rgba(193, 223, 240, 0.4)',
+          paddingLeft: '18px',
+          textAlign: 'left'
         }}
       >
-        <div style={{ fontSize: '12px', fontWeight: '800', color: '#C1DFF0', letterSpacing: '0.4px' }}>
-          Inclusive Technology
+        <div style={{ fontSize: '13px', fontStyle: 'italic', fontWeight: '500', color: 'rgba(255, 255, 255, 0.95)', lineHeight: '1.4' }}>
+          Inclusive<br />
+          Technology<br />
+          for a Brighter<br />
+          Tomorrow
         </div>
-        <div style={{ fontSize: '11px', color: 'rgba(255, 255, 255, 0.85)', marginTop: '2px' }}>
-          For a Brighter Tomorrow
-        </div>
+        <div style={{ width: '28px', height: '3px', background: '#88CCF1', marginTop: '8px', borderRadius: '2px' }} />
       </div>
     </div>
   );

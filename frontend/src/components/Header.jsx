@@ -1,19 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { Download, User, Menu, HandMetal, AlertTriangle, Video, Moon, Sun, Settings, HelpCircle } from 'lucide-react';
-import DialectSelector from './DialectSelector';
+import { Menu, HandMetal, Moon, Sun, Bell, ChevronDown, HelpCircle, Settings } from 'lucide-react';
 import { getTheme, setTheme } from '../utils/storage';
 
 export default function Header({
-  currentProvince,
-  onSelectProvince,
-  onOpenEmergency,
-  onOpenWebRTC,
-  onOpenSettings,
-  onOpenOnboarding,
   currentUser,
   onOpenAuth,
   onSignOut,
   onOpenProfile,
+  onOpenSettings,
+  onOpenOnboarding,
+  onOpenWebRTC,
   isSidebarOpen,
   onToggleSidebar
 }) {
@@ -35,16 +31,16 @@ export default function Header({
     <header
       className="glass-card"
       style={{
-        padding: '10px 18px',
-        borderRadius: '4px',
-        background: 'var(--bg-card)',
-        boxShadow: '0 2px 6px rgba(45, 137, 139, 0.05)',
-        border: '1px solid #C1DFF0'
+        padding: '10px 20px',
+        borderRadius: '16px',
+        background: '#FFFFFF',
+        boxShadow: '0 4px 16px rgba(45, 137, 139, 0.06)',
+        border: '1px solid rgba(136, 204, 241, 0.4)'
       }}
     >
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '14px' }}>
         
-        {/* Left: Sidebar Toggle + Logo & Subnav */}
+        {/* Left: Sidebar Toggle + Logo & Slogan Links */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
           {/* Menu Toggle Button */}
           <button
@@ -52,12 +48,12 @@ export default function Header({
             title={isSidebarOpen ? 'Collapse sidebar' : 'Expand sidebar'}
             aria-label="Toggle navigation sidebar"
             style={{
-              width: '34px',
-              height: '34px',
-              borderRadius: '3px',
-              background: 'var(--bg-card-subtle)',
+              width: '36px',
+              height: '36px',
+              borderRadius: '10px',
+              background: '#F0F7FB',
               border: '1px solid #C1DFF0',
-              color: '#2D898B',
+              color: '#2D848A',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -72,138 +68,108 @@ export default function Header({
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer' }}>
             <div
               style={{
-                width: '36px',
-                height: '36px',
-                borderRadius: '3px',
+                width: '38px',
+                height: '38px',
+                borderRadius: '10px',
                 background: 'linear-gradient(135deg, #2D898B 0%, #3587A4 100%)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 color: '#FFFFFF',
-                boxShadow: '0 2px 6px rgba(45, 137, 139, 0.2)'
+                boxShadow: '0 3px 8px rgba(45, 137, 139, 0.22)'
               }}
             >
-              <HandMetal size={20} />
+              <HandMetal size={22} />
             </div>
             <div>
-              <span style={{ fontSize: '18px', fontWeight: '800', color: '#2D898B', fontFamily: 'var(--font-heading)', letterSpacing: '-0.3px' }}>
-                SignVision SA
-              </span>
-              <span style={{ fontSize: '11px', fontWeight: '700', color: '#5C7B8A', marginLeft: '6px' }}>
-                SignBridge
-              </span>
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px' }}>
+                <span style={{ fontSize: '19px', fontWeight: '800', color: '#2D848A', fontFamily: 'var(--font-heading)', letterSpacing: '-0.3px' }}>
+                  SignVision SA
+                </span>
+                <span style={{ fontSize: '12px', fontWeight: '700', color: '#3587A4' }}>
+                  SignBridge
+                </span>
+              </div>
             </div>
           </div>
 
-          {/* Top Sub-Navigation Links */}
+          {/* Top Slogan Bar */}
           <div className="header-actions-desktop" style={{ display: 'flex', alignItems: 'center', gap: '14px', fontSize: '13px', fontWeight: '600', color: '#5C7B8A', borderLeft: '1px solid #C1DFF0', paddingLeft: '18px' }}>
-            <span style={{ cursor: 'pointer', color: '#2D898B', fontWeight: '700' }}>Translate</span>
+            <span style={{ cursor: 'pointer', transition: 'color 0.15s' }} onMouseEnter={(e) => e.target.style.color = '#2D848A'} onMouseLeave={(e) => e.target.style.color = '#5C7B8A'} onClick={onOpenWebRTC}>Connect</span>
             <span style={{ color: '#C1DFF0' }}>|</span>
-            <span style={{ cursor: 'pointer', transition: 'color 0.15s' }} onMouseEnter={(e) => e.target.style.color = '#2D898B'} onMouseLeave={(e) => e.target.style.color = '#5C7B8A'} onClick={onOpenWebRTC}>Connect</span>
+            <span style={{ cursor: 'pointer', color: '#2D848A', fontWeight: '700' }}>Translate</span>
             <span style={{ color: '#C1DFF0' }}>|</span>
-            <span style={{ cursor: 'pointer', transition: 'color 0.15s' }} onMouseEnter={(e) => e.target.style.color = '#2D898B'} onMouseLeave={(e) => e.target.style.color = '#5C7B8A'}>Learn</span>
+            <span style={{ cursor: 'pointer', transition: 'color 0.15s' }} onMouseEnter={(e) => e.target.style.color = '#2D848A'} onMouseLeave={(e) => e.target.style.color = '#5C7B8A'}>Learn</span>
             <span style={{ color: '#C1DFF0' }}>|</span>
-            <span style={{ cursor: 'pointer', transition: 'color 0.15s' }} onMouseEnter={(e) => e.target.style.color = '#2D898B'} onMouseLeave={(e) => e.target.style.color = '#5C7B8A'}>Empower</span>
+            <span style={{ cursor: 'pointer', transition: 'color 0.15s' }} onMouseEnter={(e) => e.target.style.color = '#2D848A'} onMouseLeave={(e) => e.target.style.color = '#5C7B8A'}>Empower</span>
           </div>
         </div>
 
-        {/* Right: Dialect Selector, Quick SOS, Theme, Settings, User Profile */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <div className="header-actions-desktop" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <DialectSelector
-              currentProvince={currentProvince || 'Gauteng'}
-              onSelectProvince={onSelectProvince}
-            />
-
-            <button
-              onClick={onOpenEmergency}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '5px',
-                background: '#FEE2E2',
-                border: '1px solid #FCA5A5',
-                color: '#DC2626',
-                padding: '6px 10px',
-                borderRadius: '3px',
-                cursor: 'pointer',
-                fontWeight: '700',
-                fontSize: '0.78rem',
-                transition: 'all 0.15s'
-              }}
-            >
-              <AlertTriangle size={13} />
-              <span>SOS</span>
-            </button>
-          </div>
-
-          {/* Theme Switcher Button */}
+        {/* Right: Theme Toggle, Notifications, User Profile Pill */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          
+          {/* Theme Switcher */}
           <button
             onClick={handleToggleTheme}
             style={{
-              width: '32px',
-              height: '32px',
-              borderRadius: '3px',
+              width: '36px',
+              height: '36px',
+              borderRadius: '50%',
               border: '1px solid #C1DFF0',
-              background: 'var(--bg-card-subtle)',
+              background: '#F0F7FB',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
-              justifyContent: 'center'
+              justifyContent: 'center',
+              transition: 'all 0.15s'
             }}
             title="Toggle Theme"
           >
-            {theme === 'dark' ? <Sun size={15} color="#88CCF1" /> : <Moon size={15} color="#2D848A" />}
+            {theme === 'dark' ? <Sun size={17} color="#88CCF1" /> : <Sun size={17} color="#2D848A" />}
           </button>
 
-          {/* Tour Button */}
+          {/* Notification Bell */}
           <button
             onClick={onOpenOnboarding}
             style={{
-              width: '32px',
-              height: '32px',
-              borderRadius: '3px',
+              width: '36px',
+              height: '36px',
+              borderRadius: '50%',
               border: '1px solid #C1DFF0',
-              background: 'var(--bg-card-subtle)',
+              background: '#F0F7FB',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
-              justifyContent: 'center'
+              justifyContent: 'center',
+              position: 'relative',
+              transition: 'all 0.15s'
             }}
-            title="Welcome Guide"
+            title="Notifications & Guide"
           >
-            <HelpCircle size={15} color="#3587A4" />
+            <Bell size={17} color="#2D848A" />
+            <span
+              style={{
+                position: 'absolute',
+                top: '7px',
+                right: '7px',
+                width: '7px',
+                height: '7px',
+                borderRadius: '50%',
+                background: '#2D848A'
+              }}
+            />
           </button>
 
-          {/* Settings Button */}
-          <button
-            onClick={onOpenSettings}
-            style={{
-              width: '32px',
-              height: '32px',
-              borderRadius: '3px',
-              border: '1px solid #C1DFF0',
-              background: 'var(--bg-card-subtle)',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}
-            title="Open Settings"
-          >
-            <Settings size={15} color="#5C7B8A" />
-          </button>
-
-          {/* Boxy User Profile Widget */}
+          {/* User Profile Pill */}
           <div
             onClick={currentUser ? onOpenProfile : onOpenAuth}
             style={{
               display: 'flex',
               alignItems: 'center',
-              gap: '8px',
-              padding: '4px 10px 4px 6px',
-              borderRadius: '3px',
-              background: 'var(--bg-card-subtle)',
+              gap: '10px',
+              padding: '4px 14px 4px 6px',
+              borderRadius: '28px',
+              background: '#F0F7FB',
               border: '1px solid #C1DFF0',
               cursor: 'pointer',
               transition: 'all 0.15s ease'
@@ -212,29 +178,31 @@ export default function Header({
           >
             <div
               style={{
-                width: '26px',
-                height: '26px',
-                borderRadius: '2px',
+                width: '32px',
+                height: '32px',
+                borderRadius: '50%',
                 background: 'linear-gradient(135deg, #3587A4 0%, #2D898B 100%)',
                 color: '#FFFFFF',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                fontSize: '12px',
+                fontSize: '13px',
                 fontWeight: '800'
               }}
             >
               {currentUser?.email ? currentUser.email.charAt(0).toUpperCase() : '👨‍🎓'}
             </div>
             <div style={{ textAlign: 'left', display: 'flex', flexDirection: 'column' }}>
-              <span style={{ fontSize: '12px', fontWeight: '800', color: '#133340', lineHeight: '1.2' }}>
+              <span style={{ fontSize: '13px', fontWeight: '800', color: '#133340', lineHeight: '1.2' }}>
                 {currentUser?.user_metadata?.full_name || (currentUser?.email ? currentUser.email.split('@')[0] : 'Mondli Nkuna')}
               </span>
-              <span style={{ fontSize: '9.5px', color: '#5C7B8A', fontWeight: '600' }}>
+              <span style={{ fontSize: '10px', color: '#5C7B8A', fontWeight: '600' }}>
                 {currentUser ? 'Active Learner' : 'Student'}
               </span>
             </div>
+            <ChevronDown size={14} color="#5C7B8A" style={{ marginLeft: '4px' }} />
           </div>
+
         </div>
 
       </div>

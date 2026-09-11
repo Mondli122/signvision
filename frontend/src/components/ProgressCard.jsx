@@ -26,15 +26,15 @@ export default function ProgressCard() {
   ];
 
   return (
-    <div className="glass-card" style={{ padding: '14px', display: 'flex', flexDirection: 'column', gap: '12px', height: '100%' }}>
+    <div className="glass-card" style={{ padding: '16px 18px', display: 'flex', flexDirection: 'column', gap: '14px', height: '100%', borderRadius: '16px', background: '#FFFFFF', border: '1px solid rgba(136, 204, 241, 0.4)', boxShadow: '0 4px 16px rgba(45, 137, 139, 0.06)' }}>
       {/* Header */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
           <div
             style={{
-              width: '32px',
-              height: '32px',
-              borderRadius: '2px',
+              width: '36px',
+              height: '36px',
+              borderRadius: '50%',
               background: '#C1DFF0',
               color: '#2D848A',
               display: 'flex',
@@ -42,7 +42,7 @@ export default function ProgressCard() {
               justifyContent: 'center'
             }}
           >
-            <BarChart3 size={18} />
+            <BarChart3 size={20} />
           </div>
           <div>
             <h3 style={{ fontSize: '15px', fontWeight: '800', color: '#133340', fontFamily: 'var(--font-heading)', margin: 0 }}>
@@ -56,11 +56,11 @@ export default function ProgressCard() {
 
         <div
           style={{
-            padding: '3px 8px',
-            borderRadius: '2px',
-            background: 'linear-gradient(135deg, #2D848A 0%, #3587A4 100%)',
+            padding: '4px 12px',
+            borderRadius: '9999px',
+            background: '#2D848A',
             color: '#FFFFFF',
-            fontSize: '11px',
+            fontSize: '11.5px',
             fontWeight: '800',
             fontFamily: 'var(--font-heading)'
           }}
@@ -70,14 +70,14 @@ export default function ProgressCard() {
       </div>
 
       {/* Progress Bar & XP indicator */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-        <div style={{ width: '100%', height: '8px', background: '#E2EFF7', borderRadius: '2px', overflow: 'hidden' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
+        <div style={{ width: '100%', height: '8px', background: '#E2EFF7', borderRadius: '9999px', overflow: 'hidden' }}>
           <div
             style={{
               width: `${percentage}%`,
               height: '100%',
               background: 'linear-gradient(90deg, #88CCF1 0%, #2D898B 100%)',
-              borderRadius: '2px',
+              borderRadius: '9999px',
               transition: 'width 0.4s ease'
             }}
           />
@@ -87,44 +87,44 @@ export default function ProgressCard() {
         </div>
       </div>
 
-      {/* 4 Boxy Stat Boxes */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '6px', marginTop: 'auto' }}>
+      {/* 4 Stat Boxes */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '8px', marginTop: 'auto' }}>
         {statBoxes.map((stat) => {
           const Icon = stat.icon;
           return (
             <div
               key={stat.label}
               style={{
-                padding: '8px 4px',
-                borderRadius: '2px',
-                background: '#F5F9FC',
+                padding: '10px 6px',
+                borderRadius: '12px',
+                background: '#F0F7FB',
                 border: '1px solid #C1DFF0',
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
                 textAlign: 'center',
-                gap: '2px'
+                gap: '3px'
               }}
             >
               <div
                 style={{
-                  width: '22px',
-                  height: '22px',
-                  borderRadius: '2px',
+                  width: '26px',
+                  height: '26px',
+                  borderRadius: '50%',
                   background: stat.bg,
                   color: stat.color,
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  marginBottom: '1px'
+                  marginBottom: '2px'
                 }}
               >
-                <Icon size={13} />
+                <Icon size={14} />
               </div>
-              <span style={{ fontSize: '14px', fontWeight: '800', color: '#133340', fontFamily: 'var(--font-heading)', lineHeight: '1.1' }}>
+              <span style={{ fontSize: '14px', fontWeight: '800', color: '#133340', lineHeight: '1.2' }}>
                 {stat.value}
               </span>
-              <span style={{ fontSize: '9.5px', color: '#5C7B8A', fontWeight: '600' }}>
+              <span style={{ fontSize: '9.5px', color: '#5C7B8A', fontWeight: '600', whiteSpace: 'nowrap' }}>
                 {stat.label}
               </span>
             </div>

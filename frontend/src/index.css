@@ -12,12 +12,12 @@
   --primary-hover: #236E70;
   --emerald-gradient: linear-gradient(135deg, #2D898B 0%, #3587A4 100%);
   --sidebar-gradient: linear-gradient(180deg, #2D848A 0%, #226469 100%);
-  --bg-page: #F0F6FA;
+  --bg-page: #D5EBF8;
   --bg-card: #FFFFFF;
-  --bg-card-subtle: #F5F9FC;
+  --bg-card-subtle: #F0F7FB;
   --text-main: #133340;
   --text-muted: #5C7B8A;
-  --border-light: #C1DFF0;
+  --border-light: rgba(136, 204, 241, 0.5);
   --border-emerald: #88CCF1;
   
   --mint-badge: #C1DFF0;
@@ -26,16 +26,16 @@
   --font-heading: 'Outfit', sans-serif;
   --font-body: 'Inter', sans-serif;
   
-  /* Boxy, sharp geometry tokens */
-  --radius-xl: 6px;
-  --radius-lg: 4px;
-  --radius-md: 4px;
-  --radius-sm: 2px;
+  /* Modern Premium Design Tokens */
+  --radius-xl: 18px;
+  --radius-lg: 14px;
+  --radius-md: 10px;
+  --radius-sm: 6px;
   
-  --shadow-card: 0 2px 8px rgba(45, 137, 139, 0.06);
-  --shadow-hover: 0 4px 14px rgba(45, 137, 139, 0.15);
+  --shadow-card: 0 4px 20px -2px rgba(45, 137, 139, 0.08), 0 2px 6px -1px rgba(45, 137, 139, 0.04);
+  --shadow-hover: 0 10px 25px -5px rgba(45, 137, 139, 0.2), 0 6px 10px -5px rgba(45, 137, 139, 0.12);
 
-  --scrollbar-track: #F0F6FA;
+  --scrollbar-track: #EAF4F9;
   --scrollbar-thumb: #C1DFF0;
   --scrollbar-thumb-hover: #3587A4;
   --skeleton-base: #E2EFF7;
@@ -147,34 +147,35 @@ h1, h2, h3, h4, h5, h6 {
   flex: 1;
 }
 
-/* Boxy Card Styling */
+/* Modern Glass Card Styling */
 .glass-card {
   background: var(--bg-card);
   border: 1px solid var(--border-light);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-xl);
   box-shadow: var(--shadow-card);
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 }
 
 .glass-card:hover {
-  border-color: var(--palette-steel);
+  border-color: rgba(45, 137, 139, 0.35);
 }
 
 .clickable-card {
   cursor: pointer;
 }
 .clickable-card:hover {
+  transform: translateY(-2px);
   border-color: var(--palette-teal);
   box-shadow: var(--shadow-hover);
 }
 
-/* Boxy Status Tag */
+/* Status Pill */
 .status-pill {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 4px 10px;
-  border-radius: var(--radius-sm);
+  padding: 5px 12px;
+  border-radius: 9999px;
   font-size: 12px;
   font-weight: 700;
   background: var(--mint-badge);
@@ -184,9 +185,9 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .status-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 1px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
   background-color: var(--palette-teal);
   box-shadow: 0 0 6px var(--palette-teal);
   animation: pulse-dot 2s infinite;
@@ -198,42 +199,43 @@ h1, h2, h3, h4, h5, h6 {
   100% { transform: scale(0.95); opacity: 0.8; }
 }
 
-/* Boxy Buttons */
+/* Modern Rounded Buttons */
 .btn-primary {
   background: linear-gradient(135deg, #2D898B 0%, #2D848A 100%);
   color: #FFFFFF;
-  border: 1px solid #236E70;
-  padding: 8px 16px;
-  border-radius: var(--radius-sm);
+  border: none;
+  padding: 9px 18px;
+  border-radius: var(--radius-md);
   font-weight: 700;
   font-size: 13px;
   font-family: var(--font-heading);
   cursor: pointer;
   display: inline-flex;
   align-items: center;
-  gap: 7px;
-  box-shadow: 0 2px 6px rgba(45, 137, 139, 0.2);
-  transition: all 0.15s ease;
+  gap: 8px;
+  box-shadow: 0 3px 10px rgba(45, 137, 139, 0.25);
+  transition: all 0.18s ease;
 }
 
 .btn-primary:hover {
   background: linear-gradient(135deg, #236E70 0%, #2D848A 100%);
-  box-shadow: 0 3px 10px rgba(45, 137, 139, 0.3);
+  box-shadow: 0 5px 14px rgba(45, 137, 139, 0.35);
+  transform: translateY(-1px);
 }
 
 .btn-outline {
   background: #FFFFFF;
   color: var(--text-main);
   border: 1px solid var(--border-light);
-  padding: 8px 14px;
-  border-radius: var(--radius-sm);
+  padding: 9px 16px;
+  border-radius: var(--radius-md);
   font-weight: 700;
   font-size: 13px;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
-  gap: 7px;
-  transition: all 0.15s ease;
+  gap: 8px;
+  transition: all 0.18s ease;
 }
 
 .btn-outline:hover {

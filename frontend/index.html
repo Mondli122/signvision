@@ -35,11 +35,24 @@
     <script type="module" src="/src/main.jsx"></script>
     <script>
       if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/sw.js')
-            .then(reg => console.log('✅ PWA Service Worker Registered:', reg.scope))
-            .catch(err => console.warn('PWA Service Worker Registration Failed:', err));
-        });
+        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+          navigator.serviceWorker.getRegistrations().then(registrations => {
+            for (const registration of registrations) {
+              registration.unregister();
+            }
+          });
+          if ('caches' in window) {
+            caches.keys().then(keys => {
+              for (const key of keys) caches.delete(key);
+            });
+          }
+        } else {
+          window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/sw.js')
+              .then(reg => console.log('✅ PWA Service Worker Registered:', reg.scope))
+              .catch(err => console.warn('PWA Service Worker Registration Failed:', err));
+          });
+        }
       }
     </script>
   </body>

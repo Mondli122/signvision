@@ -6,24 +6,25 @@ export default function StemLearningCard({ onPlayNow }) {
     <div
       className="glass-card"
       style={{
-        padding: '14px 18px',
-        borderRadius: '4px',
-        background: 'linear-gradient(135deg, #C1DFF0 0%, #F0F6FA 100%)',
-        border: '1px solid #88CCF1',
+        padding: '16px 20px',
+        borderRadius: '16px',
+        background: 'linear-gradient(135deg, #D5EBF8 0%, #FFFFFF 100%)',
+        border: '1px solid rgba(136, 204, 241, 0.5)',
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
         position: 'relative',
-        overflow: 'hidden'
+        overflow: 'hidden',
+        boxShadow: '0 4px 16px rgba(45, 137, 139, 0.06)'
       }}
     >
       <div style={{ zIndex: 1, maxWidth: '280px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '6px' }}>
           <div
             style={{
-              width: '30px',
-              height: '30px',
-              borderRadius: '2px',
+              width: '36px',
+              height: '36px',
+              borderRadius: '50%',
               background: '#2D848A',
               color: '#FFFFFF',
               display: 'flex',
@@ -31,13 +32,13 @@ export default function StemLearningCard({ onPlayNow }) {
               justifyContent: 'center'
             }}
           >
-            <Gamepad2 size={17} />
+            <Gamepad2 size={19} />
           </div>
           <div>
-            <h4 style={{ fontSize: '15px', fontWeight: '800', color: '#133340', fontFamily: 'var(--font-heading)', margin: 0 }}>
+            <h4 style={{ fontSize: '16px', fontWeight: '800', color: '#133340', fontFamily: 'var(--font-heading)', margin: 0 }}>
               STEM Learning
             </h4>
-            <span style={{ fontSize: '10.5px', color: '#5C7B8A' }}>
+            <span style={{ fontSize: '11px', color: '#5C7B8A' }}>
               Learn Robotics, AI & SASL together!
             </span>
           </div>
@@ -49,22 +50,22 @@ export default function StemLearningCard({ onPlayNow }) {
             marginTop: '8px',
             display: 'inline-flex',
             alignItems: 'center',
-            gap: '6px',
-            padding: '6px 14px',
-            borderRadius: '2px',
-            background: 'linear-gradient(135deg, #2D898B 0%, #3587A4 100%)',
+            gap: '8px',
+            padding: '8px 20px',
+            borderRadius: '9999px',
+            background: '#2D848A',
             color: '#FFFFFF',
             border: 'none',
-            fontSize: '12px',
+            fontSize: '12.5px',
             fontWeight: '700',
             fontFamily: 'var(--font-heading)',
             cursor: 'pointer',
-            boxShadow: '0 2px 6px rgba(45, 137, 139, 0.2)',
+            boxShadow: '0 3px 10px rgba(45, 137, 139, 0.25)',
             transition: 'all 0.15s'
           }}
         >
           <span>Play Now</span>
-          <ArrowRight size={13} />
+          <ArrowRight size={14} />
         </button>
       </div>
 

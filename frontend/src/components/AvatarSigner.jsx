@@ -1,6 +1,8 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { Play, RotateCcw } from 'lucide-react';
 
+const TOTAL_FRAMES = 60;
+
 export default function AvatarSigner({ activeGloss, isPlaying, onFinish }) {
   const canvasRef = useRef(null);
   const [currentFrame, setCurrentFrame] = useState(0);
@@ -12,7 +14,6 @@ export default function AvatarSigner({ activeGloss, isPlaying, onFinish }) {
 
     let animationFrameId;
     let frame = 0;
-    const totalFrames = 60; // 60 frames = 2 seconds at 30fps
 
     const gloss = (activeGloss || 'HELLO').toUpperCase().trim();
 
@@ -38,7 +39,7 @@ export default function AvatarSigner({ activeGloss, isPlaying, onFinish }) {
 
       const centerX = canvas.width / 2;
       const headY = 65;
-      const progress = frame / totalFrames;
+      const progress = frame / TOTAL_FRAMES;
       const cycle = Math.sin(progress * Math.PI * 2);
 
       // --- Head & Face ---
@@ -194,7 +195,7 @@ export default function AvatarSigner({ activeGloss, isPlaying, onFinish }) {
       frame++;
       setCurrentFrame(frame);
 
-      if (isPlaying && frame < totalFrames) {
+      if (isPlaying && frame < TOTAL_FRAMES) {
         animationFrameId = requestAnimationFrame(renderAvatarFrame);
       } else {
         if (onFinish && isPlaying) onFinish();
@@ -214,8 +215,8 @@ export default function AvatarSigner({ activeGloss, isPlaying, onFinish }) {
     <div
       style={{
         background: '#0F172A',
-        border: '1px solid #3587A4',
-        borderRadius: '4px',
+        border: '1px solid rgba(45, 137, 139, 0.4)',
+        borderRadius: '16px',
         padding: '12px',
         textAlign: 'center',
         marginTop: '0',
@@ -243,7 +244,7 @@ export default function AvatarSigner({ activeGloss, isPlaying, onFinish }) {
         style={{
           width: '100%',
           maxHeight: '180px',
-          borderRadius: '2px',
+          borderRadius: '10px',
           background: '#070A12',
           border: '1px solid rgba(255, 255, 255, 0.08)'
         }}
@@ -253,12 +254,13 @@ export default function AvatarSigner({ activeGloss, isPlaying, onFinish }) {
         style={{
           display: 'flex',
           alignItems: 'center',
-          gap: '8px',
+          gap: '10px',
           marginTop: '8px',
-          background: 'rgba(15, 23, 42, 0.8)',
-          padding: '5px 10px',
-          borderRadius: '2px',
-          border: '1px solid #3587A4'
+          background: 'rgba(15, 23, 42, 0.85)',
+          padding: '6px 12px',
+          borderRadius: '12px',
+          border: '1px solid rgba(53, 135, 164, 0.4)',
+          backdropFilter: 'blur(4px)'
         }}
       >
         <button
@@ -269,42 +271,43 @@ export default function AvatarSigner({ activeGloss, isPlaying, onFinish }) {
             }
           }}
           style={{
-            width: '24px',
-            height: '24px',
-            borderRadius: '2px',
-            background: '#88CCF1',
+            width: '28px',
+            height: '28px',
+            borderRadius: '50%',
+            background: '#2D848A',
             border: 'none',
-            color: '#133340',
+            color: '#FFFFFF',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            cursor: 'pointer'
+            cursor: 'pointer',
+            boxShadow: '0 2px 6px rgba(45, 132, 138, 0.3)'
           }}
         >
-          <Play size={12} style={{ marginLeft: '1px' }} />
+          <Play size={13} style={{ marginLeft: '1px' }} />
         </button>
 
-        <span style={{ fontSize: '11px', fontWeight: '800', color: '#88CCF1', minWidth: '50px' }}>
+        <span style={{ fontSize: '11.5px', fontWeight: '800', color: '#88CCF1', minWidth: '50px' }}>
           {gloss}
         </span>
 
         {/* Scrubber bar */}
-        <div style={{ flex: 1, height: '4px', background: 'rgba(255, 255, 255, 0.2)', borderRadius: '2px', position: 'relative', overflow: 'hidden' }}>
+        <div style={{ flex: 1, height: '5px', background: 'rgba(255, 255, 255, 0.2)', borderRadius: '9999px', position: 'relative', overflow: 'hidden' }}>
           <div
             style={{
-              width: `${Math.min(100, Math.round((currentFrame / totalFrames) * 100))}%`,
+              width: `${Math.min(100, Math.round((currentFrame / TOTAL_FRAMES) * 100))}%`,
               height: '100%',
-              background: '#88CCF1',
-              borderRadius: '2px'
+              background: 'linear-gradient(90deg, #88CCF1 0%, #2D898B 100%)',
+              borderRadius: '9999px'
             }}
           />
         </div>
 
         {/* Carousel indicators */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', color: '#94A3B8' }}>
-          <span style={{ cursor: 'pointer', color: '#88CCF1' }}>‹</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', color: '#94A3B8' }}>
+          <span style={{ cursor: 'pointer', color: '#88CCF1', fontSize: '14px' }}>‹</span>
           <span style={{ fontWeight: '700', color: '#FFFFFF' }}>1/5</span>
-          <span style={{ cursor: 'pointer', color: '#88CCF1' }}>›</span>
+          <span style={{ cursor: 'pointer', color: '#88CCF1', fontSize: '14px' }}>›</span>
         </div>
       </div>
     </div>

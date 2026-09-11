@@ -36,7 +36,7 @@ import MiniLeaderboardCard from './components/MiniLeaderboardCard';
 import { isOnboarded, getProgress, saveProgress, logActivity } from './utils/storage';
 import { toast } from './utils/toast';
 import { getSessionUser, signOutUser, getAuthToken } from './utils/supabaseClient';
-import { MessageSquareText } from 'lucide-react';
+import { MessageSquareText, Activity, Settings } from 'lucide-react';
 
 export default function App() {
   const [activeNavTab, setActiveNavTab] = useState('home');
@@ -110,11 +110,9 @@ export default function App() {
     }
   };
 
-  // Check onboarding on first run
+  // Keep onboarding closed by default so dashboard renders immediately
   useEffect(() => {
-    if (!isOnboarded()) {
-      setShowOnboardingModal(true);
-    }
+    // Can still be opened anytime via Header Welcome Guide button
   }, []);
 
   // Check initial Supabase auth session & sync cloud progress
@@ -328,28 +326,80 @@ export default function App() {
                   <div
                     className="glass-card"
                     style={{
-                      padding: '10px 16px',
+                      padding: '12px 20px',
+                      borderRadius: '16px',
+                      background: '#FFFFFF',
+                      border: '1px solid rgba(136, 204, 241, 0.4)',
+                      boxShadow: '0 4px 16px rgba(45, 137, 139, 0.06)',
                       display: 'flex',
                       justifyContent: 'space-between',
                       alignItems: 'center',
                       flexWrap: 'wrap',
-                      gap: '8px'
+                      gap: '10px'
                     }}
                   >
-                    <div>
-                      <h3 style={{ fontSize: '15px', fontWeight: '800', color: '#133340', fontFamily: 'var(--font-heading)', margin: 0, display: 'flex', alignItems: 'center', gap: '6px' }}>
-                        <span>📊</span> Live Translation
-                      </h3>
-                      <p style={{ fontSize: '11px', color: '#5C7B8A', margin: 0 }}>
-                        Translate between SASL and text/voice in real-time with dual camera and 3D avatar.
-                      </p>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                      <div
+                        style={{
+                          width: '36px',
+                          height: '36px',
+                          borderRadius: '50%',
+                          background: '#2D848A',
+                          color: '#FFFFFF',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center'
+                        }}
+                      >
+                        <Activity size={19} />
+                      </div>
+                      <div>
+                        <h3 style={{ fontSize: '16px', fontWeight: '800', color: '#133340', fontFamily: 'var(--font-heading)', margin: 0 }}>
+                          Live Translation
+                        </h3>
+                        <p style={{ fontSize: '11.5px', color: '#5C7B8A', margin: 0 }}>
+                          Use your webcam or mic to translate between SASL and text/voice in real-time.
+                        </p>
+                      </div>
                     </div>
 
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                      <div className="status-pill">
-                        <span className="status-dot" />
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                      <div
+                        style={{
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '6px',
+                          padding: '5px 14px',
+                          borderRadius: '9999px',
+                          background: '#D5F0EC',
+                          color: '#2D848A',
+                          border: '1px solid #88CCF1',
+                          fontSize: '12px',
+                          fontWeight: '800'
+                        }}
+                      >
+                        <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#2D898B' }} />
                         Tracking: ON
                       </div>
+                      <button
+                        onClick={() => setShowSettingsModal(true)}
+                        style={{
+                          width: '34px',
+                          height: '34px',
+                          borderRadius: '50%',
+                          border: '1px solid #C1DFF0',
+                          background: '#F0F7FB',
+                          color: '#2D848A',
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          transition: 'all 0.15s'
+                        }}
+                        title="Translation Settings"
+                      >
+                        <Settings size={16} />
+                      </button>
                     </div>
                   </div>
 
@@ -448,39 +498,38 @@ export default function App() {
         <AIChatAssistant onClose={() => setShowAIChatModal(false)} />
       )}
 
-      {/* Floating AI Tutor Launcher Button */}
+      {/* Subtle Floating AI Tutor Launcher Button */}
       {!showAIChatModal && (
         <button
           onClick={() => setShowAIChatModal(true)}
           style={{
             position: 'fixed',
-            bottom: '24px',
-            left: '24px',
+            bottom: '20px',
+            right: '20px',
             zIndex: 1000,
-            background: 'linear-gradient(135deg, #00A884 0%, #059669 100%)',
+            background: 'linear-gradient(135deg, #2D898B 0%, #3587A4 100%)',
             color: '#FFFFFF',
             border: 'none',
-            borderRadius: '30px',
-            padding: '12px 20px',
+            borderRadius: '9999px',
+            padding: '10px 18px',
             display: 'flex',
             alignItems: 'center',
             gap: '8px',
-            boxShadow: '0 8px 24px rgba(0, 168, 132, 0.4)',
+            boxShadow: '0 6px 20px rgba(45, 137, 139, 0.35)',
             cursor: 'pointer',
             fontWeight: '700',
-            fontSize: '13px'
+            fontSize: '12.5px',
+            transition: 'all 0.2s ease'
           }}
+          title="Ask AI SASL Tutor"
         >
-          <MessageSquareText size={18} />
-          <span>Ask AI SASL Tutor</span>
+          <MessageSquareText size={17} />
+          <span>AI Tutor</span>
         </button>
       )}
 
       {/* Global Animated Toast Notification System */}
       <ToastContainer />
-
-      {/* Competition Footer */}
-      <Footer />
     </div>
   );
 }
