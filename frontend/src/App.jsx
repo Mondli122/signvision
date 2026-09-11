@@ -15,7 +15,6 @@ import WebRTCCallRoom from './components/WebRTCCallRoom';
 import AvatarSigner from './components/AvatarSigner';
 import Footer from './components/Footer';
 
-// New Features Components
 import QuizGame from './components/QuizGame';
 import LearnMode from './components/LearnMode';
 import DatasetRecorder from './components/DatasetRecorder';
@@ -33,6 +32,9 @@ import CommunitySubmissions from './components/CommunitySubmissions';
 import HeroBanner from './components/HeroBanner';
 import StemLearningCard from './components/StemLearningCard';
 import MiniLeaderboardCard from './components/MiniLeaderboardCard';
+import AICoachPage from './components/AICoachPage';
+import DictionaryPage from './components/DictionaryPage';
+import LearningGamesPage from './components/LearningGamesPage';
 import { isOnboarded, getProgress, saveProgress, logActivity } from './utils/storage';
 import { toast } from './utils/toast';
 import { getSessionUser, signOutUser, getAuthToken } from './utils/supabaseClient';
@@ -242,12 +244,42 @@ export default function App() {
         {/* Main Content Dashboard */}
         <main style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '12px', minWidth: 0 }}>
           
-          {/* VIEW: QUIZ GAME / AI COACH */}
-          {activeNavTab === 'quiz' && (
-            <QuizGame onBackToHome={() => setActiveNavTab('home')} />
+          {/* VIEW: LIVE WEBRTC CALL ROOM */}
+          {activeNavTab === 'call' && (
+            <WebRTCCallRoom isInline={true} />
           )}
 
-          {/* VIEW: USER PROFILE & XP */}
+          {/* VIEW: AI TUTOR & POSE COACH */}
+          {activeNavTab === 'aicoach' && (
+            <AICoachPage />
+          )}
+
+          {/* VIEW: EMERGENCY SOS CRISIS HUB */}
+          {activeNavTab === 'emergency' && (
+            <EmergencyHub isInline={true} />
+          )}
+
+          {/* VIEW: NATIONAL & CLASSROOM LEADERBOARD */}
+          {(activeNavTab === 'leaderboard' || activeNavTab === 'classroom') && (
+            <ClassroomMode />
+          )}
+
+          {/* VIEW: INTERACTIVE SASL DICTIONARY & AVATAR STUDIO */}
+          {activeNavTab === 'dictionary' && (
+            <DictionaryPage />
+          )}
+
+          {/* VIEW: LEARNING & GAMIFIED PRACTICE HUB */}
+          {activeNavTab === 'learn' && (
+            <LearningGamesPage onInspectSign={(sign) => setSelectedInspectorSign(sign)} />
+          )}
+
+          {/* VIEW: SPEED QUIZ GAME */}
+          {activeNavTab === 'quiz' && (
+            <QuizGame onBackToHome={() => setActiveNavTab('learn')} />
+          )}
+
+          {/* VIEW: USER PROFILE & XP ACHIEVEMENTS */}
           {activeNavTab === 'profile' && (
             <ProfilePage
               currentUser={currentUser}
@@ -259,11 +291,6 @@ export default function App() {
           {/* VIEW: COMMUNITY SIGNS REPOSITORY */}
           {activeNavTab === 'community' && (
             <CommunitySubmissions />
-          )}
-
-          {/* VIEW: LEARN MODE */}
-          {activeNavTab === 'learn' && (
-            <LearnMode onInspectSign={(sign) => setSelectedInspectorSign(sign)} />
           )}
 
           {/* VIEW: REVERSE VOICE-TO-SIGN TRANSLATOR */}
@@ -282,29 +309,106 @@ export default function App() {
             <DatasetRecorder />
           )}
 
-          {/* VIEW: CLASSROOM & LEADERBOARD */}
-          {activeNavTab === 'classroom' && (
-            <ClassroomMode />
-          )}
-
-          {/* VIEW: FULL INLINE SETTINGS PAGE */}
+          {/* VIEW: FULL INLINE SETTINGS */}
           {activeNavTab === 'settings' && (
             <SettingsModal isInline={true} />
           )}
 
-          {/* VIEW: DICTIONARY TAB */}
-          {activeNavTab === 'dictionary' && (
+          {/* VIEW: DEDICATED REAL-TIME TRANSLATOR STUDIO */}
+          {activeNavTab === 'translator' && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              <DictionaryCard
-                items={dictionaryItems}
-                isLoading={isDictionaryLoading}
-                onSelectSign={(item) => setSelectedInspectorSign(item)}
+              {/* Top Dedicated Studio Banner */}
+              <div
+                className="glass-card"
+                style={{
+                  padding: '14px 20px',
+                  borderRadius: '16px',
+                  background: 'linear-gradient(135deg, #2D848A 0%, #205E63 100%)',
+                  color: '#FFFFFF',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  flexWrap: 'wrap',
+                  gap: '12px'
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  <div style={{
+                    width: '38px',
+                    height: '38px',
+                    borderRadius: '10px',
+                    background: 'rgba(255, 255, 255, 0.15)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: '#FFFFFF'
+                  }}>
+                    <Activity size={22} />
+                  </div>
+                  <div>
+                    <h3 style={{ margin: 0, fontSize: '16px', fontWeight: '800' }}>
+                      Real-Time 2-Way SASL & Voice/Text Translation Studio
+                    </h3>
+                    <p style={{ margin: '2px 0 0 0', fontSize: '12px', color: '#C1DFF0' }}>
+                      AI Computer Vision translation between South African Sign Language and 11 Official National Languages
+                    </p>
+                  </div>
+                </div>
+
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <span style={{
+                    padding: '5px 12px',
+                    borderRadius: '9999px',
+                    background: 'rgba(255, 255, 255, 0.15)',
+                    color: '#FFFFFF',
+                    fontSize: '12px',
+                    fontWeight: '700',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px'
+                  }}>
+                    <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#34D399' }} />
+                    Live 2-Way Engine Online
+                  </span>
+                </div>
+              </div>
+
+              {/* Dual Video Grid: Camera + 3D Avatar */}
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', alignItems: 'stretch' }}>
+                <div style={{ flex: 1, minHeight: 0 }}>
+                  <CameraViewport
+                    onPrediction={(label) => {
+                      setGlossSequence((prev) => [...prev, label]);
+                      setLastDetectedSign(label);
+                      setLastConfidence(0.92);
+                    }}
+                  />
+                </div>
+
+                <div style={{ flex: 1, minHeight: 0 }}>
+                  <AvatarSigner
+                    activeGloss={activeAvatarGloss}
+                    isPlaying={isPlayingAvatar}
+                    onFinish={() => setIsPlayingAvatar(false)}
+                  />
+                </div>
+              </div>
+
+              {/* Interactive Translation Panel with Quick Signs */}
+              <TranslationPanel
+                glossSequence={glossSequence}
+                translatedText={translatedText}
+                targetLanguage={targetLanguage}
+                onSelectLanguage={(lang) => setTargetLanguage(lang)}
+                onClear={handleClear}
+                onSave={handleSaveSequence}
+                onTranslate={handleTranslateGloss}
               />
             </div>
           )}
 
-          {/* VIEW: HOME & TRANSLATOR DEFAULT VIEW */}
-          {(activeNavTab === 'home' || activeNavTab === 'translator') && (
+          {/* VIEW: MAIN HOME DASHBOARD */}
+          {activeNavTab === 'home' && (
             <>
               {/* Top Hero Banner (Boxy, Compact, Decluttered) */}
               <HeroBanner />

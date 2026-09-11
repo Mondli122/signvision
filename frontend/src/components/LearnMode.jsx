@@ -48,8 +48,7 @@ const MODULES = [
 export default function LearnMode({ onInspectSign }) {
   const [activeModuleId, setActiveModuleId] = useState('alphabet');
   const [completedSigns, setCompletedSigns] = useState(() => {
-    const p = getProgress();
-    return Array.from(new Set([...(p.learnedSigns || []), 'letter_a', 'hello']));
+    return ['letter_a', 'hello'];
   });
 
   const activeModule = MODULES.find(m => m.id === activeModuleId) || MODULES[0];
@@ -58,24 +57,37 @@ export default function LearnMode({ onInspectSign }) {
     if (!completedSigns.includes(sign.id)) {
       setCompletedSigns(prev => [...prev, sign.id]);
       markSignLearned(sign.id, sign.word);
+      addXP(25);
     }
   };
 
   return (
-    <div className="glass-card" style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
+    <div
+      className="glass-card"
+      style={{
+        padding: '24px',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '20px',
+        background: '#FFFFFF',
+        borderRadius: '16px',
+        border: '1px solid rgba(136, 204, 241, 0.4)',
+        boxShadow: '0 4px 20px rgba(45, 137, 139, 0.08)'
+      }}
+    >
       {/* Header */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <div style={{ width: '40px', height: '40px', borderRadius: '12px', background: 'var(--mint-badge)', color: 'var(--primary-emerald)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <div style={{ width: '42px', height: '42px', borderRadius: '12px', background: '#E6F4FA', color: '#2D848A', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <GraduationCap size={22} />
           </div>
           <div>
-            <h3 style={{ fontSize: '18px', fontWeight: '800', color: 'var(--text-main)' }}>SASL Guided Learning Academy</h3>
-            <p style={{ fontSize: '13px', color: 'var(--text-muted)' }}>Interactive curriculum aligned with South African Sign Language standards</p>
+            <h3 style={{ fontSize: '18px', fontWeight: '800', color: '#133340', margin: 0 }}>SASL Guided Learning Academy</h3>
+            <p style={{ fontSize: '12.5px', color: '#5C7B8A', margin: '2px 0 0 0' }}>Interactive curriculum aligned with South African Sign Language standards</p>
           </div>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '6px 14px', borderRadius: '20px', background: 'var(--bg-card-subtle)', border: '1px solid var(--border-light)', fontSize: '13px', fontWeight: '700' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '6px 14px', borderRadius: '20px', background: '#F0F7FB', border: '1px solid #C1DFF0', fontSize: '12.5px', fontWeight: '700', color: '#133340' }}>
           <Sparkles size={16} color="#EAB308" />
           <span>{completedSigns.length} / {MODULES.reduce((acc, m) => acc + m.signs.length, 0)} Signs Mastered</span>
         </div>
@@ -94,26 +106,26 @@ export default function LearnMode({ onInspectSign }) {
                 flexDirection: 'column',
                 alignItems: 'flex-start',
                 padding: '14px',
-                borderRadius: '14px',
-                border: `2px solid ${isActive ? 'var(--primary-emerald)' : 'var(--border-light)'}`,
-                background: isActive ? 'var(--mint-badge)' : 'var(--bg-card)',
+                borderRadius: '12px',
+                border: `2px solid ${isActive ? '#2D848A' : '#C1DFF0'}`,
+                background: isActive ? '#E6F4FA' : '#F8FBFC',
                 cursor: 'pointer',
                 textAlign: 'left',
                 transition: 'all 0.15s ease'
               }}
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%', marginBottom: '4px' }}>
-                <span style={{ fontSize: '11px', fontWeight: '700', textTransform: 'uppercase', color: isActive ? 'var(--mint-text)' : 'var(--text-muted)' }}>
+                <span style={{ fontSize: '11px', fontWeight: '700', textTransform: 'uppercase', color: isActive ? '#2D848A' : '#5C7B8A' }}>
                   {module.level}
                 </span>
-                <span style={{ fontSize: '11px', fontWeight: '700', color: isActive ? 'var(--primary-emerald)' : 'var(--text-muted)' }}>
+                <span style={{ fontSize: '11px', fontWeight: '700', color: isActive ? '#2D848A' : '#5C7B8A' }}>
                   {module.signs.length} signs
                 </span>
               </div>
-              <div style={{ fontSize: '14px', fontWeight: '700', color: isActive ? 'var(--mint-text)' : 'var(--text-main)', marginBottom: '4px' }}>
+              <div style={{ fontSize: '14px', fontWeight: '800', color: isActive ? '#2D848A' : '#133340', marginBottom: '4px' }}>
                 {module.title}
               </div>
-              <div style={{ fontSize: '12px', color: 'var(--text-muted)', lineHeight: '1.3' }}>
+              <div style={{ fontSize: '12px', color: '#5C7B8A', lineHeight: '1.35' }}>
                 {module.description}
               </div>
             </button>
@@ -123,37 +135,36 @@ export default function LearnMode({ onInspectSign }) {
 
       {/* Signs Cards in Active Module */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-        <h4 style={{ fontSize: '16px', fontWeight: '700', color: 'var(--text-main)' }}>
+        <h4 style={{ fontSize: '15px', fontWeight: '800', color: '#133340', margin: 0 }}>
           Signs in this Module:
         </h4>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '14px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: '12px' }}>
           {activeModule.signs.map(sign => {
             const isDone = completedSigns.includes(sign.id);
             return (
               <div
                 key={sign.id}
-                className="clickable-card"
                 style={{
                   padding: '16px',
-                  background: 'var(--bg-card)',
-                  borderRadius: '14px',
-                  border: '1px solid var(--border-light)',
+                  background: '#FFFFFF',
+                  borderRadius: '12px',
+                  border: '1px solid #C1DFF0',
                   display: 'flex',
                   flexDirection: 'column',
                   gap: '10px'
                 }}
               >
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <div style={{ fontSize: '28px' }}>{sign.icon}</div>
+                  <div style={{ fontSize: '26px' }}>{sign.icon}</div>
                   <button
                     onClick={() => handleCompleteSign(sign)}
                     style={{
                       border: 'none',
-                      background: isDone ? '#D1FAE5' : 'var(--bg-card-subtle)',
-                      color: isDone ? '#047857' : 'var(--text-muted)',
+                      background: isDone ? '#D1FAE5' : '#F0F7FB',
+                      color: isDone ? '#065F46' : '#5C7B8A',
                       padding: '4px 10px',
-                      borderRadius: '12px',
-                      fontSize: '12px',
+                      borderRadius: '8px',
+                      fontSize: '11.5px',
                       fontWeight: '700',
                       cursor: 'pointer',
                       display: 'flex',
@@ -167,17 +178,31 @@ export default function LearnMode({ onInspectSign }) {
                 </div>
 
                 <div>
-                  <div style={{ fontSize: '16px', fontWeight: '700', color: 'var(--text-main)' }}>{sign.word}</div>
-                  <div style={{ fontSize: '12px', fontWeight: '700', color: 'var(--primary-emerald)' }}>GLOSS: {sign.gloss}</div>
+                  <div style={{ fontSize: '15px', fontWeight: '800', color: '#133340' }}>{sign.word}</div>
+                  <div style={{ fontSize: '11.5px', fontWeight: '700', color: '#2D848A' }}>GLOSS: {sign.gloss}</div>
                 </div>
 
-                <p style={{ fontSize: '13px', color: 'var(--text-muted)', lineHeight: '1.4' }}>
+                <p style={{ fontSize: '12px', color: '#5C7B8A', lineHeight: '1.4', margin: 0 }}>
                   {sign.desc}
                 </p>
 
                 <button
-                  className="btn-outline"
-                  style={{ width: '100%', justifyContent: 'center', padding: '8px', fontSize: '13px', marginTop: 'auto' }}
+                  style={{
+                    width: '100%',
+                    padding: '8px',
+                    fontSize: '12px',
+                    fontWeight: '700',
+                    marginTop: 'auto',
+                    borderRadius: '8px',
+                    border: '1px solid #C1DFF0',
+                    background: '#F0F7FB',
+                    color: '#2D848A',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '6px'
+                  }}
                   onClick={() => onInspectSign && onInspectSign(sign)}
                 >
                   <BookOpen size={14} /> Practice Sign View

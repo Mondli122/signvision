@@ -1,18 +1,17 @@
 import React from 'react';
-import { Home, Repeat, GraduationCap, BookOpen, Gamepad2, Database, Settings, Trophy, Mic, User, Users, ChevronLeft, ChevronRight, Menu } from 'lucide-react';
+import { Home, MessageSquare, Video, Gamepad2, Trophy, BookOpen, Brain, AlertTriangle, User, Settings, ChevronLeft, ChevronRight } from 'lucide-react';
 
 export default function Sidebar({ activeTab, setActiveTab, isOpen = true, onToggle }) {
   const navItems = [
     { id: 'home', label: 'Home', icon: Home },
-    { id: 'translator', label: 'Translator', icon: Repeat },
-    { id: 'reverse', label: 'Live Call Room', icon: Mic },
-    { id: 'learn', label: 'Learning & Games', icon: GraduationCap },
-    { id: 'classroom', label: 'Leaderboard', icon: Trophy },
+    { id: 'translator', label: 'Translator', icon: MessageSquare },
+    { id: 'call', label: 'Live Call Room', icon: Video },
+    { id: 'learn', label: 'Learning & Games', icon: Gamepad2 },
+    { id: 'leaderboard', label: 'Leaderboard', icon: Trophy },
     { id: 'dictionary', label: 'Dictionary', icon: BookOpen },
-    { id: 'quiz', label: 'AI Coach', icon: Gamepad2 },
-    { id: 'recorder', label: 'Dataset Recorder', icon: Database },
+    { id: 'aicoach', label: 'AI Coach', icon: Brain },
+    { id: 'emergency', label: 'Emergency SOS', icon: AlertTriangle },
     { id: 'profile', label: 'Profile', icon: User },
-    { id: 'community', label: 'Community', icon: Users },
     { id: 'settings', label: 'Settings', icon: Settings },
   ];
 

@@ -60,36 +60,62 @@ export default function ClassroomMode() {
     }));
 
   return (
-    <div className="glass-card" style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
+    <div
+      className="glass-card"
+      style={{
+        padding: '24px',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '20px',
+        background: '#FFFFFF',
+        borderRadius: '16px',
+        border: '1px solid rgba(136, 204, 241, 0.4)',
+        boxShadow: '0 4px 20px rgba(45, 137, 139, 0.08)'
+      }}
+    >
       {/* Header */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <div style={{ width: '40px', height: '40px', borderRadius: '12px', background: '#FEF3C7', color: '#D97706', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <Trophy size={22} />
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <div style={{
+            width: '42px',
+            height: '42px',
+            borderRadius: '12px',
+            background: '#F0F7FB',
+            border: '1px solid #C1DFF0',
+            color: '#2D848A',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}>
+            <Trophy size={24} />
           </div>
           <div>
-            <h3 style={{ fontSize: '18px', fontWeight: '800', color: 'var(--text-main)' }}>Classroom & National Leaderboard</h3>
-            <p style={{ fontSize: '13px', color: 'var(--text-muted)' }}>Compete with learners across South Africa and challenge your STEM classroom</p>
+            <h3 style={{ fontSize: '18px', fontWeight: '800', color: '#133340', margin: 0 }}>
+              National SASL & Classroom Leaderboard
+            </h3>
+            <p style={{ fontSize: '12.5px', color: '#5C7B8A', margin: '2px 0 0 0' }}>
+              Compete with learners across South Africa and challenge your STEM classroom
+            </p>
           </div>
         </div>
 
         {/* Tab Switcher */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <div style={{ display: 'flex', background: 'var(--bg-card-subtle)', borderRadius: '12px', padding: '4px', border: '1px solid var(--border-light)' }}>
+          <div style={{ display: 'flex', background: '#F0F7FB', borderRadius: '10px', padding: '3px', border: '1px solid #C1DFF0' }}>
             <button
               onClick={() => setActiveTab('leaderboard')}
               style={{
                 padding: '6px 14px',
                 borderRadius: '8px',
                 border: 'none',
-                background: activeTab === 'leaderboard' ? 'var(--primary-emerald)' : 'transparent',
-                color: activeTab === 'leaderboard' ? '#FFF' : 'var(--text-muted)',
-                fontSize: '13px',
+                background: activeTab === 'leaderboard' ? '#2D848A' : 'transparent',
+                color: activeTab === 'leaderboard' ? '#FFFFFF' : '#5C7B8A',
+                fontSize: '12.5px',
                 fontWeight: '700',
                 cursor: 'pointer'
               }}
             >
-              National Leaderboard
+              National Rankings
             </button>
             <button
               onClick={() => setActiveTab('room')}
@@ -97,9 +123,9 @@ export default function ClassroomMode() {
                 padding: '6px 14px',
                 borderRadius: '8px',
                 border: 'none',
-                background: activeTab === 'room' ? 'var(--primary-emerald)' : 'transparent',
-                color: activeTab === 'room' ? '#FFF' : 'var(--text-muted)',
-                fontSize: '13px',
+                background: activeTab === 'room' ? '#2D848A' : 'transparent',
+                color: activeTab === 'room' ? '#FFFFFF' : '#5C7B8A',
+                fontSize: '12.5px',
                 fontWeight: '700',
                 cursor: 'pointer'
               }}
@@ -112,17 +138,17 @@ export default function ClassroomMode() {
             onClick={fetchLeaderboard}
             title="Refresh rankings"
             style={{
-              background: 'var(--bg-card-subtle)',
-              border: '1px solid var(--border-light)',
-              borderRadius: '10px',
+              background: '#F0F7FB',
+              border: '1px solid #C1DFF0',
+              borderRadius: '8px',
               padding: '8px',
               cursor: 'pointer',
-              color: 'var(--text-muted)',
+              color: '#2D848A',
               display: 'flex',
               alignItems: 'center'
             }}
           >
-            <RefreshCw size={15} className={loading ? 'animate-spin' : ''} />
+            <RefreshCw size={15} className={loading ? 'spin' : ''} />
           </button>
         </div>
       </div>
@@ -130,7 +156,16 @@ export default function ClassroomMode() {
       {activeTab === 'leaderboard' ? (
         /* Leaderboard Table */
         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '60px 1.5fr 1fr 100px 100px', padding: '10px 16px', fontSize: '12px', fontWeight: '700', color: 'var(--text-muted)', textTransform: 'uppercase' }}>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: '60px 1.5fr 1fr 100px 100px',
+            padding: '10px 16px',
+            fontSize: '11.5px',
+            fontWeight: '800',
+            color: '#5C7B8A',
+            textTransform: 'uppercase',
+            letterSpacing: '0.5px'
+          }}>
             <span>Rank</span>
             <span>Learner & School</span>
             <span>Province</span>
@@ -142,7 +177,7 @@ export default function ClassroomMode() {
             /* Loading Skeleton */
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
               {[1, 2, 3, 4, 5].map(n => (
-                <div key={n} className="skeleton-shimmer" style={{ height: '54px', borderRadius: '12px' }} />
+                <div key={n} style={{ height: '54px', borderRadius: '12px', background: '#F0F7FB' }} />
               ))}
             </div>
           ) : (
@@ -157,34 +192,34 @@ export default function ClassroomMode() {
                     alignItems: 'center',
                     padding: '14px 16px',
                     borderRadius: '12px',
-                    background: isUser ? '#D1FAE5' : 'var(--bg-card-subtle)',
-                    border: isUser ? '2px solid #00A884' : '1px solid var(--border-light)',
-                    transition: 'transform 0.1s ease',
-                    boxShadow: isUser ? '0 4px 14px rgba(0, 168, 132, 0.15)' : 'none'
+                    background: isUser ? '#E6F4FA' : '#F8FBFC',
+                    border: isUser ? '2px solid #2D848A' : '1px solid #C1DFF0',
+                    transition: 'all 0.15s ease',
+                    boxShadow: isUser ? '0 4px 14px rgba(45, 132, 138, 0.12)' : 'none'
                   }}
                 >
-                  <span style={{ fontSize: '16px', fontWeight: '800', color: user.rank <= 3 ? '#D97706' : 'var(--text-muted)' }}>
+                  <span style={{ fontSize: '16px', fontWeight: '800', color: user.rank <= 3 ? '#2D848A' : '#5C7B8A' }}>
                     #{user.rank}
                   </span>
 
                   <div>
-                    <div style={{ fontSize: '14px', fontWeight: '700', color: isUser ? '#065F46' : 'var(--text-main)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <div style={{ fontSize: '14px', fontWeight: '700', color: '#133340', display: 'flex', alignItems: 'center', gap: '6px' }}>
                       {user.name}
-                      {user.rank <= 3 && <Medal size={16} color="#D97706" />}
-                      {isUser && <span style={{ fontSize: '11px', background: '#00A884', color: '#FFF', padding: '1px 6px', borderRadius: '8px' }}>YOU</span>}
+                      {user.rank <= 3 && <Medal size={16} color="#2D848A" />}
+                      {isUser && <span style={{ fontSize: '10px', background: '#2D848A', color: '#FFF', padding: '1px 6px', borderRadius: '6px', fontWeight: '800' }}>YOU</span>}
                     </div>
-                    <div style={{ fontSize: '12px', color: isUser ? '#047857' : 'var(--text-muted)' }}>{user.school}</div>
+                    <div style={{ fontSize: '11.5px', color: '#5C7B8A' }}>{user.school}</div>
                   </div>
 
-                  <span style={{ fontSize: '13px', fontWeight: '600', color: isUser ? '#065F46' : 'var(--text-main)' }}>
+                  <span style={{ fontSize: '13px', fontWeight: '600', color: '#133340' }}>
                     {user.province}
                   </span>
 
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '13px', fontWeight: '700', color: '#F97316' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '13px', fontWeight: '700', color: '#EAB308' }}>
                     <Flame size={14} /> {user.streak}d
                   </div>
 
-                  <span style={{ fontSize: '14px', fontWeight: '800', color: isUser ? '#00A884' : 'var(--primary-emerald)' }}>
+                  <span style={{ fontSize: '14px', fontWeight: '800', color: '#2D848A' }}>
                     {user.score} XP
                   </span>
                 </div>
@@ -196,13 +231,15 @@ export default function ClassroomMode() {
         /* Classroom Challenge Room */
         <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', alignItems: 'center', padding: '20px 0' }}>
           {!joinedRoom ? (
-            <div style={{ width: '100%', maxWidth: '420px', padding: '24px', background: 'var(--bg-card-subtle)', borderRadius: '16px', border: '1px solid var(--border-light)', display: 'flex', flexDirection: 'column', gap: '16px', textAlign: 'center' }}>
-              <School size={40} color="var(--primary-emerald)" style={{ margin: '0 auto' }} />
+            <div style={{ width: '100%', maxWidth: '420px', padding: '24px', background: '#F8FBFC', borderRadius: '16px', border: '1px solid #C1DFF0', display: 'flex', flexDirection: 'column', gap: '16px', textAlign: 'center' }}>
+              <div style={{ width: '50px', height: '50px', borderRadius: '12px', background: '#E6F4FA', color: '#2D848A', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto' }}>
+                <School size={28} />
+              </div>
               <div>
-                <h4 style={{ fontSize: '18px', fontWeight: '800', color: 'var(--text-main)', marginBottom: '6px' }}>
+                <h4 style={{ fontSize: '18px', fontWeight: '800', color: '#133340', marginBottom: '6px' }}>
                   Join STEM Classroom Room
                 </h4>
-                <p style={{ fontSize: '13px', color: 'var(--text-muted)' }}>
+                <p style={{ fontSize: '12.5px', color: '#5C7B8A', margin: 0 }}>
                   Enter your teacher or mentor's 6-character room code to join live peer sign speed matches.
                 </p>
               </div>
@@ -215,9 +252,9 @@ export default function ClassroomMode() {
                 style={{
                   padding: '12px',
                   borderRadius: '10px',
-                  border: '1px solid var(--border-light)',
-                  background: 'var(--bg-card)',
-                  color: 'var(--text-main)',
+                  border: '1px solid #C1DFF0',
+                  background: '#FFFFFF',
+                  color: '#133340',
                   fontSize: '16px',
                   fontWeight: '800',
                   textAlign: 'center',
@@ -226,39 +263,80 @@ export default function ClassroomMode() {
                 }}
               />
 
-              <button className="btn-primary" onClick={handleJoin} style={{ justifyContent: 'center' }}>
+              <button
+                onClick={handleJoin}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '8px',
+                  padding: '12px',
+                  borderRadius: '10px',
+                  border: 'none',
+                  background: '#2D848A',
+                  color: '#FFFFFF',
+                  fontWeight: '700',
+                  fontSize: '14px',
+                  cursor: 'pointer'
+                }}
+              >
                 <LogIn size={16} /> Enter Classroom Room
               </button>
             </div>
           ) : (
-            <div style={{ width: '100%', maxWidth: '520px', padding: '24px', background: 'var(--bg-card-subtle)', borderRadius: '16px', border: '1px solid var(--border-light)', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <div style={{ width: '100%', maxWidth: '520px', padding: '24px', background: '#F8FBFC', borderRadius: '16px', border: '1px solid #C1DFF0', display: 'flex', flexDirection: 'column', gap: '16px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span className="status-pill">
-                  <span className="status-dot" /> Connected to {roomCode}
+                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '4px 10px', borderRadius: '9999px', background: '#E6F4FA', color: '#2D848A', fontSize: '12px', fontWeight: '700' }}>
+                  <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#2D898B' }} /> Connected to {roomCode}
                 </span>
-                <span style={{ fontSize: '13px', fontWeight: '700', color: 'var(--primary-emerald)' }}>
+                <span style={{ fontSize: '13px', fontWeight: '700', color: '#2D848A' }}>
                   14 Students Active
                 </span>
               </div>
 
-              <div style={{ padding: '16px', background: 'var(--bg-card)', borderRadius: '12px', border: '1px solid var(--border-light)' }}>
-                <h5 style={{ fontSize: '15px', fontWeight: '700', color: 'var(--text-main)', marginBottom: '8px' }}>
+              <div style={{ padding: '16px', background: '#FFFFFF', borderRadius: '12px', border: '1px solid #C1DFF0' }}>
+                <h5 style={{ fontSize: '14px', fontWeight: '800', color: '#133340', marginBottom: '6px' }}>
                   Teacher's Live Prompt:
                 </h5>
-                <div style={{ fontSize: '14px', color: 'var(--text-muted)', lineHeight: '1.4' }}>
-                  "Sign the phrase: <b>HELLO I NEED HELP</b> with correct dominant hand posture and facial expression."
+                <div style={{ fontSize: '13px', color: '#5C7B8A', lineHeight: '1.4' }}>
+                  "Sign the phrase: <strong style={{ color: '#133340' }}>HELLO I NEED HELP</strong> with correct dominant hand posture and facial expression."
                 </div>
               </div>
 
               <div style={{ display: 'flex', gap: '10px' }}>
                 <button
-                  className="btn-primary"
-                  style={{ flex: 1, justifyContent: 'center' }}
+                  style={{
+                    flex: 1,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '8px',
+                    padding: '12px',
+                    borderRadius: '10px',
+                    border: 'none',
+                    background: '#2D848A',
+                    color: '#FFFFFF',
+                    fontWeight: '700',
+                    fontSize: '13.5px',
+                    cursor: 'pointer'
+                  }}
                   onClick={() => toast.success('Live STEM challenge round started! Perform the target sign in camera view.', 'Challenge Active')}
                 >
                   Start Live Challenge Round
                 </button>
-                <button className="btn-outline" onClick={() => setJoinedRoom(false)}>
+                <button
+                  onClick={() => setJoinedRoom(false)}
+                  style={{
+                    padding: '12px 18px',
+                    borderRadius: '10px',
+                    border: '1px solid #C1DFF0',
+                    background: '#FFFFFF',
+                    color: '#5C7B8A',
+                    fontWeight: '700',
+                    fontSize: '13.5px',
+                    cursor: 'pointer'
+                  }}
+                >
                   Leave Room
                 </button>
               </div>
